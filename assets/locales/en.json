@@ -1,0 +1,16 @@
+{
+  "app.title": "linux-helper",
+  "search.placeholder": "Search recipes",
+  "search.empty": "No recipes matched your query.",
+  "detail.run": "Press enter to fill fields and run",
+  "detail.back": "Press esc to go back",
+  "form.preview": "Preview",
+  "form.submit": "Press enter to continue",
+  "form.back": "Press esc to go back",
+  "confirm.title": "Confirmation required",
+  "confirm.approve": "Press enter or y to continue",
+  "confirm.back": "Press esc, backspace, or n to cancel",
+  "result.running": "Running command...",
+  "result.done": "Execution finished",
+  "result.back": "Press enter or esc to return"
+}

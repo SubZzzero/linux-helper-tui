@@ -1,0 +1,16 @@
+{
+  "app.title": "linux-helper",
+  "search.placeholder": "Пошук рецептів",
+  "search.empty": "Нічого не знайдено.",
+  "detail.run": "Натисніть enter, щоб заповнити поля і виконати",
+  "detail.back": "Натисніть esc, щоб повернутись",
+  "form.preview": "Попередній перегляд",
+  "form.submit": "Натисніть enter, щоб продовжити",
+  "form.back": "Натисніть esc, щоб повернутись",
+  "confirm.title": "Потрібне підтвердження",
+  "confirm.approve": "Натисніть enter або y, щоб продовжити",
+  "confirm.back": "Натисніть esc, backspace або n, щоб скасувати",
+  "result.running": "Команда виконується...",
+  "result.done": "Виконання завершено",
+  "result.back": "Натисніть enter або esc, щоб повернутись"
+}

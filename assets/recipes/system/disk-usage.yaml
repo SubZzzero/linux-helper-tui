@@ -1,0 +1,34 @@
+id: disk-usage
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: du
+command: ""
+title:
+  en: "Show disk usage"
+  ua: "Показати використання диска"
+  ru: "Показать использование диска"
+description:
+  en: "Summarize disk usage for a path."
+  ua: "Підсумовує використання диска для шляху."
+  ru: "Суммирует использование диска для пути."
+args:
+  - "-sh"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Target path"
+tags:
+  - disk
+  - system
+examples:
+  - args:
+      path: "/var/log"
+    description:
+      en: "Measure logs directory size"

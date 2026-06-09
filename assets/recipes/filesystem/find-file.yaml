@@ -1,0 +1,41 @@
+id: find-file
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find file by name"
+  ua: "Знайти файл за назвою"
+  ru: "Найти файл по имени"
+description:
+  en: "Recursively search for files under a path."
+  ua: "Рекурсивно шукає файли у каталозі."
+  ru: "Рекурсивно ищет файлы в каталоге."
+args:
+  - "{{path}}"
+  - "-name"
+  - "{{filename}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+  - name: filename
+    type: string
+    required: true
+    description:
+      en: "Filename pattern"
+tags:
+  - find
+  - filesystem
+examples:
+  - args:
+      path: "/var/log"
+      filename: "*.log"
+    description:
+      en: "Find log files in /var/log"

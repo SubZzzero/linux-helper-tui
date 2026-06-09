@@ -1,0 +1,33 @@
+# Build artifacts
+/bin/
+/linux-helper
+*.exe
+*.out
+*.test
+
+# Coverage and profiling
+/coverage.out
+*.coverprofile
+*.pprof
+*.prof
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local tool state
+.serena/
+
+# Temporary files
+tmp/
+temp/
