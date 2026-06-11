@@ -78,7 +78,6 @@ func Bootstrap() (Model, func() error, error) {
 		return Model{}, nil, err
 	}
 
-	searchService := services.NewSearchService(recipeService.All())
 	favoritesService := services.NewFavoritesService(storage.NewFavoritesStore(paths.FavoritesFile))
 	favorites, err := favoritesService.Load()
 	if err != nil {
@@ -91,28 +90,24 @@ func Bootstrap() (Model, func() error, error) {
 		return Model{}, nil, err
 	}
 
-	searchScreen, err := screens.NewSearchModel(
-		searchService,
+	catalogScreen := screens.NewCatalogModel(
+		recipeService.All(),
 		config.Locale,
 		styles,
 		favorites,
 		recent,
 		translator.T("app.title"),
-		translator.T("search.placeholder"),
-		translator.T("search.empty"),
-		translator.T("search.recent_title"),
-		translator.T("search.recent_empty"),
-		translator.T("search.category_label"),
-		translator.T("search.category_all"),
-		translator.T("search.help"),
+		translator.T("catalog.empty"),
+		translator.T("catalog.recent_title"),
+		translator.T("catalog.recent_empty"),
+		translator.T("catalog.category_label"),
+		translator.T("catalog.category_all"),
+		translator.T("catalog.help"),
 	)
-	if err != nil {
-		return Model{}, nil, err
-	}
 
 	executionService := services.NewExecutionService(executor.OSRunner{}, recentStore)
 
-	model := NewModel(searchScreen, config.Locale, styles, favoritesService, recentService, favorites, executionService, log)
+	model := NewModel(catalogScreen, config.Locale, styles, favoritesService, recentService, favorites, executionService, log)
 	model.detailRun = translator.T("detail.run")
 	model.detailBack = translator.T("detail.back")
 	model.detailFavorite = translator.T("detail.favorite")

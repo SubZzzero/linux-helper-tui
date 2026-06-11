@@ -1,5 +1,11 @@
 # All Mode Category-First Design
 
+## Status
+
+Superseded on 2026-06-11.
+
+The project no longer uses a root search screen. The current root flow is a browse-only catalog, so the search-specific parts of this design are historical context only and must not be used as the default implementation direction.
+
 ## Objective
 
 Replace the current large mixed `All` recipe list with a category-first view that scales as the embedded corpus grows.

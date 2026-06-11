@@ -14,14 +14,7 @@ import (
 	uitheme "linux-helper/internal/tui/theme"
 )
 
-type fakeSearcher struct{}
-
-func testStyles() uitheme.Styles {
-	return uitheme.NewStyles(uitheme.Definition{Name: "test", BorderColor: "63", AccentColor: "213"})
-}
-
-// Search returns static recipes from multiple categories.
-func (fakeSearcher) Search(query string) ([]models.Recipe, error) {
+func testRecipes() []models.Recipe {
 	return []models.Recipe{{
 		ID:          "find-file",
 		Category:    models.CategoryFilesystem,
@@ -32,17 +25,20 @@ func (fakeSearcher) Search(query string) ([]models.Recipe, error) {
 		Category:    models.CategorySystem,
 		Title:       models.LocalizedText{"en": "Disk usage"},
 		Description: models.LocalizedText{"en": "Show disk usage"},
-	}}, nil
+	}}
 }
 
-// TestSearchModelSelection enters the selected category from All mode.
-func TestSearchModelSelection(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+func testStyles() uitheme.Styles {
+	return uitheme.NewStyles(uitheme.Definition{Name: "test", BorderColor: "63", AccentColor: "213"})
+}
+
+// TestCatalogModelSelection enters the selected category from All mode.
+func TestCatalogModelSelection(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	searchModel := updated.(screens.SearchModel)
-	category, ok := (&searchModel).ConsumeCategorySelection()
+	catalogModel := updated.(screens.CatalogModel)
+	category, ok := (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
 	assert.Equal(t, models.CategoryFilesystem, category)
 }
@@ -87,22 +83,20 @@ func TestFormModelSubmit(t *testing.T) {
 	assert.Equal(t, "find .", formModel.Preview())
 }
 
-// TestSearchModelFavoritesPrioritizesFavorites renders favorites first.
-func TestSearchModelFavoritesPrioritizesFavorites(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), []string{"find-file"}, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+// TestCatalogModelFavoritesPrioritizesFavorites renders favorites first.
+func TestCatalogModelFavoritesPrioritizesFavorites(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), []string{"find-file"}, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	searchModel := updated.(screens.SearchModel)
-	searchModel.SetSelectedCategory(models.CategoryFilesystem)
+	catalogModel := updated.(screens.CatalogModel)
+	catalogModel.SetSelectedCategory(models.CategoryFilesystem)
 
-	assert.Contains(t, searchModel.View(), "[*] Find file")
+	assert.Contains(t, catalogModel.View(), "[*] Find file")
 }
 
-// TestSearchModelRecentCommands renders recent command history.
-func TestSearchModelRecentCommands(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), nil, []string{"find .", "du -sh /var"}, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+// TestCatalogModelRecentCommands renders recent command history.
+func TestCatalogModelRecentCommands(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, []string{"find .", "du -sh /var"}, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
 	view := model.View()
 	assert.Contains(t, view, "Recent commands")
@@ -110,20 +104,18 @@ func TestSearchModelRecentCommands(t *testing.T) {
 	assert.Contains(t, view, "- du -sh /var")
 }
 
-// TestSearchModelKeyboardShortcutsSupportProductiveNavigation.
-func TestSearchModelKeyboardShortcutsSupportProductiveNavigation(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+// TestCatalogModelKeyboardShortcutsSupportProductiveNavigation.
+func TestCatalogModelKeyboardShortcutsSupportProductiveNavigation(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyRight})
 	assert.Contains(t, updated.View(), "Category:")
 	assert.Contains(t, updated.View(), "[System]")
 }
 
-// TestSearchModelGroupsAndFiltersByCategory renders category sections and filters.
-func TestSearchModelGroupsAndFiltersByCategory(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+// TestCatalogModelGroupsAndFiltersByCategory renders category sections and filters.
+func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
 	view := model.View()
 	assert.Contains(t, view, "Filesystem (1)")
@@ -135,13 +127,13 @@ func TestSearchModelGroupsAndFiltersByCategory(t *testing.T) {
 	assert.NotContains(t, filteredView, "Disk usage")
 }
 
-// TestSearchModelTypingUpdatesQuery ensures search input remains usable.
-func TestSearchModelTypingUpdatesQuery(t *testing.T) {
-	model, err := screens.NewSearchModel(fakeSearcher{}, "en", testStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
-	require.NoError(t, err)
+// TestCatalogModelTypingDoesNotChangeView keeps browse-only input inactive.
+func TestCatalogModelTypingDoesNotChangeView(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
 
+	before := model.View()
 	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
-	assert.Contains(t, updated.View(), "> f")
+	assert.Equal(t, before, updated.View())
 }
 
 // TestDetailModelRunShortcutUsesR.

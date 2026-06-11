@@ -1,0 +1,36 @@
+id: find-symlinks
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find symbolic links"
+  ua: "Знайти символічні посилання"
+  ru: "Найти символические ссылки"
+description:
+  en: "Recursively locate symbolic links under a path."
+  ua: "Рекурсивно знаходить символічні посилання у вказаному каталозі."
+  ru: "Рекурсивно находит символические ссылки в указанном каталоге."
+args:
+  - "{{path}}"
+  - "-type"
+  - "l"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+tags:
+  - find
+  - symlink
+  - filesystem
+examples:
+  - args:
+      path: "/etc"
+    description:
+      en: "Find symlinks under /etc"

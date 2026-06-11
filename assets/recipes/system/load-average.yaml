@@ -1,0 +1,26 @@
+id: load-average
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: uptime
+command: ""
+title:
+  en: "Show load average"
+  ua: "Показати середнє навантаження"
+  ru: "Показать среднюю нагрузку"
+description:
+  en: "Print uptime together with the current system load averages."
+  ua: "Показує час роботи системи разом із поточними середніми навантаженнями."
+  ru: "Показывает время работы системы вместе с текущими средними нагрузками."
+args: []
+fields: []
+tags:
+  - uptime
+  - load
+  - system
+examples:
+  - args: {}
+    description:
+      en: "Inspect the 1, 5, and 15 minute load averages"

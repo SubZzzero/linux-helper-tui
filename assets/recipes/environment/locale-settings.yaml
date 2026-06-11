@@ -1,0 +1,25 @@
+id: locale-settings
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: locale
+command: ""
+title:
+  en: "Show locale settings"
+  ua: "Показати налаштування локалі"
+  ru: "Показать настройки локали"
+description:
+  en: "Print the locale-related environment settings for the current session."
+  ua: "Показує налаштування локалі для поточної сесії."
+  ru: "Показывает настройки локали для текущей сессии."
+args: []
+fields: []
+tags:
+  - locale
+  - environment
+examples:
+  - args: {}
+    description:
+      en: "Inspect locale variables"

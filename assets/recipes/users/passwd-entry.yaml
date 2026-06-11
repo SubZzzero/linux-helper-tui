@@ -1,0 +1,35 @@
+id: passwd-entry
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: getent
+command: ""
+title:
+  en: "Lookup passwd entry"
+  ua: "Знайти запис passwd"
+  ru: "Найти запись passwd"
+description:
+  en: "Resolve a user account entry through the system name service switch."
+  ua: "Шукає запис облікового запису користувача через системний NSS."
+  ru: "Находит запись учётной записи пользователя через системный NSS."
+args:
+  - "passwd"
+  - "{{user}}"
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to resolve"
+tags:
+  - users
+  - passwd
+  - lookup
+examples:
+  - args:
+      user: "nobody"
+    description:
+      en: "Lookup the nobody account"

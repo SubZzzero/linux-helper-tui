@@ -1,0 +1,26 @@
+id: current-shell
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: printenv
+command: ""
+title:
+  en: "Show current shell"
+  ua: "Показати поточну оболонку"
+  ru: "Показать текущую оболочку"
+description:
+  en: "Print the shell configured in the current environment."
+  ua: "Показує оболонку, налаштовану в поточному середовищі."
+  ru: "Показывает оболочку, настроенную в текущем окружении."
+args:
+  - "SHELL"
+fields: []
+tags:
+  - shell
+  - environment
+examples:
+  - args: {}
+    description:
+      en: "Show the current SHELL value"

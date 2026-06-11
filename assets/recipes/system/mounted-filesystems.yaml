@@ -1,0 +1,27 @@
+id: mounted-filesystems
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: df
+command: ""
+title:
+  en: "Show mounted filesystems"
+  ua: "Показати змонтовані файлові системи"
+  ru: "Показать смонтированные файловые системы"
+description:
+  en: "List mounted filesystems with size, usage, and filesystem type."
+  ua: "Показує змонтовані файлові системи з розміром, використанням і типом."
+  ru: "Показывает смонтированные файловые системы с размером, использованием и типом."
+args:
+  - "-hT"
+fields: []
+tags:
+  - df
+  - mount
+  - system
+examples:
+  - args: {}
+    description:
+      en: "Inspect current filesystem mounts"

@@ -4,37 +4,28 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
 	"linux-helper/internal/models"
 	uitheme "linux-helper/internal/tui/theme"
 )
 
-// Searcher is the screen-local search dependency.
-type Searcher interface {
-	Search(query string) ([]models.Recipe, error)
-}
-
-// SearchModel renders the recipe search screen.
-type SearchModel struct {
-	service          Searcher
+// CatalogModel renders the recipe catalog screen.
+type CatalogModel struct {
 	locale           string
 	styles           uitheme.Styles
 	favorites        map[string]struct{}
 	recent           []string
-	allResults       []models.Recipe
+	allRecipes       []models.Recipe
 	categories       []models.Category
 	categoryCounts   []categoryCount
 	selectedCategory models.Category
-	input            textinput.Model
 	results          []models.Recipe
 	selected         int
 	pending          *models.Recipe
 	pendingFavorite  *models.Recipe
 	pendingCategory  *models.Category
 	title            string
-	placeholder      string
 	emptyText        string
 	recentTitle      string
 	recentEmpty      string
@@ -43,7 +34,6 @@ type SearchModel struct {
 	helpText         string
 	width            int
 	height           int
-	err              error
 }
 
 type categoryCount struct {
@@ -51,30 +41,17 @@ type categoryCount struct {
 	count    int
 }
 
-// NewSearchModel constructs the initial search screen.
-func NewSearchModel(service Searcher, locale string, styles uitheme.Styles, favorites []string, recent []string, title string, placeholder string, emptyText string, recentTitle string, recentEmpty string, categoryLabel string, categoryAll string, helpText string) (SearchModel, error) {
-	input := textinput.New()
-	input.Placeholder = placeholder
-	input.Focus()
-	input.Prompt = "> "
-
-	results, err := service.Search("")
-	if err != nil {
-		return SearchModel{}, fmt.Errorf("load initial search results: %w", err)
-	}
-
-	orderedResults := orderResults(results, favoriteSet(favorites))
-	model := SearchModel{
-		service:       service,
+// NewCatalogModel constructs the initial recipe catalog screen.
+func NewCatalogModel(recipes []models.Recipe, locale string, styles uitheme.Styles, favorites []string, recent []string, title string, emptyText string, recentTitle string, recentEmpty string, categoryLabel string, categoryAll string, helpText string) CatalogModel {
+	orderedRecipes := orderResults(recipes, favoriteSet(favorites))
+	model := CatalogModel{
 		locale:        locale,
 		styles:        styles,
 		favorites:     favoriteSet(favorites),
 		recent:        append([]string(nil), recent...),
-		allResults:    orderedResults,
-		categories:    categoriesFromResults(orderedResults),
-		input:         input,
+		allRecipes:    orderedRecipes,
+		categories:    categoriesFromResults(orderedRecipes),
 		title:         title,
-		placeholder:   placeholder,
 		emptyText:     emptyText,
 		recentTitle:   recentTitle,
 		recentEmpty:   recentEmpty,
@@ -83,16 +60,16 @@ func NewSearchModel(service Searcher, locale string, styles uitheme.Styles, favo
 		helpText:      helpText,
 	}
 	model.applyCategoryFilter()
-	return model, nil
+	return model
 }
 
 // Init starts the screen with no async work.
-func (m SearchModel) Init() tea.Cmd {
+func (m CatalogModel) Init() tea.Cmd {
 	return nil
 }
 
-// Update handles input and selection changes.
-func (m SearchModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+// Update handles category and recipe selection changes.
+func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch typed := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = typed.Width
@@ -142,22 +119,16 @@ func (m SearchModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		}
+
+		// Typed characters are intentionally ignored while the catalog is browse-only.
+		return m, nil
 	}
 
-	var cmd tea.Cmd
-	m.input, cmd = m.input.Update(msg)
-	results, err := m.service.Search(m.input.Value())
-	m.err = err
-	if err == nil {
-		m.allResults = orderResults(results, m.favorites)
-		m.applyCategoryFilter()
-	}
-
-	return m, cmd
+	return m, nil
 }
 
 // ConsumeToggleFavorite returns the selected recipe for a favorite toggle once.
-func (m *SearchModel) ConsumeToggleFavorite() (models.Recipe, bool) {
+func (m *CatalogModel) ConsumeToggleFavorite() (models.Recipe, bool) {
 	if m.pendingFavorite == nil {
 		return models.Recipe{}, false
 	}
@@ -168,7 +139,7 @@ func (m *SearchModel) ConsumeToggleFavorite() (models.Recipe, bool) {
 }
 
 // ConsumeCategorySelection returns the selected category once.
-func (m *SearchModel) ConsumeCategorySelection() (models.Category, bool) {
+func (m *CatalogModel) ConsumeCategorySelection() (models.Category, bool) {
 	if m.pendingCategory == nil {
 		return "", false
 	}
@@ -179,25 +150,25 @@ func (m *SearchModel) ConsumeCategorySelection() (models.Category, bool) {
 }
 
 // SetFavorites updates the favorite state used for rendering and ordering.
-func (m *SearchModel) SetFavorites(favorites []string) {
+func (m *CatalogModel) SetFavorites(favorites []string) {
 	m.favorites = favoriteSet(favorites)
-	m.allResults = orderResults(m.allResults, m.favorites)
+	m.allRecipes = orderResults(m.allRecipes, m.favorites)
 	m.applyCategoryFilter()
 }
 
 // SetRecent updates the recent command list.
-func (m *SearchModel) SetRecent(recent []string) {
+func (m *CatalogModel) SetRecent(recent []string) {
 	m.recent = append([]string(nil), recent...)
 }
 
 // SetSelectedCategory switches the active category filter.
-func (m *SearchModel) SetSelectedCategory(category models.Category) {
+func (m *CatalogModel) SetSelectedCategory(category models.Category) {
 	m.selectedCategory = category
 	m.applyCategoryFilter()
 }
 
 // ConsumeSelection returns the selected recipe once.
-func (m *SearchModel) ConsumeSelection() (models.Recipe, bool) {
+func (m *CatalogModel) ConsumeSelection() (models.Recipe, bool) {
 	if m.pending == nil {
 		return models.Recipe{}, false
 	}
@@ -207,12 +178,10 @@ func (m *SearchModel) ConsumeSelection() (models.Recipe, bool) {
 	return recipe, true
 }
 
-// View renders the search UI.
-func (m SearchModel) View() string {
-	content := []string{m.styles.Title.Render(m.title), m.renderCategoryFilters(), m.input.View(), ""}
-	if m.err != nil {
-		content = append(content, m.styles.Error.Render("Error: "+m.err.Error()))
-	} else if m.isEmpty() {
+// View renders the catalog UI.
+func (m CatalogModel) View() string {
+	content := []string{m.styles.Title.Render(m.title), m.renderCategoryFilters(), ""}
+	if m.isEmpty() {
 		content = append(content, m.styles.Muted.Render(m.emptyText))
 	} else {
 		content = append(content, m.renderResults())
@@ -230,7 +199,7 @@ func (m SearchModel) View() string {
 }
 
 // renderResults renders the current result list.
-func (m SearchModel) renderResults() string {
+func (m CatalogModel) renderResults() string {
 	if m.selectedCategory == "" {
 		return m.renderCategoryRows()
 	}
@@ -247,7 +216,7 @@ func (m SearchModel) renderResults() string {
 	return strings.Join(lines, "\n")
 }
 
-func (m SearchModel) renderCategoryRows() string {
+func (m CatalogModel) renderCategoryRows() string {
 	lines := make([]string, 0, len(m.categoryCounts))
 	for index, entry := range m.categoryCounts {
 		line := fmt.Sprintf("  %s (%d)", entry.category.DisplayName(), entry.count)
@@ -261,7 +230,7 @@ func (m SearchModel) renderCategoryRows() string {
 	return strings.Join(lines, "\n")
 }
 
-func (m SearchModel) renderCategoryFilters() string {
+func (m CatalogModel) renderCategoryFilters() string {
 	parts := make([]string, 0, len(m.categories)+1)
 	parts = append(parts, m.renderCategoryOption("", m.categoryAll))
 	for _, category := range m.categories {
@@ -271,7 +240,7 @@ func (m SearchModel) renderCategoryFilters() string {
 	return m.styles.Accent.Render(m.categoryLabel) + " " + strings.Join(parts, "  ")
 }
 
-func (m SearchModel) renderCategoryOption(category models.Category, label string) string {
+func (m CatalogModel) renderCategoryOption(category models.Category, label string) string {
 	if m.selectedCategory == category {
 		return m.styles.Selected.Render("[" + label + "]")
 	}
@@ -279,7 +248,7 @@ func (m SearchModel) renderCategoryOption(category models.Category, label string
 	return "[" + label + "]"
 }
 
-func (m SearchModel) renderRecent() string {
+func (m CatalogModel) renderRecent() string {
 	lines := make([]string, 0, min(maxRecentVisible, len(m.recent)))
 	for index, command := range m.recent {
 		if index >= maxRecentVisible {
@@ -325,7 +294,7 @@ func favoriteMarker(favorites map[string]struct{}, recipeID string) string {
 	return "[ ]"
 }
 
-func (m *SearchModel) selectPreviousCategory() {
+func (m *CatalogModel) selectPreviousCategory() {
 	if len(m.categories) == 0 {
 		return
 	}
@@ -351,7 +320,7 @@ func (m *SearchModel) selectPreviousCategory() {
 	m.applyCategoryFilter()
 }
 
-func (m *SearchModel) selectNextCategory() {
+func (m *CatalogModel) selectNextCategory() {
 	selectedIndex := m.selectedCategoryIndex()
 	if len(m.categories) == 0 {
 		return
@@ -371,7 +340,7 @@ func (m *SearchModel) selectNextCategory() {
 	m.applyCategoryFilter()
 }
 
-func (m SearchModel) selectedCategoryIndex() int {
+func (m CatalogModel) selectedCategoryIndex() int {
 	if m.selectedCategory == "" {
 		return 0
 	}
@@ -385,14 +354,14 @@ func (m SearchModel) selectedCategoryIndex() int {
 	return -1
 }
 
-func (m *SearchModel) applyCategoryFilter() {
-	m.categories = categoriesFromResults(m.allResults)
-	m.categoryCounts = categoryCountsFromResults(m.allResults, m.categories)
+func (m *CatalogModel) applyCategoryFilter() {
+	m.categories = categoriesFromResults(m.allRecipes)
+	m.categoryCounts = categoryCountsFromResults(m.allRecipes, m.categories)
 	if m.selectedCategory != "" && !containsCategory(m.categories, m.selectedCategory) {
 		m.selectedCategory = ""
 	}
 
-	filtered := make([]models.Recipe, 0, len(m.allResults))
+	filtered := make([]models.Recipe, 0, len(m.allRecipes))
 	if m.selectedCategory == "" {
 		m.results = filtered
 		if m.selected >= len(m.categoryCounts) {
@@ -400,7 +369,7 @@ func (m *SearchModel) applyCategoryFilter() {
 		}
 		return
 	} else {
-		for _, recipe := range m.allResults {
+		for _, recipe := range m.allRecipes {
 			if recipe.Category == m.selectedCategory {
 				filtered = append(filtered, recipe)
 			}
@@ -413,7 +382,7 @@ func (m *SearchModel) applyCategoryFilter() {
 	}
 }
 
-func (m SearchModel) isEmpty() bool {
+func (m CatalogModel) isEmpty() bool {
 	if m.selectedCategory == "" {
 		return len(m.categoryCounts) == 0
 	}
@@ -421,7 +390,7 @@ func (m SearchModel) isEmpty() bool {
 	return len(m.results) == 0
 }
 
-func (m SearchModel) lastSelectableIndex() int {
+func (m CatalogModel) lastSelectableIndex() int {
 	if m.selectedCategory == "" {
 		return len(m.categoryCounts) - 1
 	}

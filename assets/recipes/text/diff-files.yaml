@@ -1,0 +1,43 @@
+id: diff-files
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: diff
+command: ""
+title:
+  en: "Compare two files"
+  ua: "Порівняти два файли"
+  ru: "Сравнить два файла"
+description:
+  en: "Show a unified diff between two text files."
+  ua: "Показує unified diff між двома текстовими файлами."
+  ru: "Показывает unified diff между двумя текстовыми файлами."
+args:
+  - "-u"
+  - "{{left}}"
+  - "{{right}}"
+fields:
+  - name: left
+    type: string
+    required: true
+    default: "/etc/hosts"
+    description:
+      en: "First file path"
+  - name: right
+    type: string
+    required: true
+    default: "/tmp/hosts.backup"
+    description:
+      en: "Second file path"
+tags:
+  - diff
+  - text
+  - compare
+examples:
+  - args:
+      left: "/etc/hosts"
+      right: "/tmp/hosts.previous"
+    description:
+      en: "Compare the current hosts file with a saved copy"

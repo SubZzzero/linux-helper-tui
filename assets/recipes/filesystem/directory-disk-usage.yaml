@@ -1,0 +1,35 @@
+id: directory-disk-usage
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: du
+command: ""
+title:
+  en: "Show directory disk usage"
+  ua: "Показати використання диска каталогом"
+  ru: "Показать использование диска каталогом"
+description:
+  en: "Print the total disk usage for a directory in human-readable form."
+  ua: "Показує загальне використання диска каталогом у зручному форматі."
+  ru: "Показывает общее использование диска каталогом в удобном формате."
+args:
+  - "-sh"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Directory to inspect"
+tags:
+  - du
+  - filesystem
+  - disk
+examples:
+  - args:
+      path: "/var/log"
+    description:
+      en: "Measure the size of /var/log"

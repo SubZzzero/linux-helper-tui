@@ -33,16 +33,20 @@
 
 **Status**: [~] In progress
 
+### Current UI constraint
+- The root TUI entry screen is a browse-only recipe catalog.
+- Do not reintroduce free-text search in the root flow unless a new design document explicitly replaces the current catalog model.
+
 ### Tasks
 - [x] Add the first expanded embedded recipe batch for `filesystem` and `system`
 - [x] Add a corpus test that validates all embedded recipes
-- [x] Add category-aware search UI for the current embedded categories
+- [x] Add category-aware catalog UI for the current embedded categories
 - [x] Expand supported categories beyond `filesystem` and `system`
-- [~] Grow the embedded corpus toward milestone-scale coverage
+- [~] Grow the embedded corpus toward milestone-scale coverage with broader workflow coverage across the six active categories
 
 ### Exit criteria
 - Embedded recipes cover multiple real Linux workflows
-- Category-aware navigation works for embedded recipe groups
+- Category-aware catalog navigation works for embedded recipe groups
 - The full embedded corpus loads and validates in tests
 - `go test ./... -race` passes
 - `golangci-lint run` clean

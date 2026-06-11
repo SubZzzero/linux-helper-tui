@@ -1,0 +1,35 @@
+id: word-count
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: wc
+command: ""
+title:
+  en: "Count words in a file"
+  ua: "Порахувати слова у файлі"
+  ru: "Подсчитать слова в файле"
+description:
+  en: "Print the number of words in a text file."
+  ua: "Показує кількість слів у текстовому файлі."
+  ru: "Показывает количество слов в текстовом файле."
+args:
+  - "-w"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Input file path"
+tags:
+  - wc
+  - text
+  - count
+examples:
+  - args:
+      path: "/etc/services"
+    description:
+      en: "Count words in /etc/services"

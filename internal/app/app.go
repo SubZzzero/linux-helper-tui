@@ -69,10 +69,10 @@ type Model struct {
 	logger            *slog.Logger
 }
 
-// NewModel constructs the root model with one search screen.
-func NewModel(search screens.SearchModel, locale string, styles uitheme.Styles, favorites Favorites, recent RecentLoader, favoriteIDs []string, executor Executor, log *slog.Logger) Model {
+// NewModel constructs the root model with one catalog screen.
+func NewModel(catalog screens.CatalogModel, locale string, styles uitheme.Styles, favorites Favorites, recent RecentLoader, favoriteIDs []string, executor Executor, log *slog.Logger) Model {
 	return Model{
-		stack:             navigation.NewStack(search),
+		stack:             navigation.NewStack(catalog),
 		locale:            locale,
 		styles:            styles,
 		favorites:         favorites,
@@ -129,27 +129,27 @@ func (m Model) View() string {
 // handleTransitions applies screen-level navigation requests.
 func (m *Model) handleTransitions() tea.Cmd {
 	switch current := m.stack.Top().(type) {
-	case screens.SearchModel:
-		searchScreen := current
-		if category, ok := searchScreen.ConsumeCategorySelection(); ok {
-			searchScreen.SetSelectedCategory(category)
-			m.stack.ReplaceTop(searchScreen)
+	case screens.CatalogModel:
+		catalogScreen := current
+		if category, ok := catalogScreen.ConsumeCategorySelection(); ok {
+			catalogScreen.SetSelectedCategory(category)
+			m.stack.ReplaceTop(catalogScreen)
 			return nil
 		}
-		if recipe, ok := searchScreen.ConsumeToggleFavorite(); ok {
-			m.stack.ReplaceTop(searchScreen)
+		if recipe, ok := catalogScreen.ConsumeToggleFavorite(); ok {
+			m.stack.ReplaceTop(catalogScreen)
 			m.toggleFavoriteRecipe(recipe.ID)
 			return nil
 		}
-		if recipe, ok := searchScreen.ConsumeSelection(); ok {
-			m.stack.ReplaceTop(searchScreen)
+		if recipe, ok := catalogScreen.ConsumeSelection(); ok {
+			m.stack.ReplaceTop(catalogScreen)
 			m.stack.Push(m.sizeScreen(screens.NewDetailModel(recipe, m.locale, m.styles, m.isFavorite(recipe.ID), m.detailRun, m.detailBack, m.detailFavorite, m.detailFavoriteOn, m.detailFavoriteOff)))
 			if m.logger != nil {
 				m.logger.Info("open recipe detail", "recipe_id", recipe.ID)
 			}
 			return nil
 		}
-		m.stack.ReplaceTop(searchScreen)
+		m.stack.ReplaceTop(catalogScreen)
 	case screens.DetailModel:
 		detailScreen := current
 		if detailScreen.ConsumeToggleFavorite() {
@@ -285,18 +285,18 @@ func (m *Model) toggleFavoriteRecipe(recipeID string) (bool, bool) {
 		delete(m.favoriteIDs, recipeID)
 	}
 
-	m.syncSearchFavorites()
+	m.syncCatalogFavorites()
 	return isFavorite, true
 }
 
-func (m *Model) syncSearchFavorites() {
-	searchScreen, ok := m.stack.Root().(screens.SearchModel)
+func (m *Model) syncCatalogFavorites() {
+	catalogScreen, ok := m.stack.Root().(screens.CatalogModel)
 	if !ok {
 		return
 	}
 
-	searchScreen.SetFavorites(favoriteIDs(m.favoriteIDs))
-	m.stack.ReplaceRoot(searchScreen)
+	catalogScreen.SetFavorites(favoriteIDs(m.favoriteIDs))
+	m.stack.ReplaceRoot(catalogScreen)
 }
 
 func (m *Model) syncRecentCommands() {
@@ -312,13 +312,13 @@ func (m *Model) syncRecentCommands() {
 		return
 	}
 
-	searchScreen, ok := m.stack.Root().(screens.SearchModel)
+	catalogScreen, ok := m.stack.Root().(screens.CatalogModel)
 	if !ok {
 		return
 	}
 
-	searchScreen.SetRecent(recent)
-	m.stack.ReplaceRoot(searchScreen)
+	catalogScreen.SetRecent(recent)
+	m.stack.ReplaceRoot(catalogScreen)
 }
 
 func favoriteSet(favorites []string) map[string]struct{} {

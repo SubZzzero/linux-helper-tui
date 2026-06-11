@@ -74,15 +74,14 @@ func (fakeRunner) RunShell(_ context.Context, _ string) (models.ExecutionResult,
 	return models.ExecutionResult{Command: "echo ok"}, nil
 }
 
-// TestRecipeAndSearchService wires loader and search correctly.
-func TestRecipeAndSearchService(t *testing.T) {
+// TestRecipeServiceAll wires loader and registry correctly.
+func TestRecipeServiceAll(t *testing.T) {
 	recipeService, err := services.NewRecipeService(fakeLoader{})
 	require.NoError(t, err)
 
-	searchService := services.NewSearchService(recipeService.All())
-	results, err := searchService.Search("find")
-	require.NoError(t, err)
+	results := recipeService.All()
 	assert.Len(t, results, 1)
+	assert.Equal(t, "find-file", results[0].ID)
 }
 
 // TestExecutionService executes and records commands.

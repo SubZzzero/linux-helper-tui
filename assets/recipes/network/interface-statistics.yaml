@@ -1,0 +1,28 @@
+id: interface-statistics
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show interface statistics"
+  ua: "Показати статистику інтерфейсів"
+  ru: "Показать статистику интерфейсов"
+description:
+  en: "Print packet and byte counters for network interfaces."
+  ua: "Показує лічильники пакетів і байтів для мережевих інтерфейсів."
+  ru: "Показывает счётчики пакетов и байтов для сетевых интерфейсов."
+args:
+  - "-s"
+  - "link"
+fields: []
+tags:
+  - ip
+  - network
+  - interface
+examples:
+  - args: {}
+    description:
+      en: "Review RX and TX counters for all interfaces"

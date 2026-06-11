@@ -1,0 +1,35 @@
+id: last-logins
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: last
+command: ""
+title:
+  en: "Show recent logins"
+  ua: "Показати нещодавні входи"
+  ru: "Показать недавние входы"
+description:
+  en: "Print the most recent login sessions from the system login database."
+  ua: "Показує останні сесії входу з системної бази входів."
+  ru: "Показывает последние сессии входа из системной базы входов."
+args:
+  - "-n"
+  - "{{count}}"
+fields:
+  - name: count
+    type: string
+    required: true
+    default: "10"
+    description:
+      en: "Number of login records"
+tags:
+  - users
+  - login
+  - audit
+examples:
+  - args:
+      count: "5"
+    description:
+      en: "Review the five most recent login sessions"

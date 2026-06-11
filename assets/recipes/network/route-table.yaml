@@ -1,0 +1,28 @@
+id: route-table
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show routing table"
+  ua: "Показати таблицю маршрутів"
+  ru: "Показать таблицу маршрутов"
+description:
+  en: "Display the kernel routing table for the current network namespace."
+  ua: "Показує таблицю маршрутів ядра для поточного мережевого простору імен."
+  ru: "Показывает таблицу маршрутов ядра для текущего сетевого пространства имён."
+args:
+  - "route"
+  - "show"
+fields: []
+tags:
+  - routing
+  - network
+  - ip
+examples:
+  - args: {}
+    description:
+      en: "Review default and connected routes"
