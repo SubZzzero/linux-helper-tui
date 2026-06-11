@@ -50,3 +50,94 @@
 - The full embedded corpus loads and validates in tests
 - `go test ./... -race` passes
 - `golangci-lint run` clean
+
+## Strategic Alignment
+
+`docs/ROADMAP.md` is the primary planning document for ongoing work.
+`AGENTS.md` defines the project constraints, milestone targets, and quality gates that this roadmap must mirror.
+
+### Current baseline
+- `Phase 1` through `Phase 3` are complete.
+- The current root TUI flow is a browse-only recipe catalog.
+- The embedded corpus currently covers the six active categories: `filesystem`, `environment`, `network`, `system`, `text`, and `users`.
+
+### Ongoing quality gates
+- Keep the application offline-first and single-binary.
+- Keep all assets embedded at build time.
+- Run `go test ./... -race` before closing a phase.
+- Keep `golangci-lint run` clean before closing a phase.
+- Maintain at least `80%` coverage for `recipes/`, `search/`, `executor/`, and `models/`.
+
+### Milestone targets carried forward from `AGENTS.md`
+- Reach `150+` bundled recipes.
+- Keep the built binary below `20 MB`.
+- Measure startup below `200 ms` for `200` recipes.
+- Measure search below `50 ms` for `200` recipes.
+- Keep valid recipe parse success above `99%`.
+
+## Phase 4 - Category Expansion
+
+**Status**: [ ] Not started
+
+### Tasks
+- [ ] Define the next category set beyond the current six active groups.
+- [ ] Update `internal/models/category.go`, `assets/recipes/`, and the catalog flow to support the expanded category set.
+- [ ] Add new recipe categories that cover missing Linux, DevOps, and SRE workflow areas.
+- [ ] Add an initial high-value recipe batch for each new category.
+- [ ] Keep validation and catalog tests aligned with the expanded category matrix.
+
+### Planned category expansion
+- Add category groups for workflows that are currently missing from the catalog.
+ - Prioritize categories such as `services`, `processes`, `logs`, `security`, `storage`, `archives`, `packages`, `containers`, or similarly high-value operational areas.
+- Keep category additions grounded in offline-safe Linux workflows that fit the project scope.
+
+### Exit criteria
+- The project supports more than the current six active categories.
+- Each new category has enough recipes to be immediately useful, not just present in the UI.
+- Category coverage is broad enough to represent more Linux and DevOps workflows than the current six-category baseline.
+- `go test ./... -race` passes.
+- `golangci-lint run` clean.
+
+## Phase 5 - Category Fill-Out And Library Growth
+
+**Status**: [ ] Not started
+
+### Tasks
+- [ ] Expand the newly added categories with deeper recipe coverage.
+- [ ] Continue filling the original six categories only after the wider category map is in place.
+- [ ] Grow the embedded recipe library from the expanded category base toward `100+` recipes.
+- [ ] Harden the single-binary packaging path and verify all runtime assets stay embedded.
+- [ ] Improve execution preview, confirmation, and result presentation where the larger corpus exposes UX gaps.
+- [ ] Expand recipe examples and field coverage for the broader corpus.
+- [ ] Keep recipe validation, category coverage checks, and examples aligned with the larger library.
+
+### Exit criteria
+- The embedded recipe library reaches at least `100` validated recipes.
+- New categories are no longer thin starter buckets and have meaningful workflow depth.
+- `go build` produces one binary smaller than `20 MB`.
+- `go test ./... -race` passes.
+- `golangci-lint run` clean.
+
+## Phase 6 - Milestone M5 And Release Hardening
+
+**Status**: [ ] Not started
+
+### Tasks
+- [ ] Grow the embedded recipe library to `150+` bundled recipes from the now-expanded category set.
+- [ ] Add or refine benchmarks that track startup, search, and corpus growth over time.
+- [ ] Close coverage gaps in the core packages called out by `AGENTS.md`.
+- [ ] Run a full TUI smoke pass across catalog, forms, confirmations, execution, favorites, and recent commands.
+- [ ] Stabilize the user experience for a larger corpus and broader category set.
+- [ ] Prepare the project for a release-quality milestone with consistent docs and changelog updates.
+
+### Exit criteria
+- The embedded recipe library reaches at least `150` validated recipes.
+- Benchmarks exist for the critical performance paths and run cleanly.
+- Startup stays below `200 ms` for `200` recipes.
+- Search stays below `50 ms` for `200` recipes.
+- Valid recipe parse success stays above `99%`.
+- `go build` produces one binary smaller than `20 MB`.
+- Coverage targets are met for the required core packages.
+- The main TUI flows are verified against the expanded corpus.
+- `go test ./... -race` passes.
+- `golangci-lint run` clean.
