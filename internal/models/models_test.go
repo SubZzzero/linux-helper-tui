@@ -37,9 +37,17 @@ func TestParseCategory(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryNetwork, category)
 
+	category, err = models.ParseCategory("environment")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryEnvironment, category)
+
 	category, err = models.ParseCategory("text")
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryText, category)
+
+	category, err = models.ParseCategory("users")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryUsers, category)
 
 	_, err = models.ParseCategory("missing")
 	assert.Error(t, err)
@@ -48,7 +56,9 @@ func TestParseCategory(t *testing.T) {
 // TestCategoryDisplayName returns stable labels for known categories.
 func TestCategoryDisplayName(t *testing.T) {
 	assert.Equal(t, "Filesystem", models.CategoryFilesystem.DisplayName())
+	assert.Equal(t, "Environment", models.CategoryEnvironment.DisplayName())
 	assert.Equal(t, "Network", models.CategoryNetwork.DisplayName())
 	assert.Equal(t, "System", models.CategorySystem.DisplayName())
 	assert.Equal(t, "Text", models.CategoryText.DisplayName())
+	assert.Equal(t, "Users", models.CategoryUsers.DisplayName())
 }

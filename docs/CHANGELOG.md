@@ -13,3 +13,4 @@
 - Start `Phase 3` with eight new embedded recipes and a corpus test for all bundled recipe files.
 - Add category filters and grouped search results for the embedded recipe categories.
 - Expand category support to `network` and `text` and add eight embedded recipes for those workflows.
+- Expand category support to `environment` and `users` and add eight more embedded recipes for common local inspection workflows.

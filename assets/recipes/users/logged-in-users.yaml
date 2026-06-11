@@ -1,0 +1,26 @@
+id: logged-in-users
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: who
+command: ""
+title:
+  en: "List logged-in users"
+  ua: "Показати користувачів у системі"
+  ru: "Показать пользователей в системе"
+description:
+  en: "List interactive user sessions that are currently logged in."
+  ua: "Показує інтерактивні сесії користувачів, які зараз увійшли до системи."
+  ru: "Показывает интерактивные пользовательские сессии, которые сейчас вошли в систему."
+args: []
+fields: []
+tags:
+  - users
+  - sessions
+  - who
+examples:
+  - args: {}
+    description:
+      en: "Inspect active login sessions"

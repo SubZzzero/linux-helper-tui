@@ -1,0 +1,27 @@
+id: print-path
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: printenv
+command: ""
+title:
+  en: "Show PATH variable"
+  ua: "Показати змінну PATH"
+  ru: "Показать переменную PATH"
+description:
+  en: "Print the current PATH search value used to resolve binaries."
+  ua: "Виводить поточне значення PATH, яке використовується для пошуку бінарних файлів."
+  ru: "Выводит текущее значение PATH, которое используется для поиска бинарных файлов."
+args:
+  - "PATH"
+fields: []
+tags:
+  - environment
+  - path
+  - binaries
+examples:
+  - args: {}
+    description:
+      en: "Inspect executable search directories"

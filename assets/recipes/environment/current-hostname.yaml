@@ -1,0 +1,26 @@
+id: current-hostname
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: hostname
+command: ""
+title:
+  en: "Show hostname"
+  ua: "Показати ім'я хоста"
+  ru: "Показать имя хоста"
+description:
+  en: "Print the current system hostname."
+  ua: "Виводить поточне ім'я хоста системи."
+  ru: "Выводит текущее имя хоста системы."
+args: []
+fields: []
+tags:
+  - environment
+  - hostname
+  - system
+examples:
+  - args: {}
+    description:
+      en: "Check which host you are currently working on"

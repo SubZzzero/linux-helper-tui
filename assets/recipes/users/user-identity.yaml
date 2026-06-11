@@ -1,0 +1,26 @@
+id: user-identity
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: id
+command: ""
+title:
+  en: "Show user identity"
+  ua: "Показати ідентифікатор користувача"
+  ru: "Показать идентификатор пользователя"
+description:
+  en: "Print UID, GID, and group membership details for the current user."
+  ua: "Виводить UID, GID та відомості про групи для поточного користувача."
+  ru: "Выводит UID, GID и сведения о группах для текущего пользователя."
+args: []
+fields: []
+tags:
+  - users
+  - id
+  - identity
+examples:
+  - args: {}
+    description:
+      en: "Inspect numeric and named identity details"

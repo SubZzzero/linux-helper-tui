@@ -1,0 +1,26 @@
+id: current-date
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: date
+command: ""
+title:
+  en: "Show current date"
+  ua: "Показати поточну дату"
+  ru: "Показать текущую дату"
+description:
+  en: "Print the current system date and time."
+  ua: "Виводить поточну системну дату та час."
+  ru: "Выводит текущую системную дату и время."
+args: []
+fields: []
+tags:
+  - environment
+  - time
+  - date
+examples:
+  - args: {}
+    description:
+      en: "Check the current local system time"

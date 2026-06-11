@@ -1,0 +1,26 @@
+id: print-environment
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: env
+command: ""
+title:
+  en: "Print environment variables"
+  ua: "Показати змінні середовища"
+  ru: "Показать переменные окружения"
+description:
+  en: "Print all exported environment variables for the current process context."
+  ua: "Виводить усі експортовані змінні середовища для поточного контексту процесу."
+  ru: "Выводит все экспортированные переменные окружения для текущего контекста процесса."
+args: []
+fields: []
+tags:
+  - environment
+  - env
+  - variables
+examples:
+  - args: {}
+    description:
+      en: "Inspect the current shell environment"

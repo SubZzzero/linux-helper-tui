@@ -1,0 +1,26 @@
+id: current-user
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: whoami
+command: ""
+title:
+  en: "Show current user"
+  ua: "Показати поточного користувача"
+  ru: "Показать текущего пользователя"
+description:
+  en: "Print the effective username for the current session."
+  ua: "Виводить ефективне ім'я користувача для поточної сесії."
+  ru: "Выводит эффективное имя пользователя для текущей сессии."
+args: []
+fields: []
+tags:
+  - users
+  - identity
+  - whoami
+examples:
+  - args: {}
+    description:
+      en: "Confirm the active user account"

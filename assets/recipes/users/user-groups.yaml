@@ -1,0 +1,26 @@
+id: user-groups
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: groups
+command: ""
+title:
+  en: "Show user groups"
+  ua: "Показати групи користувача"
+  ru: "Показать группы пользователя"
+description:
+  en: "Print the group memberships for the current user."
+  ua: "Виводить членство у групах для поточного користувача."
+  ru: "Выводит членство в группах для текущего пользователя."
+args: []
+fields: []
+tags:
+  - users
+  - groups
+  - identity
+examples:
+  - args: {}
+    description:
+      en: "Check the current user's group memberships"

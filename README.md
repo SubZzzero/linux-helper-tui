@@ -20,7 +20,11 @@ The repository currently includes:
 The current bundled recipes include:
 
 - filesystem: `find-file`, `list-directory`, `show-file-head`, `show-file-tail`, `count-files`, `find-large-files`
+- environment: `current-date`, `current-hostname`, `print-environment`, `print-path`
+- network: `ping-host`, `dns-lookup`, `listening-ports`, `ip-addresses`
 - system: `disk-usage`, `memory-usage`, `system-uptime`, `kernel-info`, `process-list`, `top-cpu-processes`
+- text: `grep-pattern`, `count-lines`, `cut-fields`, `sort-unique`
+- users: `current-user`, `user-identity`, `user-groups`, `logged-in-users`
 
 ## Requirements
 

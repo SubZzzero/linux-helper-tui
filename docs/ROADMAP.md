@@ -38,7 +38,7 @@
 - [x] Add a corpus test that validates all embedded recipes
 - [x] Add category-aware search UI for the current embedded categories
 - [x] Expand supported categories beyond `filesystem` and `system`
-- [ ] Grow the embedded corpus toward milestone-scale coverage
+- [~] Grow the embedded corpus toward milestone-scale coverage
 
 ### Exit criteria
 - Embedded recipes cover multiple real Linux workflows
