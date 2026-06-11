@@ -1,0 +1,34 @@
+id: checksum-file
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: sha256sum
+command: ""
+title:
+  en: "Calculate SHA-256 checksum"
+  ua: "Обчислити контрольну суму SHA-256"
+  ru: "Вычислить контрольную сумму SHA-256"
+description:
+  en: "Calculate a SHA-256 checksum for a file to verify integrity."
+  ua: "Обчислює контрольну суму SHA-256 для файлу, щоб перевірити цілісність."
+  ru: "Вычисляет контрольную сумму SHA-256 для файла, чтобы проверить целостность."
+args:
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/etc/hosts"
+    description:
+      en: "File path to hash"
+tags:
+  - filesystem
+  - checksum
+  - integrity
+examples:
+  - args:
+      path: "/var/log/syslog"
+    description:
+      en: "Hash a log file before comparing copies"

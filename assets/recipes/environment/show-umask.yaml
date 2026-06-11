@@ -1,0 +1,26 @@
+id: show-umask
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: shell
+binary: ""
+command: "umask"
+title:
+  en: "Show umask"
+  ua: "Показати umask"
+  ru: "Показать umask"
+description:
+  en: "Print the file creation mask for the current shell context."
+  ua: "Показує маску створення файлів для поточного контексту shell."
+  ru: "Показывает маску создания файлов для текущего контекста shell."
+args: []
+fields: []
+tags:
+  - umask
+  - environment
+  - permissions
+examples:
+  - args: {}
+    description:
+      en: "Check the default permission mask"

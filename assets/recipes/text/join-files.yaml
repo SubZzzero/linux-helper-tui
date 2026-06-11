@@ -1,0 +1,42 @@
+id: join-files
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: join
+command: ""
+title:
+  en: "Join sorted files"
+  ua: "Об'єднати відсортовані файли"
+  ru: "Объединить отсортированные файлы"
+description:
+  en: "Join two sorted files on their first matching field."
+  ua: "Об'єднує два відсортовані файли за першим спільним полем."
+  ru: "Объединяет два отсортированных файла по первому общему полю."
+args:
+  - "{{left}}"
+  - "{{right}}"
+fields:
+  - name: left
+    type: string
+    required: true
+    default: "/tmp/users.left"
+    description:
+      en: "First sorted file path"
+  - name: right
+    type: string
+    required: true
+    default: "/tmp/users.right"
+    description:
+      en: "Second sorted file path"
+tags:
+  - join
+  - text
+  - compare
+examples:
+  - args:
+      left: "/tmp/packages.names"
+      right: "/tmp/packages.versions"
+    description:
+      en: "Join two sorted package datasets"

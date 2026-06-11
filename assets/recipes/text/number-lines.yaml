@@ -1,0 +1,35 @@
+id: number-lines
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: nl
+command: ""
+title:
+  en: "Number file lines"
+  ua: "Пронумерувати рядки файлу"
+  ru: "Пронумеровать строки файла"
+description:
+  en: "Print a file with every line numbered."
+  ua: "Виводить файл із нумерацією кожного рядка."
+  ru: "Выводит файл с нумерацией каждой строки."
+args:
+  - "-ba"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/etc/hosts"
+    description:
+      en: "Input file path"
+tags:
+  - nl
+  - text
+  - lines
+examples:
+  - args:
+      path: "/var/log/syslog"
+    description:
+      en: "Inspect exact line positions in a log"

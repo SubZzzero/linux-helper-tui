@@ -1,0 +1,34 @@
+id: file-metadata
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: stat
+command: ""
+title:
+  en: "Show file metadata"
+  ua: "Показати метадані файлу"
+  ru: "Показать метаданные файла"
+description:
+  en: "Print ownership, permissions, size, and timestamps for a file path."
+  ua: "Показує власника, права доступу, розмір і часові мітки для шляху до файлу."
+  ru: "Показывает владельца, права доступа, размер и временные метки для пути к файлу."
+args:
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/etc/hosts"
+    description:
+      en: "File or directory path"
+tags:
+  - filesystem
+  - stat
+  - metadata
+examples:
+  - args:
+      path: "/var/log"
+    description:
+      en: "Inspect metadata for a directory"

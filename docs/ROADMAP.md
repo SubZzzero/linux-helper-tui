@@ -31,7 +31,7 @@
 
 ## Phase 3 - Recipe Expansion
 
-**Status**: [~] In progress
+**Status**: [x] Done
 
 ### Current UI constraint
 - The root TUI entry screen is a browse-only recipe catalog.
@@ -42,10 +42,10 @@
 - [x] Add a corpus test that validates all embedded recipes
 - [x] Add category-aware catalog UI for the current embedded categories
 - [x] Expand supported categories beyond `filesystem` and `system`
-- [~] Grow the embedded corpus toward milestone-scale coverage with broader workflow coverage across the six active categories
+- [x] Grow the embedded corpus toward milestone-scale coverage with broader workflow coverage across the six active categories
 
 ### Exit criteria
-- Embedded recipes cover multiple real Linux workflows
+- Embedded recipes cover multiple real Linux workflows across all six active categories
 - Category-aware catalog navigation works for embedded recipe groups
 - The full embedded corpus loads and validates in tests
 - `go test ./... -race` passes

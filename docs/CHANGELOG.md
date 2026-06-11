@@ -19,3 +19,5 @@
 - Remove the search architecture and convert the root TUI screen into a browse-only recipe catalog.
 - Add eight more embedded recipes across `environment`, `network`, `text`, and `users` to bring every active category to at least eight bundled workflows.
 - Raise the embedded corpus test floor to `48` recipes and assert the new per-category minimums.
+- Add twelve more embedded recipes across all six active categories to bring the bundled corpus to `60` workflows total.
+- Mark `Phase 3` complete after raising the corpus test floor to `60` recipes and `10` recipes per active category.

@@ -1,0 +1,33 @@
+id: user-home-directory
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: shell
+binary: ""
+command: "getent passwd {{user}} | cut -d: -f6"
+title:
+  en: "Show user home directory"
+  ua: "Показати домашній каталог користувача"
+  ru: "Показать домашний каталог пользователя"
+description:
+  en: "Resolve a user's home directory from the passwd database."
+  ua: "Визначає домашній каталог користувача з бази passwd."
+  ru: "Определяет домашний каталог пользователя из базы passwd."
+args: []
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - passwd
+  - home
+examples:
+  - args:
+      user: "nobody"
+    description:
+      en: "Show the home directory for nobody"

@@ -1,0 +1,26 @@
+id: loaded-kernel-modules
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: lsmod
+command: ""
+title:
+  en: "List loaded kernel modules"
+  ua: "Показати завантажені модулі ядра"
+  ru: "Показать загруженные модули ядра"
+description:
+  en: "Print currently loaded kernel modules and their usage counts."
+  ua: "Показує поточні завантажені модулі ядра та кількість їх використань."
+  ru: "Показывает текущие загруженные модули ядра и количество их использований."
+args: []
+fields: []
+tags:
+  - system
+  - kernel
+  - modules
+examples:
+  - args: {}
+    description:
+      en: "Review active kernel module usage"

@@ -1,0 +1,29 @@
+id: default-route
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show default route"
+  ua: "Показати маршрут за замовчуванням"
+  ru: "Показать маршрут по умолчанию"
+description:
+  en: "Print the default route that outbound traffic uses."
+  ua: "Показує маршрут за замовчуванням, який використовує вихідний трафік."
+  ru: "Показывает маршрут по умолчанию, который использует исходящий трафик."
+args:
+  - "route"
+  - "show"
+  - "default"
+fields: []
+tags:
+  - ip
+  - route
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Verify the active gateway"

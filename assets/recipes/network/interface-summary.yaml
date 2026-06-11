@@ -1,0 +1,29 @@
+id: interface-summary
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show interface summary"
+  ua: "Показати зведення інтерфейсів"
+  ru: "Показать сводку интерфейсов"
+description:
+  en: "Print a brief address summary for local network interfaces."
+  ua: "Показує коротке зведення адрес для локальних мережевих інтерфейсів."
+  ru: "Показывает краткую сводку адресов для локальных сетевых интерфейсов."
+args:
+  - "-br"
+  - "address"
+  - "show"
+fields: []
+tags:
+  - ip
+  - interface
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Review interface names and assigned addresses"

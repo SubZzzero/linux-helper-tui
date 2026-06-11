@@ -1,0 +1,26 @@
+id: block-devices
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: lsblk
+command: ""
+title:
+  en: "List block devices"
+  ua: "Показати блокові пристрої"
+  ru: "Показать блочные устройства"
+description:
+  en: "Print disks, partitions, and mountpoints in a tree view."
+  ua: "Показує диски, розділи та точки монтування у вигляді дерева."
+  ru: "Показывает диски, разделы и точки монтирования в виде дерева."
+args: []
+fields: []
+tags:
+  - system
+  - storage
+  - lsblk
+examples:
+  - args: {}
+    description:
+      en: "Inspect local disks and mounted partitions"

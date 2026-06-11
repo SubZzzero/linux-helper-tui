@@ -1,0 +1,33 @@
+id: user-login-shell
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: shell
+binary: ""
+command: "getent passwd {{user}} | cut -d: -f7"
+title:
+  en: "Show user login shell"
+  ua: "Показати shell входу користувача"
+  ru: "Показать login shell пользователя"
+description:
+  en: "Resolve a user's configured login shell from the passwd database."
+  ua: "Визначає налаштований shell входу користувача з бази passwd."
+  ru: "Определяет настроенный login shell пользователя из базы passwd."
+args: []
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - passwd
+  - shell
+examples:
+  - args:
+      user: "daemon"
+    description:
+      en: "Show the configured login shell for daemon"

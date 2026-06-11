@@ -1,0 +1,26 @@
+id: shell-options
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: shell
+binary: ""
+command: "set -o"
+title:
+  en: "Show shell options"
+  ua: "Показати параметри shell"
+  ru: "Показать параметры shell"
+description:
+  en: "Print the current shell option flags for the running session."
+  ua: "Показує поточні прапорці параметрів shell для активної сесії."
+  ru: "Показывает текущие флаги параметров shell для активной сессии."
+args: []
+fields: []
+tags:
+  - shell
+  - environment
+  - options
+examples:
+  - args: {}
+    description:
+      en: "Review how the current shell is configured"
