@@ -1,0 +1,43 @@
+id: show-file-tail
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: tail
+command: ""
+title:
+  en: "Show last lines of a file"
+  ua: "Показати останні рядки файлу"
+  ru: "Показать последние строки файла"
+description:
+  en: "Print the last lines from a text file."
+  ua: "Виводить останні рядки текстового файлу."
+  ru: "Выводит последние строки текстового файла."
+args:
+  - "-n"
+  - "{{lines}}"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "File path"
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of lines"
+tags:
+  - filesystem
+  - file
+  - tail
+examples:
+  - args:
+      path: "/var/log/auth.log"
+      lines: "25"
+    description:
+      en: "Read the latest 25 lines of auth.log"

@@ -1,0 +1,45 @@
+id: find-large-files
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find large files"
+  ua: "Знайти великі файли"
+  ru: "Найти большие файлы"
+description:
+  en: "Search for files larger than a size threshold."
+  ua: "Шукає файли, більші за вказаний розмір."
+  ru: "Ищет файлы больше указанного размера."
+args:
+  - "{{path}}"
+  - "-type"
+  - "f"
+  - "-size"
+  - "+{{size_mb}}M"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+  - name: size_mb
+    type: string
+    required: true
+    default: "100"
+    description:
+      en: "Minimum size in MB"
+tags:
+  - filesystem
+  - find
+  - size
+examples:
+  - args:
+      path: "/var"
+      size_mb: "500"
+    description:
+      en: "Find files larger than 500 MB under /var"

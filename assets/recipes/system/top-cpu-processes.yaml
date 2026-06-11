@@ -1,0 +1,33 @@
+id: top-cpu-processes
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: shell
+binary: ""
+command: "ps aux --sort=-%cpu | head -n {{lines}}"
+title:
+  en: "Show top CPU processes"
+  ua: "Показати процеси з найбільшим CPU"
+  ru: "Показать процессы с наибольшим CPU"
+description:
+  en: "Show the busiest CPU consumers from the process list."
+  ua: "Показує процеси з найбільшим споживанням CPU."
+  ru: "Показывает процессы с наибольшим потреблением CPU."
+args: []
+fields:
+  - name: lines
+    type: string
+    required: true
+    default: "10"
+    description:
+      en: "Number of lines to display"
+tags:
+  - system
+  - process
+  - cpu
+examples:
+  - args:
+      lines: "15"
+    description:
+      en: "Show the top 15 CPU-heavy processes"

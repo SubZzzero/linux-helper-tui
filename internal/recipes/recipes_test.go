@@ -1,12 +1,14 @@
 package recipes_test
 
 import (
+	"io/fs"
 	"testing"
 	"testing/fstest"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	linuxhelper "linux-helper"
 	"linux-helper/internal/recipes"
 )
 
@@ -65,4 +67,25 @@ description:
 	recipe, err := registry.Get("find-file")
 	require.NoError(t, err)
 	assert.Equal(t, "find-file", recipe.ID)
+}
+
+// TestEmbeddedRecipeCorpusLoads validates all bundled recipe files.
+func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
+	recipeFS, err := fs.Sub(linuxhelper.Assets, "assets/recipes")
+	require.NoError(t, err)
+
+	loader := recipes.NewLoader(recipeFS, nil, ".")
+	loaded, err := loader.Load()
+	require.NoError(t, err)
+	assert.Len(t, loaded, 12)
+
+	ids := make(map[string]struct{}, len(loaded))
+	for _, recipe := range loaded {
+		ids[recipe.ID] = struct{}{}
+		assert.NoError(t, recipes.Validate(recipe))
+	}
+
+	assert.Contains(t, ids, "find-file")
+	assert.Contains(t, ids, "list-directory")
+	assert.Contains(t, ids, "top-cpu-processes")
 }

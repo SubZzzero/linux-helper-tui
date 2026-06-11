@@ -17,10 +17,10 @@ The repository currently includes:
 - embedded themes: `dark`, `light`
 - storage for config, favorites, recent commands, and logs
 
-The current bundled sample recipes are:
+The current bundled recipes include:
 
-- `find-file`
-- `disk-usage`
+- filesystem: `find-file`, `list-directory`, `show-file-head`, `show-file-tail`, `count-files`, `find-large-files`
+- system: `disk-usage`, `memory-usage`, `system-uptime`, `kernel-info`, `process-list`, `top-cpu-processes`
 
 ## Requirements
 

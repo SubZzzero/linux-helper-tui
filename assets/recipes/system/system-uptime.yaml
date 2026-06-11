@@ -1,0 +1,26 @@
+id: system-uptime
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: uptime
+command: ""
+title:
+  en: "Show system uptime"
+  ua: "Показати час роботи системи"
+  ru: "Показать время работы системы"
+description:
+  en: "Display uptime, load average, and logged-in users."
+  ua: "Показує uptime, середнє навантаження та користувачів."
+  ru: "Показывает uptime, среднюю нагрузку и пользователей."
+args: []
+fields: []
+tags:
+  - system
+  - uptime
+  - load
+examples:
+  - args: {}
+    description:
+      en: "Check the current system uptime"

@@ -1,0 +1,35 @@
+id: list-directory
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: ls
+command: ""
+title:
+  en: "List directory contents"
+  ua: "Показати вміст каталогу"
+  ru: "Показать содержимое каталога"
+description:
+  en: "Show files in a directory with permissions and sizes."
+  ua: "Показує файли у каталозі з правами та розмірами."
+  ru: "Показывает файлы в каталоге с правами и размерами."
+args:
+  - "-lah"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Directory to inspect"
+tags:
+  - filesystem
+  - ls
+  - inspect
+examples:
+  - args:
+      path: "/var/log"
+    description:
+      en: "List files under /var/log"

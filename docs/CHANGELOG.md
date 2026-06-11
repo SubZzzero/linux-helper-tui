@@ -9,3 +9,5 @@
 - Add persisted favorites with TUI toggle support, favorite-aware search ordering, and coverage for the new flow.
 - Add recent command history to the search screen and refresh it after command execution.
 - Add productive keyboard shortcuts across search, detail, form, confirmation, and result screens.
+- Mark `Phase 2` complete after the lint gate passes.
+- Start `Phase 3` with eight new embedded recipes and a corpus test for all bundled recipe files.

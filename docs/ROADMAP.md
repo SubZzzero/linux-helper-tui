@@ -16,7 +16,7 @@
 
 ## Phase 2 - Productivity
 
-**Status**: [~] In progress
+**Status**: [x] Done
 
 ### Tasks
 - [x] Surface persisted favorites in the TUI and keep them across launches
@@ -26,5 +26,21 @@
 
 ### Exit criteria
 - Favorites and recent commands are visible in the TUI
+- `go test ./... -race` passes
+- `golangci-lint run` clean
+
+## Phase 3 - Recipe Expansion
+
+**Status**: [~] In progress
+
+### Tasks
+- [x] Add the first expanded embedded recipe batch for `filesystem` and `system`
+- [x] Add a corpus test that validates all embedded recipes
+- [ ] Expand supported categories beyond `filesystem` and `system`
+- [ ] Grow the embedded corpus toward milestone-scale coverage
+
+### Exit criteria
+- Embedded recipes cover multiple real Linux workflows
+- The full embedded corpus loads and validates in tests
 - `go test ./... -race` passes
 - `golangci-lint run` clean

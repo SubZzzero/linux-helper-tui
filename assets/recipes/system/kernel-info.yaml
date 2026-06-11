@@ -1,0 +1,27 @@
+id: kernel-info
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: uname
+command: ""
+title:
+  en: "Show kernel information"
+  ua: "Показати інформацію про ядро"
+  ru: "Показать информацию о ядре"
+description:
+  en: "Print kernel, architecture, and host information."
+  ua: "Показує ядро, архітектуру та інформацію про хост."
+  ru: "Показывает ядро, архитектуру и информацию о хосте."
+args:
+  - "-a"
+fields: []
+tags:
+  - system
+  - kernel
+  - uname
+examples:
+  - args: {}
+    description:
+      en: "Inspect kernel details"

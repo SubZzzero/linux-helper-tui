@@ -1,0 +1,27 @@
+id: memory-usage
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: free
+command: ""
+title:
+  en: "Show memory usage"
+  ua: "Показати використання пам'яті"
+  ru: "Показать использование памяти"
+description:
+  en: "Display RAM and swap usage in human-readable form."
+  ua: "Показує використання RAM і swap у зручному форматі."
+  ru: "Показывает использование RAM и swap в удобном формате."
+args:
+  - "-h"
+fields: []
+tags:
+  - system
+  - memory
+  - free
+examples:
+  - args: {}
+    description:
+      en: "Inspect current memory usage"

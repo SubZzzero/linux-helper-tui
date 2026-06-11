@@ -1,0 +1,33 @@
+id: count-files
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: shell
+binary: ""
+command: "find {{path}} -type f | wc -l"
+title:
+  en: "Count files under a path"
+  ua: "Порахувати файли у каталозі"
+  ru: "Подсчитать файлы в каталоге"
+description:
+  en: "Count regular files below a directory."
+  ua: "Рахує звичайні файли під каталогом."
+  ru: "Считает обычные файлы под каталогом."
+args: []
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Root path"
+tags:
+  - filesystem
+  - count
+  - find
+examples:
+  - args:
+      path: "/var/log"
+    description:
+      en: "Count files under /var/log"
