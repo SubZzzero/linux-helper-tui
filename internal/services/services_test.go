@@ -29,6 +29,39 @@ func (fakeLoader) Load() ([]models.Recipe, error) {
 	}}, nil
 }
 
+// TestFavoritesServiceToggle persists favorite state.
+func TestFavoritesServiceToggle(t *testing.T) {
+	store := storage.NewFavoritesStore(filepath.Join(t.TempDir(), "favorites.yaml"))
+	service := services.NewFavoritesService(store)
+
+	isFavorite, err := service.Toggle("find-file")
+	require.NoError(t, err)
+	assert.True(t, isFavorite)
+
+	loaded, err := service.Load()
+	require.NoError(t, err)
+	assert.Equal(t, []string{"find-file"}, loaded)
+
+	isFavorite, err = service.Toggle("find-file")
+	require.NoError(t, err)
+	assert.False(t, isFavorite)
+
+	loaded, err = service.Load()
+	require.NoError(t, err)
+	assert.Empty(t, loaded)
+}
+
+// TestRecentServiceLoad returns stored recent commands.
+func TestRecentServiceLoad(t *testing.T) {
+	store := storage.NewRecentStore(filepath.Join(t.TempDir(), "recent.yaml"))
+	require.NoError(t, store.Save([]string{"find .", "du -sh /var"}))
+
+	service := services.NewRecentService(store)
+	loaded, err := service.Load()
+	require.NoError(t, err)
+	assert.Equal(t, []string{"find .", "du -sh /var"}, loaded)
+}
+
 type fakeRunner struct{}
 
 // Run returns a static execution result.

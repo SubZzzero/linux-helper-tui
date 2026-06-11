@@ -79,24 +79,43 @@ func Bootstrap() (Model, func() error, error) {
 	}
 
 	searchService := services.NewSearchService(recipeService.All())
+	favoritesService := services.NewFavoritesService(storage.NewFavoritesStore(paths.FavoritesFile))
+	favorites, err := favoritesService.Load()
+	if err != nil {
+		return Model{}, nil, err
+	}
+	recentStore := storage.NewRecentStore(paths.RecentFile)
+	recentService := services.NewRecentService(recentStore)
+	recent, err := recentService.Load()
+	if err != nil {
+		return Model{}, nil, err
+	}
+
 	searchScreen, err := screens.NewSearchModel(
 		searchService,
 		config.Locale,
 		styles,
+		favorites,
+		recent,
 		translator.T("app.title"),
 		translator.T("search.placeholder"),
 		translator.T("search.empty"),
+		translator.T("search.recent_title"),
+		translator.T("search.recent_empty"),
+		translator.T("search.help"),
 	)
 	if err != nil {
 		return Model{}, nil, err
 	}
 
-	recentStore := storage.NewRecentStore(paths.RecentFile)
 	executionService := services.NewExecutionService(executor.OSRunner{}, recentStore)
 
-	model := NewModel(searchScreen, config.Locale, styles, executionService, log)
+	model := NewModel(searchScreen, config.Locale, styles, favoritesService, recentService, favorites, executionService, log)
 	model.detailRun = translator.T("detail.run")
 	model.detailBack = translator.T("detail.back")
+	model.detailFavorite = translator.T("detail.favorite")
+	model.detailFavoriteOn = translator.T("detail.favorite_on")
+	model.detailFavoriteOff = translator.T("detail.favorite_off")
 	model.formPreview = translator.T("form.preview")
 	model.formSubmit = translator.T("form.submit")
 	model.formBack = translator.T("form.back")

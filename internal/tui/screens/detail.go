@@ -11,19 +11,34 @@ import (
 
 // DetailModel renders one recipe detail screen.
 type DetailModel struct {
-	recipe   models.Recipe
-	locale   string
-	styles   uitheme.Styles
-	runText  string
-	backText string
-	start    bool
-	back     bool
-	width    int
+	recipe          models.Recipe
+	locale          string
+	styles          uitheme.Styles
+	runText         string
+	backText        string
+	favoriteLabel   string
+	favoriteOnText  string
+	favoriteOffText string
+	isFavorite      bool
+	start           bool
+	back            bool
+	toggleFavorite  bool
+	width           int
 }
 
 // NewDetailModel constructs a detail screen.
-func NewDetailModel(recipe models.Recipe, locale string, styles uitheme.Styles, runText string, backText string) DetailModel {
-	return DetailModel{recipe: recipe, locale: locale, styles: styles, runText: runText, backText: backText}
+func NewDetailModel(recipe models.Recipe, locale string, styles uitheme.Styles, isFavorite bool, runText string, backText string, favoriteLabel string, favoriteOnText string, favoriteOffText string) DetailModel {
+	return DetailModel{
+		recipe:          recipe,
+		locale:          locale,
+		styles:          styles,
+		isFavorite:      isFavorite,
+		runText:         runText,
+		backText:        backText,
+		favoriteLabel:   favoriteLabel,
+		favoriteOnText:  favoriteOnText,
+		favoriteOffText: favoriteOffText,
+	}
 }
 
 // Init starts the detail screen with no async work.
@@ -38,9 +53,11 @@ func (m DetailModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = typed.Width
 	case tea.KeyMsg:
 		switch typed.String() {
-		case "esc", "backspace":
+		case "esc", "backspace", "q":
 			m.back = true
-		case "enter":
+		case "f":
+			m.toggleFavorite = true
+		case "enter", "r":
 			m.start = true
 		case "ctrl+c":
 			return m, tea.Quit
@@ -48,6 +65,18 @@ func (m DetailModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, nil
+}
+
+// ConsumeToggleFavorite reports whether the screen requested a favorite change.
+func (m *DetailModel) ConsumeToggleFavorite() bool {
+	toggle := m.toggleFavorite
+	m.toggleFavorite = false
+	return toggle
+}
+
+// SetFavorite updates the current favorite state.
+func (m *DetailModel) SetFavorite(isFavorite bool) {
+	m.isFavorite = isFavorite
 }
 
 // ConsumeExecute reports whether the screen requested form entry.
@@ -77,6 +106,7 @@ func (m DetailModel) View() string {
 		resolveRecipeText(m.locale, m.recipe.Description),
 		"",
 		"Category: " + m.recipe.Category.DisplayName(),
+		m.favoriteLabel + ": " + boolLabel(m.isFavorite),
 		"Risk: " + string(m.recipe.Risk),
 		"Execution: " + string(m.recipe.Execution),
 		"",
@@ -84,9 +114,26 @@ func (m DetailModel) View() string {
 		strings.Join(m.recipe.Args, " "),
 		"",
 		m.styles.Accent.Render(m.runText),
+		m.styles.Accent.Render(m.favoriteText()),
 		"",
 		m.styles.Muted.Render(m.backText),
 	}
 
 	return renderFrame(m.styles, m.width, lines)
+}
+
+func (m DetailModel) favoriteText() string {
+	if m.isFavorite {
+		return m.favoriteOnText
+	}
+
+	return m.favoriteOffText
+}
+
+func boolLabel(value bool) string {
+	if value {
+		return "yes"
+	}
+
+	return "no"
 }

@@ -51,7 +51,7 @@ func (m ResultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case "enter", "esc", "backspace":
+		case "enter", "esc", "backspace", "q":
 			if !m.running {
 				m.pendingBack = true
 			}

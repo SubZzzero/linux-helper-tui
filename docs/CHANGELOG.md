@@ -6,3 +6,6 @@
 - Add embedded theme loading and centralized TUI styling.
 - Extend the TUI flow to collect recipe fields, confirm dangerous commands, execute recipes, and display results.
 - Add tests for theme loading, screen transitions, execution flow, and race-safe verification.
+- Add persisted favorites with TUI toggle support, favorite-aware search ordering, and coverage for the new flow.
+- Add recent command history to the search screen and refresh it after command execution.
+- Add productive keyboard shortcuts across search, detail, form, confirmation, and result screens.

@@ -127,6 +127,14 @@ The current application flow is:
 5. Confirm execution for dangerous recipes.
 6. Execute and inspect the result screen.
 
+## Keyboard shortcuts
+
+- Search: `enter` open recipe, `f` toggle favorite, `j`/`k` or arrows move, `g`/`G` jump to first or last result, `q` quit
+- Detail: `enter` or `r` continue to the form, `f` toggle favorite, `esc` or `q` go back
+- Form: `tab`, arrows, or `j`/`k` move between fields, `enter` or `ctrl+s` submit, `esc` or `q` go back
+- Confirm: `enter` or `y` approve, `esc`, `q`, or `n` cancel
+- Result: `enter`, `esc`, or `q` return to the previous screen after execution finishes
+
 ## Architecture notes
 
 - The app is a single binary.

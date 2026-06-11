@@ -32,3 +32,12 @@ func max(left int, right int) int {
 
 	return right
 }
+
+// min returns the smaller integer.
+func min(left int, right int) int {
+	if left < right {
+		return left
+	}
+
+	return right
+}

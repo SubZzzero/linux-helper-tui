@@ -53,7 +53,7 @@ func (m ConfirmModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter", "y":
 			m.pendingRun = true
 			return m, nil
-		case "esc", "n", "backspace":
+		case "esc", "n", "backspace", "q":
 			m.pendingBack = true
 			return m, nil
 		}

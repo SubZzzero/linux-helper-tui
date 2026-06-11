@@ -13,3 +13,18 @@
 - All tasks checked
 - `go test ./... -race` passes
 - `golangci-lint run` clean
+
+## Phase 2 - Productivity
+
+**Status**: [~] In progress
+
+### Tasks
+- [x] Surface persisted favorites in the TUI and keep them across launches
+- [x] Surface recent commands in the TUI
+- [x] Expand keyboard navigation for productivity actions
+- [x] Add tests that cover persistence-backed TUI state
+
+### Exit criteria
+- Favorites and recent commands are visible in the TUI
+- `go test ./... -race` passes
+- `golangci-lint run` clean

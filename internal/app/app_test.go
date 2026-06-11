@@ -22,10 +22,44 @@ type fakeExecutor struct {
 	called int
 }
 
+type fakeFavorites struct {
+	ids map[string]struct{}
+}
+
+type fakeRecent struct {
+	commands []string
+}
+
 // Execute records one execution request.
 func (e *fakeExecutor) Execute(_ context.Context, _ models.Recipe, _ map[string]string, _ bool) (models.ExecutionResult, error) {
 	e.called++
 	return e.result, e.err
+}
+
+// Load returns the current favorite identifiers.
+func (f *fakeFavorites) Load() ([]string, error) {
+	ids := make([]string, 0, len(f.ids))
+	for recipeID := range f.ids {
+		ids = append(ids, recipeID)
+	}
+
+	return ids, nil
+}
+
+// Toggle flips one recipe identifier.
+func (f *fakeFavorites) Toggle(recipeID string) (bool, error) {
+	if _, ok := f.ids[recipeID]; ok {
+		delete(f.ids, recipeID)
+		return false, nil
+	}
+
+	f.ids[recipeID] = struct{}{}
+	return true, nil
+}
+
+// Load returns the recent commands.
+func (f *fakeRecent) Load() ([]string, error) {
+	return append([]string(nil), f.commands...), nil
 }
 
 func appTestStyles() uitheme.Styles {
@@ -36,6 +70,7 @@ func appTestStyles() uitheme.Styles {
 func (fakeSearcher) Search(query string) ([]models.Recipe, error) {
 	return []models.Recipe{{
 		ID:          "find-file",
+		Version:     1,
 		Category:    models.CategoryFilesystem,
 		Risk:        models.RiskSafe,
 		Execution:   models.ExecutionTypeDirect,
@@ -49,21 +84,22 @@ func (fakeSearcher) Search(query string) ([]models.Recipe, error) {
 
 // TestModelView renders the active screen.
 func TestModelView(t *testing.T) {
-	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), "linux-helper", "Search", "Empty")
+	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "enter open, f favorite, j/k move, g/G jump, q quit")
 	require.NoError(t, err)
 
-	model := app.NewModel(searchModel, "en", appTestStyles(), nil, nil)
+	model := app.NewModel(searchModel, "en", appTestStyles(), nil, nil, nil, nil, nil)
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	assert.NotEmpty(t, updated.View())
 }
 
 // TestModelExecutesSafeRecipe drives the minimal execution flow.
 func TestModelExecutesSafeRecipe(t *testing.T) {
-	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), "linux-helper", "Search", "Empty")
+	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "enter open, f favorite, j/k move, g/G jump, q quit")
 	require.NoError(t, err)
 
 	executor := &fakeExecutor{result: models.ExecutionResult{Command: "find .", ExitCode: 0, Stdout: "ok"}}
-	model := app.NewModel(searchModel, "en", appTestStyles(), executor, nil)
+	recent := &fakeRecent{commands: []string{"find ."}}
+	model := app.NewModel(searchModel, "en", appTestStyles(), nil, recent, nil, executor, nil)
 
 	updated, cmd := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	require.NotNil(t, updated)
@@ -82,4 +118,39 @@ func TestModelExecutesSafeRecipe(t *testing.T) {
 	assert.Equal(t, 1, executor.called)
 	assert.Contains(t, updated.View(), "Execution finished")
 	assert.Contains(t, updated.View(), "find .")
+
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	assert.Contains(t, updated.View(), "Recent commands")
+	assert.Contains(t, updated.View(), "- find .")
+}
+
+// TestModelTogglesFavorites updates detail and search state.
+func TestModelTogglesFavorites(t *testing.T) {
+	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "enter open, f favorite, j/k move, g/G jump, q quit")
+	require.NoError(t, err)
+
+	favorites := &fakeFavorites{ids: map[string]struct{}{}}
+	model := app.NewModel(searchModel, "en", appTestStyles(), favorites, nil, nil, nil, nil)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
+
+	assert.Contains(t, updated.View(), "Favorite: yes")
+
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	assert.Contains(t, updated.View(), "[*] Find file")
+}
+
+// TestModelTogglesFavoritesFromSearch uses the direct search shortcut.
+func TestModelTogglesFavoritesFromSearch(t *testing.T) {
+	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "enter open, f favorite, j/k move, g/G jump, q quit")
+	require.NoError(t, err)
+
+	favorites := &fakeFavorites{ids: map[string]struct{}{}}
+	model := app.NewModel(searchModel, "en", appTestStyles(), favorites, nil, nil, nil, nil)
+
+	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
+	assert.Contains(t, updated.View(), "[*] Find file")
 }

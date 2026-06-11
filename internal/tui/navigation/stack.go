@@ -35,3 +35,13 @@ func (s *Stack) Top() tea.Model {
 func (s *Stack) ReplaceTop(model tea.Model) {
 	s.screens[len(s.screens)-1] = model
 }
+
+// Root returns the bottom screen in the stack.
+func (s *Stack) Root() tea.Model {
+	return s.screens[0]
+}
+
+// ReplaceRoot swaps the bottom screen in place.
+func (s *Stack) ReplaceRoot(model tea.Model) {
+	s.screens[0] = model
+}
