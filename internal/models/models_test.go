@@ -27,12 +27,28 @@ func TestRecipeValidate(t *testing.T) {
 	assert.Equal(t, "Find file", recipe.Title.Resolve("en"))
 }
 
-// TestParseCategory rejects unknown categories.
+// TestParseCategory accepts known categories and rejects unknown ones.
 func TestParseCategory(t *testing.T) {
 	category, err := models.ParseCategory("filesystem")
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryFilesystem, category)
 
+	category, err = models.ParseCategory("network")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryNetwork, category)
+
+	category, err = models.ParseCategory("text")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryText, category)
+
 	_, err = models.ParseCategory("missing")
 	assert.Error(t, err)
+}
+
+// TestCategoryDisplayName returns stable labels for known categories.
+func TestCategoryDisplayName(t *testing.T) {
+	assert.Equal(t, "Filesystem", models.CategoryFilesystem.DisplayName())
+	assert.Equal(t, "Network", models.CategoryNetwork.DisplayName())
+	assert.Equal(t, "System", models.CategorySystem.DisplayName())
+	assert.Equal(t, "Text", models.CategoryText.DisplayName())
 }

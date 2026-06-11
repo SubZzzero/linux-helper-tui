@@ -1,0 +1,33 @@
+id: sort-unique
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: shell
+binary: ""
+command: "sort {{path}} | uniq -c"
+title:
+  en: "Count unique lines"
+  ua: "Порахувати унікальні рядки"
+  ru: "Подсчитать уникальные строки"
+description:
+  en: "Sort file lines and count repeated values."
+  ua: "Сортує рядки файлу та підраховує повторювані значення."
+  ru: "Сортирует строки файла и подсчитывает повторяющиеся значения."
+args: []
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/dpkg.log"
+    description:
+      en: "Input file path"
+tags:
+  - sort
+  - uniq
+  - text
+examples:
+  - args:
+      path: "/etc/shells"
+    description:
+      en: "Count repeated shell entries"

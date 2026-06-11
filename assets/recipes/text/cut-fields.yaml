@@ -1,0 +1,51 @@
+id: cut-fields
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: cut
+command: ""
+title:
+  en: "Extract delimited fields"
+  ua: "Витягти поля з роздільником"
+  ru: "Извлечь поля с разделителем"
+description:
+  en: "Extract selected fields from each line of a delimited file."
+  ua: "Витягує вибрані поля з кожного рядка файлу з роздільником."
+  ru: "Извлекает выбранные поля из каждой строки файла с разделителем."
+args:
+  - "-d"
+  - "{{delimiter}}"
+  - "-f"
+  - "{{fields}}"
+  - "{{path}}"
+fields:
+  - name: delimiter
+    type: string
+    required: true
+    default: ":"
+    description:
+      en: "Field delimiter"
+  - name: fields
+    type: string
+    required: true
+    default: "1,7"
+    description:
+      en: "Field list"
+  - name: path
+    type: string
+    required: true
+    default: "/etc/passwd"
+    description:
+      en: "Input file path"
+tags:
+  - text
+  - cut
+examples:
+  - args:
+      delimiter: ":"
+      fields: "1,7"
+      path: "/etc/passwd"
+    description:
+      en: "Show usernames and shells"

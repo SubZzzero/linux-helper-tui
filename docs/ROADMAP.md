@@ -37,7 +37,7 @@
 - [x] Add the first expanded embedded recipe batch for `filesystem` and `system`
 - [x] Add a corpus test that validates all embedded recipes
 - [x] Add category-aware search UI for the current embedded categories
-- [ ] Expand supported categories beyond `filesystem` and `system`
+- [x] Expand supported categories beyond `filesystem` and `system`
 - [ ] Grow the embedded corpus toward milestone-scale coverage
 
 ### Exit criteria

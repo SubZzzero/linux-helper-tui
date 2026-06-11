@@ -12,3 +12,4 @@
 - Mark `Phase 2` complete after the lint gate passes.
 - Start `Phase 3` with eight new embedded recipes and a corpus test for all bundled recipe files.
 - Add category filters and grouped search results for the embedded recipe categories.
+- Expand category support to `network` and `text` and add eight embedded recipes for those workflows.

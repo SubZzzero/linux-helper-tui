@@ -1,0 +1,34 @@
+id: count-lines
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: wc
+command: ""
+title:
+  en: "Count file lines"
+  ua: "Порахувати рядки у файлі"
+  ru: "Подсчитать строки в файле"
+description:
+  en: "Count the number of lines in a file."
+  ua: "Підраховує кількість рядків у файлі."
+  ru: "Подсчитывает количество строк в файле."
+args:
+  - "-l"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "File path"
+tags:
+  - text
+  - lines
+examples:
+  - args:
+      path: "/etc/passwd"
+    description:
+      en: "Count lines in /etc/passwd"

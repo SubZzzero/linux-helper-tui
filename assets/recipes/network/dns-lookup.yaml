@@ -1,0 +1,34 @@
+id: dns-lookup
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: getent
+command: ""
+title:
+  en: "Resolve host addresses"
+  ua: "Визначити адреси хоста"
+  ru: "Определить адреса хоста"
+description:
+  en: "Resolve IPv4 and IPv6 addresses through the local name service stack."
+  ua: "Визначає IPv4 та IPv6 адреси через локальну службу імен."
+  ru: "Определяет IPv4 и IPv6 адреса через локальную службу имен."
+args:
+  - "ahosts"
+  - "{{hostname}}"
+fields:
+  - name: hostname
+    type: string
+    required: true
+    default: "localhost"
+    description:
+      en: "Hostname or domain name"
+tags:
+  - dns
+  - network
+examples:
+  - args:
+      hostname: "example.com"
+    description:
+      en: "Resolve example.com through NSS"

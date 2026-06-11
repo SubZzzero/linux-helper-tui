@@ -1,0 +1,27 @@
+id: listening-ports
+version: 1
+type: recipe
+category: network
+risk: elevated
+execution: direct
+binary: ss
+command: ""
+title:
+  en: "List listening ports"
+  ua: "Показати порти, що слухають"
+  ru: "Показать прослушиваемые порты"
+description:
+  en: "Show TCP and UDP sockets that are currently listening."
+  ua: "Показує TCP та UDP сокети, які зараз слухають."
+  ru: "Показывает TCP и UDP сокеты, которые сейчас прослушиваются."
+args:
+  - "-tulpn"
+fields: []
+tags:
+  - ports
+  - sockets
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Inspect services bound to local ports"

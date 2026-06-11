@@ -1,0 +1,43 @@
+id: grep-pattern
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: grep
+command: ""
+title:
+  en: "Search text with grep"
+  ua: "Шукати текст через grep"
+  ru: "Искать текст через grep"
+description:
+  en: "Search for a pattern in a file and print matching lines with numbers."
+  ua: "Шукає шаблон у файлі та виводить збіги з номерами рядків."
+  ru: "Ищет шаблон в файле и выводит совпадения с номерами строк."
+args:
+  - "-n"
+  - "{{pattern}}"
+  - "{{path}}"
+fields:
+  - name: pattern
+    type: string
+    required: true
+    default: "error"
+    description:
+      en: "Search pattern"
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Input file path"
+tags:
+  - grep
+  - text
+  - search
+examples:
+  - args:
+      pattern: "sshd"
+      path: "/var/log/auth.log"
+    description:
+      en: "Find sshd lines in auth.log"

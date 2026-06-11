@@ -1,0 +1,43 @@
+id: ping-host
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ping
+command: ""
+title:
+  en: "Ping a host"
+  ua: "Перевірити хост через ping"
+  ru: "Проверить хост через ping"
+description:
+  en: "Send ICMP echo requests to verify reachability and latency."
+  ua: "Надсилає ICMP echo запити для перевірки доступності та затримки."
+  ru: "Отправляет ICMP echo-запросы для проверки доступности и задержки."
+args:
+  - "-c"
+  - "{{count}}"
+  - "{{host}}"
+fields:
+  - name: host
+    type: string
+    required: true
+    default: "1.1.1.1"
+    description:
+      en: "Host or IP address"
+  - name: count
+    type: string
+    required: true
+    default: "4"
+    description:
+      en: "Number of echo requests"
+tags:
+  - ping
+  - latency
+  - network
+examples:
+  - args:
+      host: "8.8.8.8"
+      count: "3"
+    description:
+      en: "Check reachability to a public resolver"

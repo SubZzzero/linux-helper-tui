@@ -8,14 +8,18 @@ type Category string
 const (
 	// CategoryFilesystem groups filesystem commands.
 	CategoryFilesystem Category = "filesystem"
+	// CategoryNetwork groups networking commands.
+	CategoryNetwork Category = "network"
 	// CategorySystem groups system inspection commands.
 	CategorySystem Category = "system"
+	// CategoryText groups text-processing commands.
+	CategoryText Category = "text"
 )
 
 // Valid reports whether the category is known.
 func (c Category) Valid() bool {
 	switch c {
-	case CategoryFilesystem, CategorySystem:
+	case CategoryFilesystem, CategoryNetwork, CategorySystem, CategoryText:
 		return true
 	default:
 		return false
@@ -27,8 +31,12 @@ func (c Category) DisplayName() string {
 	switch c {
 	case CategoryFilesystem:
 		return "Filesystem"
+	case CategoryNetwork:
+		return "Network"
 	case CategorySystem:
 		return "System"
+	case CategoryText:
+		return "Text"
 	default:
 		return string(c)
 	}

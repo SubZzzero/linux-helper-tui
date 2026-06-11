@@ -1,0 +1,28 @@
+id: ip-addresses
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "List interface addresses"
+  ua: "Показати адреси інтерфейсів"
+  ru: "Показать адреса интерфейсов"
+description:
+  en: "Show a compact list of network interfaces and their addresses."
+  ua: "Показує стислий список мережевих інтерфейсів та їх адрес."
+  ru: "Показывает краткий список сетевых интерфейсов и их адресов."
+args:
+  - "-brief"
+  - "address"
+fields: []
+tags:
+  - ip
+  - address
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Inspect the current interface addressing"

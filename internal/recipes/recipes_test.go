@@ -77,7 +77,7 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	loader := recipes.NewLoader(recipeFS, nil, ".")
 	loaded, err := loader.Load()
 	require.NoError(t, err)
-	assert.Len(t, loaded, 12)
+	assert.Len(t, loaded, 20)
 
 	ids := make(map[string]struct{}, len(loaded))
 	for _, recipe := range loaded {
@@ -86,6 +86,8 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	}
 
 	assert.Contains(t, ids, "find-file")
+	assert.Contains(t, ids, "ping-host")
+	assert.Contains(t, ids, "grep-pattern")
 	assert.Contains(t, ids, "list-directory")
 	assert.Contains(t, ids, "top-cpu-processes")
 }
