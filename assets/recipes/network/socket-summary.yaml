@@ -1,0 +1,27 @@
+id: socket-summary
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ss
+command: ""
+title:
+  en: "Show socket summary"
+  ua: "Показати зведення сокетів"
+  ru: "Показать сводку сокетов"
+description:
+  en: "Summarize socket counts by protocol and state."
+  ua: "Показує зведення кількості сокетів за протоколом і станом."
+  ru: "Показывает сводку количества сокетов по протоколам и состояниям."
+args:
+  - "-s"
+fields: []
+tags:
+  - ss
+  - sockets
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Get a quick overview of socket usage"

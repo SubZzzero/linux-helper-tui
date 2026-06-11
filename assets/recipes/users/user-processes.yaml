@@ -1,0 +1,37 @@
+id: user-processes
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: ps
+command: ""
+title:
+  en: "List processes for a user"
+  ua: "Показати процеси користувача"
+  ru: "Показать процессы пользователя"
+description:
+  en: "Print active processes owned by a specific user."
+  ua: "Показує активні процеси, що належать вказаному користувачу."
+  ru: "Показывает активные процессы, принадлежащие указанному пользователю."
+args:
+  - "-u"
+  - "{{user}}"
+  - "-o"
+  - "pid,tty,stat,time,cmd"
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - processes
+  - ps
+examples:
+  - args:
+      user: "www-data"
+    description:
+      en: "Inspect processes owned by the web service account"

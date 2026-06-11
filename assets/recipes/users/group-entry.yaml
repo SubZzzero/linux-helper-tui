@@ -1,0 +1,35 @@
+id: group-entry
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: getent
+command: ""
+title:
+  en: "Lookup group entry"
+  ua: "Знайти запис групи"
+  ru: "Найти запись группы"
+description:
+  en: "Resolve a group entry through the system name service switch."
+  ua: "Шукає запис групи через системний NSS."
+  ru: "Находит запись группы через системный NSS."
+args:
+  - "group"
+  - "{{group}}"
+fields:
+  - name: group
+    type: string
+    required: true
+    default: "sudo"
+    description:
+      en: "Group name to resolve"
+tags:
+  - users
+  - groups
+  - lookup
+examples:
+  - args:
+      group: "adm"
+    description:
+      en: "Lookup the adm group"

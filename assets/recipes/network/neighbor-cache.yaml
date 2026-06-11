@@ -1,0 +1,28 @@
+id: neighbor-cache
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show neighbor cache"
+  ua: "Показати кеш сусідів"
+  ru: "Показать кэш соседей"
+description:
+  en: "Print ARP and NDP neighbor cache entries known by the kernel."
+  ua: "Показує записи ARP та NDP у кеші сусідів ядра."
+  ru: "Показывает записи ARP и NDP в кэше соседей ядра."
+args:
+  - "neigh"
+  - "show"
+fields: []
+tags:
+  - ip
+  - arp
+  - network
+examples:
+  - args: {}
+    description:
+      en: "Inspect recently discovered L2 neighbors"

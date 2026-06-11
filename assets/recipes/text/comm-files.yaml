@@ -1,0 +1,42 @@
+id: comm-files
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: comm
+command: ""
+title:
+  en: "Compare sorted files"
+  ua: "Порівняти відсортовані файли"
+  ru: "Сравнить отсортированные файлы"
+description:
+  en: "Print lines unique to each file and lines shared by both sorted inputs."
+  ua: "Показує рядки, унікальні для кожного файлу, та спільні рядки з двох відсортованих входів."
+  ru: "Показывает строки, уникальные для каждого файла, и общие строки двух отсортированных входов."
+args:
+  - "{{left}}"
+  - "{{right}}"
+fields:
+  - name: left
+    type: string
+    required: true
+    default: "/tmp/left.sorted"
+    description:
+      en: "First sorted file path"
+  - name: right
+    type: string
+    required: true
+    default: "/tmp/right.sorted"
+    description:
+      en: "Second sorted file path"
+tags:
+  - comm
+  - compare
+  - text
+examples:
+  - args:
+      left: "/tmp/packages.before"
+      right: "/tmp/packages.after"
+    description:
+      en: "Compare two sorted package lists"

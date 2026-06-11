@@ -1,0 +1,26 @@
+id: terminal-device
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: tty
+command: ""
+title:
+  en: "Show terminal device"
+  ua: "Показати пристрій термінала"
+  ru: "Показать устройство терминала"
+description:
+  en: "Print the terminal device attached to the current session."
+  ua: "Показує пристрій термінала, прив'язаний до поточної сесії."
+  ru: "Показывает устройство терминала, привязанное к текущей сессии."
+args: []
+fields: []
+tags:
+  - tty
+  - terminal
+  - environment
+examples:
+  - args: {}
+    description:
+      en: "Confirm which TTY backs the current shell"

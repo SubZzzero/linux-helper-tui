@@ -1,0 +1,27 @@
+id: list-locales
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: locale
+command: ""
+title:
+  en: "List available locales"
+  ua: "Показати доступні локалі"
+  ru: "Показать доступные локали"
+description:
+  en: "Print all locales that are currently generated on the system."
+  ua: "Показує всі локалі, які зараз згенеровані в системі."
+  ru: "Показывает все локали, которые сейчас сгенерированы в системе."
+args:
+  - "-a"
+fields: []
+tags:
+  - locale
+  - environment
+  - languages
+examples:
+  - args: {}
+    description:
+      en: "Review which locales are installed"

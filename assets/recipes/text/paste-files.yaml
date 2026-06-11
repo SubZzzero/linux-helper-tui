@@ -1,0 +1,42 @@
+id: paste-files
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: paste
+command: ""
+title:
+  en: "Paste files side by side"
+  ua: "Об'єднати файли поруч"
+  ru: "Объединить файлы рядом"
+description:
+  en: "Merge lines from two files into aligned tab-separated columns."
+  ua: "Об'єднує рядки з двох файлів у вирівняні стовпці, розділені табуляцією."
+  ru: "Объединяет строки из двух файлов в выровненные столбцы, разделённые табуляцией."
+args:
+  - "{{left}}"
+  - "{{right}}"
+fields:
+  - name: left
+    type: string
+    required: true
+    default: "/etc/passwd"
+    description:
+      en: "First file path"
+  - name: right
+    type: string
+    required: true
+    default: "/etc/group"
+    description:
+      en: "Second file path"
+tags:
+  - paste
+  - columns
+  - text
+examples:
+  - args:
+      left: "/tmp/hosts.old"
+      right: "/tmp/hosts.new"
+    description:
+      en: "View matching lines from two files side by side"

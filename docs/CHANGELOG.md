@@ -17,3 +17,5 @@
 - Add twelve more embedded recipes across `filesystem`, `environment`, `network`, `system`, `text`, and `users` to deepen the offline command corpus.
 - Strengthen the embedded recipe corpus test to assert broader category coverage instead of a single exact recipe count.
 - Remove the search architecture and convert the root TUI screen into a browse-only recipe catalog.
+- Add eight more embedded recipes across `environment`, `network`, `text`, and `users` to bring every active category to at least eight bundled workflows.
+- Raise the embedded corpus test floor to `48` recipes and assert the new per-category minimums.
