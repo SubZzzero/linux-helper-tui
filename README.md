@@ -129,11 +129,18 @@ The current application flow is:
 
 ## Keyboard shortcuts
 
-- Search: `enter` open recipe, `f` toggle favorite, `j`/`k` or arrows move, `g`/`G` jump to first or last result, `q` quit
+- Search: type to search, left/right arrows switch category, up/down arrows move, `enter` open recipe, `ctrl+c` quit
 - Detail: `enter` or `r` continue to the form, `f` toggle favorite, `esc` or `q` go back
 - Form: `tab`, arrows, or `j`/`k` move between fields, `enter` or `ctrl+s` submit, `esc` or `q` go back
 - Confirm: `enter` or `y` approve, `esc`, `q`, or `n` cancel
 - Result: `enter`, `esc`, or `q` return to the previous screen after execution finishes
+
+## Search categories
+
+- The search screen groups results by recipe category.
+- Use left/right arrows to cycle through `All` and the embedded categories.
+- Search input stays text-first, so letter keys are reserved for the query itself.
+- Category filtering works together with favorites and recent commands.
 
 ## Architecture notes
 

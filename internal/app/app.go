@@ -122,6 +122,11 @@ func (m *Model) handleTransitions() tea.Cmd {
 	switch current := m.stack.Top().(type) {
 	case screens.SearchModel:
 		searchScreen := current
+		if category, ok := searchScreen.ConsumeCategorySelection(); ok {
+			searchScreen.SetSelectedCategory(category)
+			m.stack.ReplaceTop(searchScreen)
+			return nil
+		}
 		if recipe, ok := searchScreen.ConsumeToggleFavorite(); ok {
 			m.stack.ReplaceTop(searchScreen)
 			m.toggleFavoriteRecipe(recipe.ID)

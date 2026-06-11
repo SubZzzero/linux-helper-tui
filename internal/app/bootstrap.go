@@ -102,6 +102,8 @@ func Bootstrap() (Model, func() error, error) {
 		translator.T("search.empty"),
 		translator.T("search.recent_title"),
 		translator.T("search.recent_empty"),
+		translator.T("search.category_label"),
+		translator.T("search.category_all"),
 		translator.T("search.help"),
 	)
 	if err != nil {

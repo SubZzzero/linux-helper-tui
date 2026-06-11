@@ -36,11 +36,13 @@
 ### Tasks
 - [x] Add the first expanded embedded recipe batch for `filesystem` and `system`
 - [x] Add a corpus test that validates all embedded recipes
+- [x] Add category-aware search UI for the current embedded categories
 - [ ] Expand supported categories beyond `filesystem` and `system`
 - [ ] Grow the embedded corpus toward milestone-scale coverage
 
 ### Exit criteria
 - Embedded recipes cover multiple real Linux workflows
+- Category-aware navigation works for embedded recipe groups
 - The full embedded corpus loads and validates in tests
 - `go test ./... -race` passes
 - `golangci-lint run` clean

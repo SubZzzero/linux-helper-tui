@@ -11,3 +11,4 @@
 - Add productive keyboard shortcuts across search, detail, form, confirmation, and result screens.
 - Mark `Phase 2` complete after the lint gate passes.
 - Start `Phase 3` with eight new embedded recipes and a corpus test for all bundled recipe files.
+- Add category filters and grouped search results for the embedded recipe categories.
