@@ -61,8 +61,11 @@ type Model struct {
 	resultRunning     string
 	resultDone        string
 	resultBack        string
+	resultScroll      string
 	executor          Executor
 	pendingExecution  *executionRequest
+	windowWidth       int
+	windowHeight      int
 	logger            *slog.Logger
 }
 
@@ -88,6 +91,7 @@ func NewModel(search screens.SearchModel, locale string, styles uitheme.Styles, 
 		confirmBack:       "Press esc, backspace, or n to cancel",
 		resultRunning:     "Running command...",
 		resultDone:        "Execution finished",
+		resultScroll:      "Use up/down or pgup/pgdn to scroll",
 		resultBack:        "Press enter or esc to return",
 		executor:          executor,
 		logger:            log,
@@ -101,6 +105,11 @@ func (m Model) Init() tea.Cmd {
 
 // Update updates the active screen and handles navigation transitions.
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if sized, ok := msg.(tea.WindowSizeMsg); ok {
+		m.windowWidth = sized.Width
+		m.windowHeight = sized.Height
+	}
+
 	if finished, ok := msg.(executionFinishedMsg); ok {
 		m.finishExecution(finished)
 		return m, nil
@@ -134,7 +143,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		}
 		if recipe, ok := searchScreen.ConsumeSelection(); ok {
 			m.stack.ReplaceTop(searchScreen)
-			m.stack.Push(screens.NewDetailModel(recipe, m.locale, m.styles, m.isFavorite(recipe.ID), m.detailRun, m.detailBack, m.detailFavorite, m.detailFavoriteOn, m.detailFavoriteOff))
+			m.stack.Push(m.sizeScreen(screens.NewDetailModel(recipe, m.locale, m.styles, m.isFavorite(recipe.ID), m.detailRun, m.detailBack, m.detailFavorite, m.detailFavoriteOn, m.detailFavoriteOff)))
 			if m.logger != nil {
 				m.logger.Info("open recipe detail", "recipe_id", recipe.ID)
 			}
@@ -151,7 +160,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		if detailScreen.ConsumeExecute() {
 			recipe := detailScreen.Recipe()
 			m.stack.ReplaceTop(detailScreen)
-			m.stack.Push(screens.NewFormModel(recipe, m.locale, m.styles, m.formPreview, m.formSubmit, m.formBack))
+			m.stack.Push(m.sizeScreen(screens.NewFormModel(recipe, m.locale, m.styles, m.formPreview, m.formSubmit, m.formBack)))
 			return nil
 		}
 		if detailScreen.ConsumeBack() {
@@ -171,11 +180,11 @@ func (m *Model) handleTransitions() tea.Cmd {
 			m.pendingExecution = request
 			m.stack.ReplaceTop(formScreen)
 			if recipe.Risk == models.RiskDangerous {
-				m.stack.Push(screens.NewConfirmModel(recipe, m.locale, m.styles, formScreen.Preview(), m.confirmTitle, m.confirmApprove, m.confirmBack))
+				m.stack.Push(m.sizeScreen(screens.NewConfirmModel(recipe, m.locale, m.styles, formScreen.Preview(), m.confirmTitle, m.confirmApprove, m.confirmBack)))
 				return nil
 			}
 
-			m.stack.Push(screens.NewResultModel(recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack))
+			m.stack.Push(m.sizeScreen(screens.NewResultModel(recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack, m.resultScroll)))
 			return m.executePending()
 		}
 		m.stack.ReplaceTop(formScreen)
@@ -192,7 +201,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 				return nil
 			}
 			m.stack.ReplaceTop(confirmScreen)
-			m.stack.Push(screens.NewResultModel(m.pendingExecution.recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack))
+			m.stack.Push(m.sizeScreen(screens.NewResultModel(m.pendingExecution.recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack, m.resultScroll)))
 			return m.executePending()
 		}
 		m.stack.ReplaceTop(confirmScreen)
@@ -232,6 +241,16 @@ func (m *Model) finishExecution(msg executionFinishedMsg) {
 	resultScreen.SetOutcome(msg.result, msg.err)
 	m.stack.ReplaceTop(resultScreen)
 	m.syncRecentCommands()
+}
+
+// sizeScreen applies the latest known terminal geometry to a newly opened screen.
+func (m Model) sizeScreen(screen tea.Model) tea.Model {
+	if m.windowWidth == 0 || m.windowHeight == 0 {
+		return screen
+	}
+
+	updated, _ := screen.Update(tea.WindowSizeMsg{Width: m.windowWidth, Height: m.windowHeight})
+	return updated
 }
 
 func (m *Model) isFavorite(recipeID string) bool {

@@ -147,3 +147,28 @@ func TestModelTogglesFavorites(t *testing.T) {
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	assert.Contains(t, updated.View(), "[*] Find file")
 }
+
+// TestModelCarriesWindowSizeToResultScreen keeps result output usable without a manual resize.
+func TestModelCarriesWindowSizeToResultScreen(t *testing.T) {
+	searchModel, err := screens.NewSearchModel(fakeSearcher{}, "en", appTestStyles(), nil, nil, "linux-helper", "Search", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "type to search, left/right category, up/down move, enter open, ctrl+c quit")
+	require.NoError(t, err)
+
+	executor := &fakeExecutor{result: models.ExecutionResult{Command: "ps aux", ExitCode: 0, Stdout: "header\nbody\nfooter"}}
+	model := app.NewModel(searchModel, "en", appTestStyles(), nil, nil, nil, executor, nil)
+
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 100, Height: 30})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	require.NotNil(t, cmd)
+
+	updated, _ = updated.Update(cmd())
+	view := updated.View()
+
+	assert.Contains(t, view, "Execution finished")
+	assert.Contains(t, view, "header")
+	assert.Contains(t, view, "body")
+	assert.Contains(t, view, "footer")
+	assert.Contains(t, view, "Use up/down or pgup/pgdn to scroll")
+}

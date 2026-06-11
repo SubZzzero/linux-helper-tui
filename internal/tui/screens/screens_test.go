@@ -1,6 +1,8 @@
 package screens_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -180,4 +182,47 @@ func TestDetailModelToggleFavorite(t *testing.T) {
 	detailModel := updated.(screens.DetailModel)
 
 	assert.True(t, (&detailModel).ConsumeToggleFavorite())
+}
+
+// TestResultModelScrollsLargeOutput keeps large command output accessible in a viewport.
+func TestResultModelScrollsLargeOutput(t *testing.T) {
+	model := screens.NewResultModel(
+		models.Recipe{Title: models.LocalizedText{"en": "Process list"}},
+		"en",
+		testStyles(),
+		"Running",
+		"Done",
+		"Back",
+		"Scroll",
+	)
+
+	outputLines := make([]string, 0, 20)
+	for index := 1; index <= 20; index++ {
+		outputLines = append(outputLines, fmt.Sprintf("line %02d", index))
+	}
+
+	model.SetOutcome(models.ExecutionResult{
+		Command:  "ps aux",
+		ExitCode: 0,
+		Stdout:   strings.Join(outputLines, "\n"),
+	}, nil)
+
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 80, Height: 16})
+	resultModel := updated.(screens.ResultModel)
+
+	initialView := resultModel.View()
+	assert.Contains(t, initialView, "line 01")
+	assert.NotContains(t, initialView, "line 20")
+
+	for step := 0; step < 5; step++ {
+		updated, _ = resultModel.Update(tea.KeyMsg{Type: tea.KeyPgDown})
+		resultModel = updated.(screens.ResultModel)
+	}
+
+	assert.NotContains(t, resultModel.View(), "line 01")
+	assert.Contains(t, resultModel.View(), "line 20")
+	assert.False(t, (&resultModel).ConsumeBack())
+	updated, _ = resultModel.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	resultModel = updated.(screens.ResultModel)
+	assert.True(t, (&resultModel).ConsumeBack())
 }
