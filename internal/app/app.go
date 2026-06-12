@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"linux-helper/internal/models"
+	"linux-helper/internal/storage"
 	"linux-helper/internal/tui/navigation"
 	"linux-helper/internal/tui/screens"
 	uitheme "linux-helper/internal/tui/theme"
@@ -67,6 +68,13 @@ type Model struct {
 	windowWidth       int
 	windowHeight      int
 	logger            *slog.Logger
+	translations      map[string]models.LocalizedText
+	localeOrder       []string
+	themes            map[string]uitheme.Definition
+	themeOrder        []string
+	currentTheme      string
+	saveConfig        func(storage.Config) error
+	preferenceSave    bool
 }
 
 // NewModel constructs the root model with one catalog screen.
@@ -113,6 +121,32 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if finished, ok := msg.(executionFinishedMsg); ok {
 		m.finishExecution(finished)
 		return m, nil
+	}
+
+	if saved, ok := msg.(preferenceSaveMsg); ok {
+		m.preferenceSave = false
+		if saved.err != nil {
+			if m.logger != nil {
+				m.logger.Error("save preferences", "error", saved.err)
+			}
+			return m, nil
+		}
+
+		m.applyPreferences(saved.config)
+		return m, nil
+	}
+
+	if key, ok := msg.(tea.KeyMsg); ok {
+		switch key.String() {
+		case "ctrl+l":
+			if cmd := m.cycleLocale(); cmd != nil {
+				return m, cmd
+			}
+		case "ctrl+t":
+			if cmd := m.cycleTheme(); cmd != nil {
+				return m, cmd
+			}
+		}
 	}
 
 	updated, cmd := m.stack.Top().Update(msg)
@@ -165,6 +199,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		}
 		if detailScreen.ConsumeBack() {
 			m.stack.Pop()
+			m.refreshTopScreen()
 			return nil
 		}
 		m.stack.ReplaceTop(detailScreen)
@@ -172,6 +207,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		formScreen := current
 		if formScreen.ConsumeBack() {
 			m.stack.Pop()
+			m.refreshTopScreen()
 			return nil
 		}
 		if values, ok := formScreen.ConsumeSubmit(); ok {
@@ -193,6 +229,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		if confirmScreen.ConsumeBack() {
 			m.pendingExecution = nil
 			m.stack.Pop()
+			m.refreshTopScreen()
 			return nil
 		}
 		if confirmScreen.ConsumeConfirm() {
@@ -209,6 +246,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 		resultScreen := current
 		if resultScreen.ConsumeBack() {
 			m.stack.Pop()
+			m.refreshTopScreen()
 			return nil
 		}
 		m.stack.ReplaceTop(resultScreen)

@@ -1,0 +1,45 @@
+id: journal-boot
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show logs from one boot"
+  ua: "Показати логи одного завантаження"
+  ru: "Показать логи одной загрузки"
+description:
+  en: "Read journal entries from one boot session."
+  ua: "Читає записи журналу з одного сеансу завантаження."
+  ru: "Читает записи журнала из одного сеанса загрузки."
+args:
+  - "-b"
+  - "{{boot_offset}}"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: boot_offset
+    type: string
+    required: true
+    default: "0"
+    description:
+      en: "Boot offset, where 0 is the current boot"
+  - name: lines
+    type: string
+    required: true
+    default: "100"
+    description:
+      en: "Number of journal lines to show"
+tags:
+  - logs
+  - journalctl
+  - boot
+examples:
+  - args:
+      boot_offset: "-1"
+      lines: "200"
+    description:
+      en: "Inspect the previous boot for regressions"

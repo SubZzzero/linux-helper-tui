@@ -1,0 +1,35 @@
+id: service-unit-file
+version: 1
+type: recipe
+category: services
+risk: elevated
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show service unit file contents"
+  ua: "Показати вміст unit-файлу служби"
+  ru: "Показать содержимое unit-файла службы"
+description:
+  en: "Render the merged unit file definition for one systemd unit."
+  ua: "Показує об'єднане визначення unit-файлу для одного systemd-юніта."
+  ru: "Показывает объединенное определение unit-файла для одного systemd-юнита."
+args:
+  - "cat"
+  - "{{unit}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - unit-file
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Inspect the effective unit file for nginx"

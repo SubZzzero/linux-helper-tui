@@ -1,0 +1,45 @@
+id: journal-since
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show journal entries since a time"
+  ua: "Показати записи журналу з певного часу"
+  ru: "Показать записи журнала с определенного времени"
+description:
+  en: "Read system journal entries newer than one time expression."
+  ua: "Читає записи системного журналу, новіші за один часовий вираз."
+  ru: "Читает записи системного журнала, новее одного временного выражения."
+args:
+  - "--since"
+  - "{{since}}"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: since
+    type: string
+    required: true
+    default: "1 hour ago"
+    description:
+      en: "Time expression understood by journalctl"
+  - name: lines
+    type: string
+    required: true
+    default: "100"
+    description:
+      en: "Number of journal lines to show"
+tags:
+  - logs
+  - journalctl
+  - time
+examples:
+  - args:
+      since: "today"
+      lines: "200"
+    description:
+      en: "Inspect journal activity since the start of today"

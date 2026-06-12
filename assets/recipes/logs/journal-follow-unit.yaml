@@ -1,0 +1,38 @@
+id: journal-follow-unit
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Follow a service journal live"
+  ua: "Стежити за журналом служби в реальному часі"
+  ru: "Следить за журналом службы в реальном времени"
+description:
+  en: "Stream new journal entries for one systemd unit."
+  ua: "Потоково показує нові записи журналу для одного systemd-юніта."
+  ru: "Потоково показывает новые записи журнала для одного systemd-юнита."
+args:
+  - "-u"
+  - "{{unit}}"
+  - "-f"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - logs
+  - journalctl
+  - systemd
+  - follow
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Follow new nginx service log entries live"

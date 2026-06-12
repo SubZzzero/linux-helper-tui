@@ -79,6 +79,17 @@ func (m *DetailModel) SetFavorite(isFavorite bool) {
 	m.isFavorite = isFavorite
 }
 
+// SetPresentation updates localized strings and styles without resetting state.
+func (m *DetailModel) SetPresentation(locale string, styles uitheme.Styles, runText string, backText string, favoriteLabel string, favoriteOnText string, favoriteOffText string) {
+	m.locale = locale
+	m.styles = styles
+	m.runText = runText
+	m.backText = backText
+	m.favoriteLabel = favoriteLabel
+	m.favoriteOnText = favoriteOnText
+	m.favoriteOffText = favoriteOffText
+}
+
 // ConsumeExecute reports whether the screen requested form entry.
 func (m *DetailModel) ConsumeExecute() bool {
 	start := m.start

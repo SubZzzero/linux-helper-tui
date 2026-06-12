@@ -1,0 +1,38 @@
+id: process-threads
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: ps
+command: ""
+title:
+  en: "Show threads for one process"
+  ua: "Показати потоки одного процесу"
+  ru: "Показать потоки одного процесса"
+description:
+  en: "List thread-level details for one process."
+  ua: "Показує деталі потоків для одного процесу."
+  ru: "Показывает детали потоков для одного процесса."
+args:
+  - "-T"
+  - "-p"
+  - "{{pid}}"
+  - "-o"
+  - "pid,spid,pcpu,stat,comm"
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process identifier"
+tags:
+  - processes
+  - ps
+  - threads
+examples:
+  - args:
+      pid: "5678"
+    description:
+      en: "Inspect thread-level activity for one worker process"

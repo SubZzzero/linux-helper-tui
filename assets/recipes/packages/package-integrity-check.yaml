@@ -1,0 +1,33 @@
+id: package-integrity-check
+version: 1
+type: recipe
+category: packages
+risk: elevated
+execution: shell
+binary: ""
+command: "if command -v dpkg >/dev/null 2>&1; then dpkg -V {{package}}; elif command -v rpm >/dev/null 2>&1; then rpm -V {{package}}; elif command -v pacman >/dev/null 2>&1; then pacman -Qk {{package}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Verify package integrity"
+  ua: "Перевірити цілісність пакунка"
+  ru: "Проверить целостность пакета"
+description:
+  en: "Verify installed files that belong to one package."
+  ua: "Перевіряє встановлені файли, що належать одному пакунку."
+  ru: "Проверяет установленные файлы, принадлежащие одному пакету."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - verify
+  - integrity
+examples:
+  - args:
+      package: "openssh-server"
+    description:
+      en: "Verify the installed files owned by openssh-server"

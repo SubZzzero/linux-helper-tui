@@ -128,6 +128,15 @@ func (m FormModel) Preview() string {
 	return m.previewCommand()
 }
 
+// SetPresentation updates localized strings and styles without resetting state.
+func (m *FormModel) SetPresentation(locale string, styles uitheme.Styles, previewText string, submitText string, backText string) {
+	m.locale = locale
+	m.styles = styles
+	m.previewText = previewText
+	m.submitText = submitText
+	m.backText = backText
+}
+
 // View renders the recipe field form and a live command summary.
 func (m FormModel) View() string {
 	lines := []string{

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path/filepath"
+	"sort"
 
 	"github.com/charmbracelet/lipgloss"
 	"gopkg.in/yaml.v3"
@@ -61,6 +62,17 @@ func LoadDefinitions(fsys fs.FS, basePath string) (map[string]Definition, error)
 	}
 
 	return definitions, nil
+}
+
+// Names returns the available theme names in deterministic order.
+func Names(definitions map[string]Definition) []string {
+	names := make([]string, 0, len(definitions))
+	for name := range definitions {
+		names = append(names, name)
+	}
+
+	sort.Strings(names)
+	return names
 }
 
 // ResolveDefinition returns one theme by configured name.

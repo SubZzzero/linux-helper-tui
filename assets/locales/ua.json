@@ -5,7 +5,7 @@
   "catalog.recent_empty": "Останніх команд ще немає.",
   "catalog.category_label": "Категорія:",
   "catalog.category_all": "Усі",
-  "catalog.help": "up/down рух, enter відкрити, esc назад, ctrl+c вихід",
+  "catalog.help": "up/down рух, enter відкрити, ctrl+l мова, ctrl+t тема, esc назад, ctrl+c вихід",
   "detail.run": "Натисніть enter або r, щоб заповнити поля і виконати",
   "detail.back": "Натисніть esc, backspace або q, щоб повернутись",
   "detail.favorite": "Обране",
@@ -19,5 +19,6 @@
   "confirm.back": "Натисніть esc, backspace, q або n, щоб скасувати",
   "result.running": "Команда виконується...",
   "result.done": "Виконання завершено",
+  "result.scroll": "Використовуйте up/down або pgup/pgdn для прокрутки",
   "result.back": "Натисніть enter, esc або q, щоб повернутись"
 }

@@ -8,6 +8,7 @@ The project is implemented in Go and uses Bubble Tea for the TUI layer. Recipes,
 
 The repository currently includes:
 
+- `103` embedded recipes across `11` categories
 - embedded recipe loading with optional user overrides
 - category-first recipe catalog with browse-only root navigation
 - multi-screen Bubble Tea flow: catalog, detail, form, confirmation, result
@@ -15,6 +16,8 @@ The repository currently includes:
 - risk confirmation for dangerous commands
 - embedded locales: `en`, `ua`, `ru`
 - embedded themes: `dark`, `light`
+- in-app locale switching with `ctrl+l`
+- in-app theme switching with `ctrl+t`
 - storage for config, favorites, recent commands, and logs
 
 Representative bundled recipes include:
@@ -101,17 +104,11 @@ theme: dark
 
 Current behavior:
 
-- The user selects the interface language with `locale` in `~/.config/linux-helper/config.yaml`.
-- The user selects the active theme with `theme` in the same config file.
+- `ctrl+l` cycles the UI locale between the embedded languages and persists the choice to `config.yaml`.
+- `ctrl+t` cycles the active theme between the embedded themes and persists the choice to `config.yaml`.
 - `en` is the default locale when the config file is missing or `locale` is empty.
 - `dark` is the default theme when the config file is missing or `theme` is empty.
 - Locale resolution falls back to `en` when a specific translation key is missing.
-
-Planned TUI behavior:
-
-- `l` will cycle the UI locale between the embedded languages and persist the choice to `config.yaml`.
-- `t` will cycle the active theme between the embedded themes and persist the choice to `config.yaml`.
-- These shortcuts are planned but not implemented yet.
 
 ## Recipe model
 
@@ -158,11 +155,11 @@ The current application flow is:
 ## Keyboard shortcuts
 
 - Catalog: left/right arrows switch category, up/down arrows move, `enter` open recipe, `ctrl+c` quit
+- Global: `ctrl+l` cycle locale, `ctrl+t` cycle theme
 - Detail: `enter` or `r` continue to the form, `f` toggle favorite, `esc` or `q` go back
 - Form: `tab`, arrows, or `j`/`k` move between fields, `enter` or `ctrl+s` submit, `esc` or `q` go back
 - Confirm: `enter` or `y` approve, `esc`, `q`, or `n` cancel
 - Result: `enter`, `esc`, or `q` return to the previous screen after execution finishes
-- Planned global shortcuts: `l` cycle locale, `t` cycle theme
 
 ## Catalog categories
 

@@ -94,6 +94,17 @@ func (m *ResultModel) SetOutcome(result models.ExecutionResult, err error) {
 	m.syncViewport()
 }
 
+// SetPresentation updates localized strings and styles without resetting state.
+func (m *ResultModel) SetPresentation(locale string, styles uitheme.Styles, runningText string, doneText string, backText string, scrollText string) {
+	m.locale = locale
+	m.styles = styles
+	m.runningText = runningText
+	m.doneText = doneText
+	m.backText = backText
+	m.scrollText = scrollText
+	m.syncViewport()
+}
+
 // View renders the current execution state.
 func (m ResultModel) View() string {
 	title := m.styles.Title.Render(resolveRecipeText(m.locale, m.recipe.Title))

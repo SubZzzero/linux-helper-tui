@@ -1,0 +1,30 @@
+id: enabled-services
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "List enabled services"
+  ua: "Показати увімкнені служби"
+  ru: "Показать включенные службы"
+description:
+  en: "List enabled systemd service unit files."
+  ua: "Показує увімкнені systemd service unit files."
+  ru: "Показывает включенные service unit files systemd."
+args:
+  - "list-unit-files"
+  - "--type=service"
+  - "--state=enabled"
+  - "--no-pager"
+fields: []
+tags:
+  - services
+  - systemctl
+  - enabled
+examples:
+  - args: {}
+    description:
+      en: "Review which services are enabled at boot"

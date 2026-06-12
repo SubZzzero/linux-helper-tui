@@ -1,0 +1,33 @@
+id: search-installed-packages
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v dpkg-query >/dev/null 2>&1; then dpkg-query -W | grep -i -- {{pattern}}; elif command -v rpm >/dev/null 2>&1; then rpm -qa | grep -i -- {{pattern}}; elif command -v pacman >/dev/null 2>&1; then pacman -Q | grep -i -- {{pattern}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Search installed packages"
+  ua: "Шукати серед встановлених пакунків"
+  ru: "Искать среди установленных пакетов"
+description:
+  en: "Filter the installed package inventory with one pattern."
+  ua: "Фільтрує список встановлених пакунків за одним шаблоном."
+  ru: "Фильтрует список установленных пакетов по одному шаблону."
+args: []
+fields:
+  - name: pattern
+    type: string
+    required: true
+    default: "ssh"
+    description:
+      en: "Case-insensitive package name pattern"
+tags:
+  - packages
+  - search
+  - inventory
+examples:
+  - args:
+      pattern: "python"
+    description:
+      en: "Search installed packages related to Python"

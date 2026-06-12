@@ -30,3 +30,9 @@
 - Start `Phase 5` with a new `troubleshooting` category for operator triage workflows.
 - Add ten troubleshooting recipes for logs, ports, connectivity, boot dependencies, inode pressure, and deleted-open-file diagnostics.
 - Raise the embedded corpus test floor to `86` recipes and assert coverage for `11` active categories.
+- Deepen the `logs`, `packages`, `processes`, and `services` categories with sixteen more embedded recipes.
+- Raise the embedded corpus to `103` validated recipes and strengthen recipe corpus tests for placeholders, examples, and new per-category minimums.
+- Add in-app locale switching with `ctrl+l`, persistence to `config.yaml`, and embedded locale smoke coverage.
+- Add in-app theme switching with `ctrl+t`, persistence to `config.yaml`, and embedded theme smoke coverage.
+- Refresh active TUI screens in place after locale and theme changes so forms and result views keep their state.
+- Mark `Phase 5` complete after the expanded corpus, persistence flow, and validation gates pass.

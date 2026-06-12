@@ -5,7 +5,7 @@
   "catalog.recent_empty": "Последних команд пока нет.",
   "catalog.category_label": "Категория:",
   "catalog.category_all": "Все",
-  "catalog.help": "up/down движение, enter открыть, esc назад, ctrl+c выход",
+  "catalog.help": "up/down движение, enter открыть, ctrl+l язык, ctrl+t тема, esc назад, ctrl+c выход",
   "detail.run": "Нажмите enter или r, чтобы заполнить поля и выполнить",
   "detail.back": "Нажмите esc, backspace или q, чтобы вернуться",
   "detail.favorite": "Избранное",
@@ -19,5 +19,6 @@
   "confirm.back": "Нажмите esc, backspace, q или n, чтобы отменить",
   "result.running": "Команда выполняется...",
   "result.done": "Выполнение завершено",
+  "result.scroll": "Используйте up/down или pgup/pgdn для прокрутки",
   "result.back": "Нажмите enter, esc или q, чтобы вернуться"
 }

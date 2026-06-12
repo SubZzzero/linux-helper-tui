@@ -1,0 +1,30 @@
+id: running-services
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "List running services"
+  ua: "Показати запущені служби"
+  ru: "Показать запущенные службы"
+description:
+  en: "List currently running systemd services."
+  ua: "Показує запущені зараз служби systemd."
+  ru: "Показывает службы systemd, которые сейчас запущены."
+args:
+  - "list-units"
+  - "--type=service"
+  - "--state=running"
+  - "--no-pager"
+fields: []
+tags:
+  - services
+  - systemctl
+  - running
+examples:
+  - args: {}
+    description:
+      en: "Inspect all currently active services"

@@ -1,0 +1,35 @@
+id: follow-log-file
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: direct
+binary: tail
+command: ""
+title:
+  en: "Follow a log file across rotations"
+  ua: "Стежити за лог-файлом через ротації"
+  ru: "Следить за лог-файлом через ротации"
+description:
+  en: "Follow one log file and continue across rotations."
+  ua: "Стежить за одним лог-файлом і продовжує роботу після ротацій."
+  ru: "Следит за одним лог-файлом и продолжает работу после ротаций."
+args:
+  - "-F"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Log file path"
+tags:
+  - logs
+  - tail
+  - follow
+examples:
+  - args:
+      path: "/var/log/nginx/access.log"
+    description:
+      en: "Follow an nginx access log that may rotate"

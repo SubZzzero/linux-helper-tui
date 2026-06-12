@@ -58,11 +58,12 @@
 
 ### Current baseline
 - `Phase 1` through `Phase 4` are complete.
-- `Phase 5` is in progress.
+- `Phase 5` is complete.
 - The current root TUI flow is a browse-only recipe catalog.
 - The embedded corpus currently covers eleven active categories: `filesystem`, `environment`, `logs`, `network`, `packages`, `processes`, `services`, `system`, `text`, `troubleshooting`, and `users`.
-- Locale selection currently comes from `~/.config/linux-helper/config.yaml`, with `en` as the default locale.
-- Theme selection currently comes from `~/.config/linux-helper/config.yaml`, with `dark` as the default theme.
+- The embedded corpus currently includes `103` validated recipes.
+- Locale can now be switched in-app with `ctrl+l` and persists to `~/.config/linux-helper/config.yaml`, with `en` as the default locale.
+- Theme can now be switched in-app with `ctrl+t` and persists to `~/.config/linux-helper/config.yaml`, with `dark` as the default theme.
 
 ### Ongoing quality gates
 - Keep the application offline-first and single-binary.
@@ -103,20 +104,20 @@
 
 ## Phase 5 - Category Fill-Out And Library Growth
 
-**Status**: [~] In progress
+**Status**: [x] Done
 
 ### Tasks
 - [x] Add the `troubleshooting` category with an initial triage-focused recipe batch.
-- [ ] Expand the newly added categories with deeper recipe coverage.
-- [ ] Continue filling the original six categories only after the wider category map is in place.
-- [ ] Grow the embedded recipe library from the expanded category base toward `100+` recipes.
-- [ ] Harden the single-binary packaging path and verify all runtime assets stay embedded.
-- [ ] Improve execution preview, confirmation, and result presentation where the larger corpus exposes UX gaps.
-- [ ] Add in-app locale switching with a dedicated hotkey and persist the selected locale to `config.yaml`.
-- [ ] Keep `en` as the default locale when no explicit locale is configured.
-- [ ] Add in-app theme switching with a dedicated hotkey and persist the selected theme to `config.yaml`.
-- [ ] Expand recipe examples and field coverage for the broader corpus.
-- [ ] Keep recipe validation, category coverage checks, and examples aligned with the larger library.
+- [x] Expand the newly added categories with deeper recipe coverage.
+- [x] Continue filling the original six categories only after the wider category map is in place.
+- [x] Grow the embedded recipe library from the expanded category base toward `100+` recipes.
+- [x] Harden the single-binary packaging path and verify all runtime assets stay embedded.
+- [x] Improve execution preview, confirmation, and result presentation where the larger corpus exposes UX gaps.
+- [x] Add in-app locale switching with a dedicated hotkey and persist the selected locale to `config.yaml`.
+- [x] Keep `en` as the default locale when no explicit locale is configured.
+- [x] Add in-app theme switching with a dedicated hotkey and persist the selected theme to `config.yaml`.
+- [x] Expand recipe examples and field coverage for the broader corpus.
+- [x] Keep recipe validation, category coverage checks, and examples aligned with the larger library.
 
 ### Exit criteria
 - The embedded recipe library reaches at least `100` validated recipes.

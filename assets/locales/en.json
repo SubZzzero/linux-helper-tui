@@ -5,7 +5,7 @@
   "catalog.recent_empty": "No recent commands yet.",
   "catalog.category_label": "Category:",
   "catalog.category_all": "All",
-  "catalog.help": "up/down move, enter open, esc back, ctrl+c quit",
+  "catalog.help": "up/down move, enter open, ctrl+l locale, ctrl+t theme, esc back, ctrl+c quit",
   "detail.run": "Press enter or r to fill fields and run",
   "detail.back": "Press esc, backspace, or q to go back",
   "detail.favorite": "Favorite",
@@ -19,5 +19,6 @@
   "confirm.back": "Press esc, backspace, q, or n to cancel",
   "result.running": "Running command...",
   "result.done": "Execution finished",
+  "result.scroll": "Use up/down or pgup/pgdn to scroll",
   "result.back": "Press enter, esc, or q to return"
 }

@@ -29,6 +29,47 @@ func TestSaveAndLoadConfig(t *testing.T) {
 	assert.Equal(t, "light", config.Theme)
 }
 
+// TestLoadConfigReturnsDefaultsWhenFileMissing falls back to starter values.
+func TestLoadConfigReturnsDefaultsWhenFileMissing(t *testing.T) {
+	config, err := storage.LoadConfig(filepath.Join(t.TempDir(), "missing.yaml"))
+	require.NoError(t, err)
+	assert.Equal(t, storage.DefaultConfig(), config)
+}
+
+// TestLoadConfigBackfillsEmptyLocaleAndTheme restores missing config values.
+func TestLoadConfigBackfillsEmptyLocaleAndTheme(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	require.NoError(t, storage.SaveConfig(path, storage.Config{}))
+
+	config, err := storage.LoadConfig(path)
+	require.NoError(t, err)
+	assert.Equal(t, storage.Config{Locale: "en", Theme: "dark"}, config)
+}
+
+// TestLoadConfigDefaultsOnlyMissingField fills only the empty setting.
+func TestLoadConfigDefaultsOnlyMissingField(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.yaml")
+	require.NoError(t, storage.SaveConfig(path, storage.Config{Locale: "ua"}))
+
+	config, err := storage.LoadConfig(path)
+	require.NoError(t, err)
+	assert.Equal(t, storage.Config{Locale: "ua", Theme: "dark"}, config)
+
+	require.NoError(t, storage.SaveConfig(path, storage.Config{Theme: "light"}))
+	config, err = storage.LoadConfig(path)
+	require.NoError(t, err)
+	assert.Equal(t, storage.Config{Locale: "en", Theme: "light"}, config)
+}
+
+// TestSaveConfigCreatesParentDirectory creates nested config paths.
+func TestSaveConfigCreatesParentDirectory(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "nested", "config", "config.yaml")
+	require.NoError(t, storage.SaveConfig(path, storage.Config{Locale: "ru", Theme: "light"}))
+	config, err := storage.LoadConfig(path)
+	require.NoError(t, err)
+	assert.Equal(t, storage.Config{Locale: "ru", Theme: "light"}, config)
+}
+
 // TestSaveAndLoadFavorites persists favorite recipe identifiers.
 func TestSaveAndLoadFavorites(t *testing.T) {
 	store := storage.NewFavoritesStore(filepath.Join(t.TempDir(), "favorites.yaml"))

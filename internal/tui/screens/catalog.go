@@ -151,6 +151,17 @@ func (m *CatalogModel) SetRecent(recent []string) {
 	m.recent = append([]string(nil), recent...)
 }
 
+// SetPresentation updates localized strings and styles without resetting state.
+func (m *CatalogModel) SetPresentation(locale string, styles uitheme.Styles, title string, emptyText string, recentTitle string, recentEmpty string, helpText string) {
+	m.locale = locale
+	m.styles = styles
+	m.title = title
+	m.emptyText = emptyText
+	m.recentTitle = recentTitle
+	m.recentEmpty = recentEmpty
+	m.helpText = helpText
+}
+
 // SetSelectedCategory switches the active category filter.
 func (m *CatalogModel) SetSelectedCategory(category models.Category) {
 	m.selectedCategory = category

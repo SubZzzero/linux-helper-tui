@@ -1,0 +1,33 @@
+id: package-dependencies
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt-cache >/dev/null 2>&1; then apt-cache depends {{package}}; elif command -v dnf >/dev/null 2>&1; then dnf repoquery --requires {{package}}; elif command -v rpm >/dev/null 2>&1; then rpm -qR {{package}}; elif command -v pacman >/dev/null 2>&1; then pactree -u {{package}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Show package dependencies"
+  ua: "Показати залежності пакунка"
+  ru: "Показать зависимости пакета"
+description:
+  en: "Inspect dependency requirements for one package."
+  ua: "Переглядає залежності одного пакунка."
+  ru: "Показывает зависимости одного пакета."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - dependencies
+  - metadata
+examples:
+  - args:
+      package: "curl"
+    description:
+      en: "Inspect the package dependencies for curl"

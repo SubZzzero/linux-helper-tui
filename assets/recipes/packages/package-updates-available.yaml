@@ -1,0 +1,26 @@
+id: package-updates-available
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt >/dev/null 2>&1; then apt list --upgradable 2>/dev/null; elif command -v dnf >/dev/null 2>&1; then dnf check-update --cacheonly; elif command -v pacman >/dev/null 2>&1; then pacman -Qu; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "List available package updates"
+  ua: "Показати доступні оновлення пакунків"
+  ru: "Показать доступные обновления пакетов"
+description:
+  en: "List package upgrades available from local package metadata."
+  ua: "Показує оновлення пакунків, доступні з локальних метаданих менеджера пакунків."
+  ru: "Показывает обновления пакетов, доступные из локальных метаданных менеджера пакетов."
+args: []
+fields: []
+tags:
+  - packages
+  - updates
+  - inventory
+examples:
+  - args: {}
+    description:
+      en: "Review upgrades available on this host"

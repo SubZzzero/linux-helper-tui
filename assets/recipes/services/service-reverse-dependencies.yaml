@@ -1,0 +1,37 @@
+id: service-reverse-dependencies
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show reverse service dependencies"
+  ua: "Показати зворотні залежності служби"
+  ru: "Показать обратные зависимости службы"
+description:
+  en: "List units that depend on one systemd unit."
+  ua: "Показує юніти, які залежать від одного systemd-юніта."
+  ru: "Показывает юниты, которые зависят от одного systemd-юнита."
+args:
+  - "list-dependencies"
+  - "--reverse"
+  - "{{unit}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "network-online.target"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - dependencies
+examples:
+  - args:
+      unit: "sshd.service"
+    description:
+      en: "Review which units depend on sshd"

@@ -76,6 +76,15 @@ func (m *ConfirmModel) ConsumeConfirm() bool {
 	return confirmed
 }
 
+// SetPresentation updates localized strings and styles without resetting state.
+func (m *ConfirmModel) SetPresentation(locale string, styles uitheme.Styles, titleText string, approveText string, backText string) {
+	m.locale = locale
+	m.styles = styles
+	m.titleText = titleText
+	m.approveText = approveText
+	m.backText = backText
+}
+
 // View renders the confirmation prompt and command preview.
 func (m ConfirmModel) View() string {
 	lines := []string{

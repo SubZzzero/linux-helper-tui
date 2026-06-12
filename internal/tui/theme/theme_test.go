@@ -1,12 +1,14 @@
 package theme_test
 
 import (
+	"io/fs"
 	"testing"
 	"testing/fstest"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	linuxhelper "linux-helper"
 	"linux-helper/internal/tui/theme"
 )
 
@@ -31,4 +33,25 @@ func TestResolveDefinitionMissing(t *testing.T) {
 	_, err := theme.ResolveDefinition(map[string]theme.Definition{}, "missing")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "missing")
+}
+
+// TestLoadEmbeddedThemesIncludesDarkAndLight loads the bundled theme files.
+func TestLoadEmbeddedThemesIncludesDarkAndLight(t *testing.T) {
+	themeFS, err := fs.Sub(linuxhelper.Assets, "assets/themes")
+	require.NoError(t, err)
+
+	definitions, err := theme.LoadDefinitions(themeFS, ".")
+	require.NoError(t, err)
+	_, err = theme.ResolveDefinition(definitions, "dark")
+	require.NoError(t, err)
+	_, err = theme.ResolveDefinition(definitions, "light")
+	require.NoError(t, err)
+}
+
+// TestNamesReturnsSortedThemeNames keeps theme cycling deterministic.
+func TestNamesReturnsSortedThemeNames(t *testing.T) {
+	assert.Equal(t, []string{"dark", "light"}, theme.Names(map[string]theme.Definition{
+		"light": {Name: "light"},
+		"dark":  {Name: "dark"},
+	}))
 }

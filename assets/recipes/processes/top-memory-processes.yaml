@@ -1,0 +1,33 @@
+id: top-memory-processes
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: shell
+binary: ""
+command: "ps aux --sort=-%mem | head -n {{lines}}"
+title:
+  en: "Show top memory-consuming processes"
+  ua: "Показати процеси з найбільшим споживанням пам'яті"
+  ru: "Показать процессы с наибольшим потреблением памяти"
+description:
+  en: "List the processes using the most resident memory."
+  ua: "Показує процеси, які використовують найбільше резидентної пам'яті."
+  ru: "Показывает процессы, которые используют больше всего резидентной памяти."
+args: []
+fields:
+  - name: lines
+    type: string
+    required: true
+    default: "10"
+    description:
+      en: "Number of output lines to keep"
+tags:
+  - processes
+  - memory
+  - ps
+examples:
+  - args:
+      lines: "15"
+    description:
+      en: "Inspect the top 15 memory-heavy processes"

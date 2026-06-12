@@ -106,6 +106,15 @@ func Bootstrap() (Model, func() error, error) {
 	executionService := services.NewExecutionService(executor.OSRunner{}, recentStore)
 
 	model := NewModel(catalogScreen, config.Locale, styles, favoritesService, recentService, favorites, executionService, log)
+	model.ConfigurePreferences(
+		translations,
+		localeNames(translations),
+		themes,
+		config.Theme,
+		func(next storage.Config) error {
+			return storage.SaveConfig(paths.ConfigFile, next)
+		},
+	)
 	model.detailRun = translator.T("detail.run")
 	model.detailBack = translator.T("detail.back")
 	model.detailFavorite = translator.T("detail.favorite")
@@ -119,6 +128,7 @@ func Bootstrap() (Model, func() error, error) {
 	model.confirmBack = translator.T("confirm.back")
 	model.resultRunning = translator.T("result.running")
 	model.resultDone = translator.T("result.done")
+	model.resultScroll = translator.T("result.scroll")
 	model.resultBack = translator.T("result.back")
 	return model, closer.Close, nil
 }
