@@ -139,9 +139,9 @@ func (m *ResultModel) syncViewport() {
 func (m ResultModel) viewportDimensions() (int, int) {
 	frame := resultFrame(m.styles, m.width)
 	horizontalFrame, verticalFrame := frame.GetFrameSize()
-	frameWidth := minimumScreenWidth
+	frameWidth := 1
 	if m.width > 0 {
-		frameWidth = max(minimumScreenWidth, m.width-2)
+		frameWidth = max(1, m.width-2)
 	}
 
 	contentWidth := max(1, frameWidth-horizontalFrame)
@@ -176,7 +176,7 @@ func (m ResultModel) outputContent() string {
 func resultFrame(styles uitheme.Styles, width int) lipgloss.Style {
 	frame := styles.Frame
 	if width > 0 {
-		frame = frame.Width(max(minimumScreenWidth, width-2))
+		frame = frame.Width(max(1, width-2))
 	}
 
 	return frame

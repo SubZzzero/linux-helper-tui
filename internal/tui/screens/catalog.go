@@ -1,7 +1,6 @@
 package screens
 
 import (
-	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -18,7 +17,6 @@ type CatalogModel struct {
 	recent           []string
 	allRecipes       []models.Recipe
 	categories       []models.Category
-	categoryCounts   []categoryCount
 	selectedCategory models.Category
 	results          []models.Recipe
 	selected         int
@@ -29,35 +27,26 @@ type CatalogModel struct {
 	emptyText        string
 	recentTitle      string
 	recentEmpty      string
-	categoryLabel    string
-	categoryAll      string
 	helpText         string
 	width            int
 	height           int
 }
 
-type categoryCount struct {
-	category models.Category
-	count    int
-}
-
 // NewCatalogModel constructs the initial recipe catalog screen.
-func NewCatalogModel(recipes []models.Recipe, locale string, styles uitheme.Styles, favorites []string, recent []string, title string, emptyText string, recentTitle string, recentEmpty string, categoryLabel string, categoryAll string, helpText string) CatalogModel {
+func NewCatalogModel(recipes []models.Recipe, locale string, styles uitheme.Styles, favorites []string, recent []string, title string, emptyText string, recentTitle string, recentEmpty string, helpText string) CatalogModel {
 	orderedRecipes := orderResults(recipes, favoriteSet(favorites))
 	model := CatalogModel{
-		locale:        locale,
-		styles:        styles,
-		favorites:     favoriteSet(favorites),
-		recent:        append([]string(nil), recent...),
-		allRecipes:    orderedRecipes,
-		categories:    categoriesFromResults(orderedRecipes),
-		title:         title,
-		emptyText:     emptyText,
-		recentTitle:   recentTitle,
-		recentEmpty:   recentEmpty,
-		categoryLabel: categoryLabel,
-		categoryAll:   categoryAll,
-		helpText:      helpText,
+		locale:      locale,
+		styles:      styles,
+		favorites:   favoriteSet(favorites),
+		recent:      append([]string(nil), recent...),
+		allRecipes:  orderedRecipes,
+		categories:  categoriesFromResults(orderedRecipes),
+		title:       title,
+		emptyText:   emptyText,
+		recentTitle: recentTitle,
+		recentEmpty: recentEmpty,
+		helpText:    helpText,
 	}
 	model.applyCategoryFilter()
 	return model
@@ -78,11 +67,11 @@ func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case "left":
-			m.selectPreviousCategory()
-			return m, nil
-		case "right":
-			m.selectNextCategory()
+		case "esc", "backspace", "q":
+			if m.selectedCategory != "" {
+				m.selectedCategory = ""
+				m.applyCategoryFilter()
+			}
 			return m, nil
 		case "up", "ctrl+p":
 			if m.selected > 0 {
@@ -106,8 +95,8 @@ func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		case "enter":
 			if m.selectedCategory == "" {
-				if len(m.categoryCounts) > 0 {
-					selected := m.categoryCounts[m.selected].category
+				if len(m.categories) > 0 {
+					selected := m.categories[m.selected]
 					m.pendingCategory = &selected
 				}
 				return m, nil
@@ -180,21 +169,7 @@ func (m *CatalogModel) ConsumeSelection() (models.Recipe, bool) {
 
 // View renders the catalog UI.
 func (m CatalogModel) View() string {
-	content := []string{m.styles.Title.Render(m.title), m.renderCategoryFilters(), ""}
-	if m.isEmpty() {
-		content = append(content, m.styles.Muted.Render(m.emptyText))
-	} else {
-		content = append(content, m.renderResults())
-	}
-
-	content = append(content, "", m.styles.Accent.Render(m.recentTitle))
-	if len(m.recent) == 0 {
-		content = append(content, m.styles.Muted.Render(m.recentEmpty))
-	} else {
-		content = append(content, m.renderRecent())
-	}
-	content = append(content, "", m.styles.Muted.Render(m.helpText))
-
+	content := m.layoutLines()
 	return renderFrame(m.styles, m.width, content)
 }
 
@@ -205,10 +180,11 @@ func (m CatalogModel) renderResults() string {
 	}
 
 	lines := make([]string, 0, len(m.results))
+	contentWidth := m.availableContentWidth()
 	for index, recipe := range m.results {
-		line := "  " + favoriteMarker(m.favorites, recipe.ID) + " " + resolveRecipeText(m.locale, recipe.Title) + " [" + string(recipe.Category) + "]"
+		line := truncateText("  "+favoriteMarker(m.favorites, recipe.ID)+" "+resolveRecipeText(m.locale, recipe.Title), contentWidth)
 		if index == m.selected {
-			line = m.styles.Selected.Render("> " + favoriteMarker(m.favorites, recipe.ID) + " " + resolveRecipeText(m.locale, recipe.Title) + " [" + string(recipe.Category) + "]")
+			line = m.styles.Selected.Render(truncateText("> "+favoriteMarker(m.favorites, recipe.ID)+" "+resolveRecipeText(m.locale, recipe.Title), contentWidth))
 		}
 		lines = append(lines, line)
 	}
@@ -217,35 +193,19 @@ func (m CatalogModel) renderResults() string {
 }
 
 func (m CatalogModel) renderCategoryRows() string {
-	lines := make([]string, 0, len(m.categoryCounts))
-	for index, entry := range m.categoryCounts {
-		line := fmt.Sprintf("  %s (%d)", entry.category.DisplayName(), entry.count)
+	lines := make([]string, 0, len(m.categories))
+	nameWidth := categoryNameWidth(m.categories)
+	contentWidth := m.availableContentWidth()
+	for index, category := range m.categories {
+		line := truncateText("  "+categoryLine(m.locale, category, nameWidth), contentWidth)
 		if index == m.selected {
-			line = m.styles.Selected.Render(fmt.Sprintf("> %s (%d)", entry.category.DisplayName(), entry.count))
+			line = m.styles.Selected.Render(truncateText("> "+categoryLine(m.locale, category, nameWidth), contentWidth))
 		}
 
 		lines = append(lines, line)
 	}
 
 	return strings.Join(lines, "\n")
-}
-
-func (m CatalogModel) renderCategoryFilters() string {
-	parts := make([]string, 0, len(m.categories)+1)
-	parts = append(parts, m.renderCategoryOption("", m.categoryAll))
-	for _, category := range m.categories {
-		parts = append(parts, m.renderCategoryOption(category, category.DisplayName()))
-	}
-
-	return m.styles.Accent.Render(m.categoryLabel) + " " + strings.Join(parts, "  ")
-}
-
-func (m CatalogModel) renderCategoryOption(category models.Category, label string) string {
-	if m.selectedCategory == category {
-		return m.styles.Selected.Render("[" + label + "]")
-	}
-
-	return "[" + label + "]"
 }
 
 func (m CatalogModel) renderRecent() string {
@@ -259,6 +219,100 @@ func (m CatalogModel) renderRecent() string {
 	}
 
 	return strings.Join(lines, "\n")
+}
+
+func (m CatalogModel) layoutLines() []string {
+	mainLines := []string{m.styles.Title.Render(m.title), ""}
+	if m.isEmpty() {
+		mainLines = append(mainLines, m.styles.Muted.Render(truncateText(m.emptyText, m.availableContentWidth())))
+	} else {
+		mainLines = append(mainLines, strings.Split(m.renderResults(), "\n")...)
+	}
+
+	availableHeight := m.availableContentHeight()
+	if availableHeight <= 0 {
+		return append(mainLines, m.fullFooterLines(maxRecentVisible)...)
+	}
+
+	helpLines := []string{"", m.styles.Muted.Render(m.helpText)}
+	remainingHeight := availableHeight - len(mainLines)
+	if remainingHeight < len(helpLines) {
+		return trimLines(mainLines, availableHeight)
+	}
+
+	recentLimit := remainingHeight - len(helpLines) - 2
+	if recentLimit < 0 {
+		recentLimit = 0
+	}
+
+	content := append([]string(nil), mainLines...)
+	content = append(content, m.footerLines(recentLimit)...)
+	content = trimLines(content, availableHeight)
+	return content
+}
+
+func (m CatalogModel) fullFooterLines(recentLimit int) []string {
+	footer := m.footerLines(recentLimit)
+	if len(footer) == 0 {
+		return nil
+	}
+
+	return append([]string(nil), footer...)
+}
+
+func (m CatalogModel) footerLines(recentLimit int) []string {
+	lines := []string{"", m.styles.Accent.Render(m.recentTitle)}
+	if len(m.recent) == 0 || recentLimit == 0 {
+		lines = append(lines, m.styles.Muted.Render(truncateText(m.recentEmpty, m.availableContentWidth())))
+	} else {
+		lines = append(lines, m.renderRecentLines(recentLimit)...)
+	}
+
+	lines = append(lines, "", m.styles.Muted.Render(truncateText(m.helpText, m.availableContentWidth())))
+	return lines
+}
+
+func (m CatalogModel) renderRecentLines(limit int) []string {
+	lines := make([]string, 0, min(limit, len(m.recent)))
+	contentWidth := m.availableContentWidth()
+	for index, command := range m.recent {
+		if index >= limit {
+			break
+		}
+
+		lines = append(lines, truncateText("- "+command, contentWidth))
+	}
+
+	return lines
+}
+
+func (m CatalogModel) availableContentHeight() int {
+	if m.height <= 0 {
+		return 0
+	}
+
+	return max(1, m.height-framedVerticalOverhead)
+}
+
+func (m CatalogModel) availableContentWidth() int {
+	if m.width <= 0 {
+		return 0
+	}
+
+	return max(1, m.width-framedHorizontalOverhead)
+}
+
+func trimLines(lines []string, limit int) []string {
+	if limit <= 0 || len(lines) <= limit {
+		return lines
+	}
+
+	trimmed := append([]string(nil), lines[:limit]...)
+	if limit > 0 && len(lines) > limit {
+		trimmed[limit-1] = strings.TrimRight(trimmed[limit-1], " ")
+	}
+
+	return trimmed
 }
 
 func favoriteSet(favorites []string) map[string]struct{} {
@@ -294,69 +348,8 @@ func favoriteMarker(favorites map[string]struct{}, recipeID string) string {
 	return "[ ]"
 }
 
-func (m *CatalogModel) selectPreviousCategory() {
-	if len(m.categories) == 0 {
-		return
-	}
-
-	selectedIndex := m.selectedCategoryIndex()
-	if selectedIndex == 0 {
-		m.selectedCategory = m.categories[len(m.categories)-1]
-		m.applyCategoryFilter()
-		return
-	}
-
-	if selectedIndex == -1 || len(m.categories) == 0 {
-		return
-	}
-
-	if selectedIndex == 1 {
-		m.selectedCategory = ""
-		m.applyCategoryFilter()
-		return
-	}
-
-	m.selectedCategory = m.categories[selectedIndex-2]
-	m.applyCategoryFilter()
-}
-
-func (m *CatalogModel) selectNextCategory() {
-	selectedIndex := m.selectedCategoryIndex()
-	if len(m.categories) == 0 {
-		return
-	}
-
-	if selectedIndex == -1 {
-		return
-	}
-
-	if selectedIndex == len(m.categories) {
-		m.selectedCategory = ""
-		m.applyCategoryFilter()
-		return
-	}
-
-	m.selectedCategory = m.categories[selectedIndex]
-	m.applyCategoryFilter()
-}
-
-func (m CatalogModel) selectedCategoryIndex() int {
-	if m.selectedCategory == "" {
-		return 0
-	}
-
-	for index, category := range m.categories {
-		if category == m.selectedCategory {
-			return index + 1
-		}
-	}
-
-	return -1
-}
-
 func (m *CatalogModel) applyCategoryFilter() {
 	m.categories = categoriesFromResults(m.allRecipes)
-	m.categoryCounts = categoryCountsFromResults(m.allRecipes, m.categories)
 	if m.selectedCategory != "" && !containsCategory(m.categories, m.selectedCategory) {
 		m.selectedCategory = ""
 	}
@@ -364,8 +357,8 @@ func (m *CatalogModel) applyCategoryFilter() {
 	filtered := make([]models.Recipe, 0, len(m.allRecipes))
 	if m.selectedCategory == "" {
 		m.results = filtered
-		if m.selected >= len(m.categoryCounts) {
-			m.selected = max(0, len(m.categoryCounts)-1)
+		if m.selected >= len(m.categories) {
+			m.selected = max(0, len(m.categories)-1)
 		}
 		return
 	} else {
@@ -384,7 +377,7 @@ func (m *CatalogModel) applyCategoryFilter() {
 
 func (m CatalogModel) isEmpty() bool {
 	if m.selectedCategory == "" {
-		return len(m.categoryCounts) == 0
+		return len(m.categories) == 0
 	}
 
 	return len(m.results) == 0
@@ -392,7 +385,7 @@ func (m CatalogModel) isEmpty() bool {
 
 func (m CatalogModel) lastSelectableIndex() int {
 	if m.selectedCategory == "" {
-		return len(m.categoryCounts) - 1
+		return len(m.categories) - 1
 	}
 
 	return len(m.results) - 1
@@ -413,24 +406,6 @@ func categoriesFromResults(results []models.Recipe) []models.Category {
 	return categories
 }
 
-func categoryCountsFromResults(results []models.Recipe, categories []models.Category) []categoryCount {
-	counts := make([]categoryCount, 0, len(categories))
-	for _, category := range categories {
-		count := 0
-		for _, recipe := range results {
-			if recipe.Category == category {
-				count++
-			}
-		}
-
-		if count > 0 {
-			counts = append(counts, categoryCount{category: category, count: count})
-		}
-	}
-
-	return counts
-}
-
 func containsCategory(categories []models.Category, target models.Category) bool {
 	for _, category := range categories {
 		if category == target {
@@ -439,6 +414,79 @@ func containsCategory(categories []models.Category, target models.Category) bool
 	}
 
 	return false
+}
+
+func categoryLine(locale string, category models.Category, nameWidth int) string {
+	name := category.DisplayName()
+	padding := strings.Repeat(" ", max(0, nameWidth-textWidth(name)))
+	return name + padding + "   " + categoryDescription(locale, category)
+}
+
+func categoryNameWidth(categories []models.Category) int {
+	width := 0
+	for _, category := range categories {
+		width = max(width, textWidth(category.DisplayName()))
+	}
+
+	return width
+}
+
+// categoryDescription returns one short localized hint for a category.
+func categoryDescription(locale string, category models.Category) string {
+	if descriptions, ok := localizedCategoryDescriptions[locale]; ok {
+		if description, ok := descriptions[category]; ok {
+			return description
+		}
+		return descriptions[""]
+	}
+
+	if description, ok := localizedCategoryDescriptions["en"][category]; ok {
+		return description
+	}
+
+	return localizedCategoryDescriptions["en"][""]
+}
+
+var localizedCategoryDescriptions = map[string]map[models.Category]string{
+	"en": {
+		models.CategoryFilesystem:  "Files, directories, and permissions",
+		models.CategoryEnvironment: "Environment variables and shell",
+		models.CategoryLogs:        "System logs and journal",
+		models.CategoryNetwork:     "Network, ports, and connections",
+		models.CategoryPackages:    "Packages and package managers",
+		models.CategoryProcesses:   "Processes and system load",
+		models.CategoryServices:    "Services and systemd",
+		models.CategorySystem:      "System, disks, and resources",
+		models.CategoryText:        "Search and text processing",
+		models.CategoryUsers:       "Users and sessions",
+		"":                         "Category commands",
+	},
+	"ru": {
+		models.CategoryFilesystem:  "Файлы, каталоги и права",
+		models.CategoryEnvironment: "Переменные окружения и shell",
+		models.CategoryLogs:        "Логи и журналы системы",
+		models.CategoryNetwork:     "Сеть, порты и соединения",
+		models.CategoryPackages:    "Пакеты и менеджеры пакетов",
+		models.CategoryProcesses:   "Процессы и нагрузка",
+		models.CategoryServices:    "Сервисы и systemd",
+		models.CategorySystem:      "Система, диски и ресурсы",
+		models.CategoryText:        "Поиск и обработка текста",
+		models.CategoryUsers:       "Пользователи и сессии",
+		"":                         "Команды категории",
+	},
+	"ua": {
+		models.CategoryFilesystem:  "Файли, каталоги та права",
+		models.CategoryEnvironment: "Змінні середовища та shell",
+		models.CategoryLogs:        "Логи та журнали системи",
+		models.CategoryNetwork:     "Мережа, порти та з'єднання",
+		models.CategoryPackages:    "Пакунки та менеджери пакунків",
+		models.CategoryProcesses:   "Процеси та навантаження",
+		models.CategoryServices:    "Сервіси та systemd",
+		models.CategorySystem:      "Система, диски та ресурси",
+		models.CategoryText:        "Пошук і обробка тексту",
+		models.CategoryUsers:       "Користувачі та сесії",
+		"":                         "Команди категорії",
+	},
 }
 
 const maxRecentVisible = 5

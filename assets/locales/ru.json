@@ -5,7 +5,7 @@
   "catalog.recent_empty": "Последних команд пока нет.",
   "catalog.category_label": "Категория:",
   "catalog.category_all": "Все",
-  "catalog.help": "left/right категория, up/down движение, enter открыть, ctrl+c выход",
+  "catalog.help": "up/down движение, enter открыть, esc назад, ctrl+c выход",
   "detail.run": "Нажмите enter или r, чтобы заполнить поля и выполнить",
   "detail.back": "Нажмите esc, backspace или q, чтобы вернуться",
   "detail.favorite": "Избранное",

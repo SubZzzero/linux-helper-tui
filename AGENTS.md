@@ -99,18 +99,6 @@ linux-helper/
 └── go.mod
 ```
 
----
-
-## Shortcuts
-
-| Keyword | Behaviour |
-|---|---|
-| `KILO:PAIR` | Act as a senior pair programmer. Explain the tradeoffs, suggest alternatives the user may not have considered, and recommend the best course of action before writing code. |
-| `RFC` | Refactor the code per the instructions provided. State the objective clearly in one sentence, then implement. |
-| `RFP` | Improve the given prompt. Make it precise, break it into numbered steps, follow Google's Technical Writing Style Guide. |
-
----
-
 ## Bubble Tea Conventions
 
 Bubble Tea uses the **Model / Update / View** pattern. Follow these rules consistently:

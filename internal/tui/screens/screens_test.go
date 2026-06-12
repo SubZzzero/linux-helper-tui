@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"unicode/utf8"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/stretchr/testify/assert"
@@ -32,9 +33,9 @@ func testStyles() uitheme.Styles {
 	return uitheme.NewStyles(uitheme.Definition{Name: "test", BorderColor: "63", AccentColor: "213"})
 }
 
-// TestCatalogModelSelection enters the selected category from All mode.
+// TestCatalogModelSelection enters the selected category from the category list.
 func TestCatalogModelSelection(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
@@ -85,7 +86,7 @@ func TestFormModelSubmit(t *testing.T) {
 
 // TestCatalogModelFavoritesPrioritizesFavorites renders favorites first.
 func TestCatalogModelFavoritesPrioritizesFavorites(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), []string{"find-file"}, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), []string{"find-file"}, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
@@ -96,7 +97,7 @@ func TestCatalogModelFavoritesPrioritizesFavorites(t *testing.T) {
 
 // TestCatalogModelRecentCommands renders recent command history.
 func TestCatalogModelRecentCommands(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, []string{"find .", "du -sh /var"}, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, []string{"find .", "du -sh /var"}, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	view := model.View()
 	assert.Contains(t, view, "Recent commands")
@@ -104,32 +105,69 @@ func TestCatalogModelRecentCommands(t *testing.T) {
 	assert.Contains(t, view, "- du -sh /var")
 }
 
-// TestCatalogModelKeyboardShortcutsSupportProductiveNavigation.
-func TestCatalogModelKeyboardShortcutsSupportProductiveNavigation(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+// TestCatalogModelBackReturnsToCategories uses escape to leave a category.
+func TestCatalogModelBackReturnsToCategories(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+	model.SetSelectedCategory(models.CategoryFilesystem)
 
-	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyRight})
-	assert.Contains(t, updated.View(), "Category:")
-	assert.Contains(t, updated.View(), "[System]")
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	view := updated.View()
+
+	assert.Contains(t, view, "Filesystem   Files, directories, and permissions")
+	assert.Contains(t, view, "System       System, disks, and resources")
+	assert.NotContains(t, view, "[*] Find file")
 }
 
-// TestCatalogModelGroupsAndFiltersByCategory renders category sections and filters.
+// TestCatalogModelGroupsAndFiltersByCategory renders category list and selected recipes.
 func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	view := model.View()
-	assert.Contains(t, view, "Filesystem (1)")
-	assert.Contains(t, view, "System (1)")
+	assert.Contains(t, view, "Filesystem   Files, directories, and permissions")
+	assert.Contains(t, view, "System       System, disks, and resources")
+	assert.NotContains(t, view, "Category:")
+	assert.NotContains(t, view, "(1)")
 
-	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyRight})
-	filteredView := updated.View()
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	catalogModel := updated.(screens.CatalogModel)
+	category, ok := (&catalogModel).ConsumeCategorySelection()
+	require.True(t, ok)
+	catalogModel.SetSelectedCategory(category)
+	filteredView := catalogModel.View()
 	assert.Contains(t, filteredView, "Find file")
 	assert.NotContains(t, filteredView, "Disk usage")
+	assert.NotContains(t, filteredView, "[filesystem]")
+}
+
+// TestCatalogModelCategoryDescriptionsAlign keeps category descriptions in one column.
+func TestCatalogModelCategoryDescriptionsAlign(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+	view := model.View()
+
+	filesystemLine := findLineContaining(view, "Filesystem")
+	systemLine := findLineContaining(view, "System")
+	require.NotEmpty(t, filesystemLine)
+	require.NotEmpty(t, systemLine)
+
+	assert.Equal(t, strings.Index(filesystemLine, "Files, directories, and permissions"), strings.Index(systemLine, "System, disks, and resources"))
+}
+
+// TestCatalogModelFitsNarrowTerminal avoids forcing a wide frame in small terminals.
+func TestCatalogModelFitsNarrowTerminal(t *testing.T) {
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 30, Height: 12})
+	view := updated.View()
+
+	assert.LessOrEqual(t, maxLineWidth(view), 30)
+	assert.LessOrEqual(t, lineCount(view), 12)
+	assert.Contains(t, view, "┌")
+	assert.Contains(t, view, "┘")
 }
 
 // TestCatalogModelTypingDoesNotChangeView keeps browse-only input inactive.
 func TestCatalogModelTypingDoesNotChangeView(t *testing.T) {
-	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	before := model.View()
 	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
@@ -217,4 +255,35 @@ func TestResultModelScrollsLargeOutput(t *testing.T) {
 	updated, _ = resultModel.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	resultModel = updated.(screens.ResultModel)
 	assert.True(t, (&resultModel).ConsumeBack())
+}
+
+func findLineContaining(view string, substring string) string {
+	for _, line := range strings.Split(view, "\n") {
+		if strings.Contains(line, substring) {
+			return line
+		}
+	}
+
+	return ""
+}
+
+func maxLineWidth(view string) int {
+	width := 0
+	for _, line := range strings.Split(view, "\n") {
+		width = maxInt(width, utf8.RuneCountInString(line))
+	}
+
+	return width
+}
+
+func lineCount(view string) int {
+	return len(strings.Split(view, "\n"))
+}
+
+func maxInt(left int, right int) int {
+	if left > right {
+		return left
+	}
+
+	return right
 }

@@ -5,7 +5,7 @@
   "catalog.recent_empty": "Останніх команд ще немає.",
   "catalog.category_label": "Категорія:",
   "catalog.category_all": "Усі",
-  "catalog.help": "left/right категорія, up/down рух, enter відкрити, ctrl+c вихід",
+  "catalog.help": "up/down рух, enter відкрити, esc назад, ctrl+c вихід",
   "detail.run": "Натисніть enter або r, щоб заповнити поля і виконати",
   "detail.back": "Натисніть esc, backspace або q, щоб повернутись",
   "detail.favorite": "Обране",

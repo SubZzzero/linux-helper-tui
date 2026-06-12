@@ -5,7 +5,7 @@
   "catalog.recent_empty": "No recent commands yet.",
   "catalog.category_label": "Category:",
   "catalog.category_all": "All",
-  "catalog.help": "left/right category, up/down move, enter open, ctrl+c quit",
+  "catalog.help": "up/down move, enter open, esc back, ctrl+c quit",
   "detail.run": "Press enter or r to fill fields and run",
   "detail.back": "Press esc, backspace, or q to go back",
   "detail.favorite": "Favorite",

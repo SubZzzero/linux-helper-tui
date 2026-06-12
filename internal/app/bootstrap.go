@@ -100,8 +100,6 @@ func Bootstrap() (Model, func() error, error) {
 		translator.T("catalog.empty"),
 		translator.T("catalog.recent_title"),
 		translator.T("catalog.recent_empty"),
-		translator.T("catalog.category_label"),
-		translator.T("catalog.category_all"),
 		translator.T("catalog.help"),
 	)
 

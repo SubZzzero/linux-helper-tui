@@ -81,7 +81,7 @@ func appTestStyles() uitheme.Styles {
 
 // TestModelView renders the active screen.
 func TestModelView(t *testing.T) {
-	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, nil, nil)
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	assert.NotEmpty(t, updated.View())
@@ -91,7 +91,7 @@ func TestModelView(t *testing.T) {
 func TestModelExecutesSafeRecipe(t *testing.T) {
 	executor := &fakeExecutor{result: models.ExecutionResult{Command: "find .", ExitCode: 0, Stdout: "ok"}}
 	recent := &fakeRecent{commands: []string{"find ."}}
-	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, recent, nil, executor, nil)
 
 	updated, cmd := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -126,7 +126,7 @@ func TestModelExecutesSafeRecipe(t *testing.T) {
 // TestModelTogglesFavorites updates detail and catalog state.
 func TestModelTogglesFavorites(t *testing.T) {
 	favorites := &fakeFavorites{ids: map[string]struct{}{}}
-	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 	model := app.NewModel(catalogModel, "en", appTestStyles(), favorites, nil, nil, nil, nil)
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -142,7 +142,7 @@ func TestModelTogglesFavorites(t *testing.T) {
 // TestModelCarriesWindowSizeToResultScreen keeps result output usable without a manual resize.
 func TestModelCarriesWindowSizeToResultScreen(t *testing.T) {
 	executor := &fakeExecutor{result: models.ExecutionResult{Command: "ps aux", ExitCode: 0, Stdout: "header\nbody\nfooter"}}
-	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "Category:", "All", "left/right category, up/down move, enter open, ctrl+c quit")
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, executor, nil)
 
 	updated, _ := model.Update(tea.WindowSizeMsg{Width: 100, Height: 30})
