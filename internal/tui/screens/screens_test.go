@@ -165,6 +165,29 @@ func TestCatalogModelFitsNarrowTerminal(t *testing.T) {
 	assert.Contains(t, view, "┘")
 }
 
+// TestCatalogModelWrapsLongRecentCommands keeps long commands inside the frame.
+func TestCatalogModelWrapsLongRecentCommands(t *testing.T) {
+	model := screens.NewCatalogModel(
+		testRecipes(),
+		"en",
+		testStyles(),
+		nil,
+		[]string{"systemctl list-dependencies multi-user.target --no-pager"},
+		"linux-helper",
+		"Empty",
+		"Recent commands",
+		"No recent commands yet.",
+		"up/down move, enter open, esc back, ctrl+c quit",
+	)
+
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 34, Height: 16})
+	view := updated.View()
+
+	assert.Contains(t, view, "- systemctl")
+	assert.Contains(t, view, "  multi-user.target --no-pager")
+	assert.LessOrEqual(t, maxLineWidth(view), 34)
+}
+
 // TestCatalogModelTypingDoesNotChangeView keeps browse-only input inactive.
 func TestCatalogModelTypingDoesNotChangeView(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")

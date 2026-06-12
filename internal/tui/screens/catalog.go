@@ -275,12 +275,18 @@ func (m CatalogModel) footerLines(recentLimit int) []string {
 func (m CatalogModel) renderRecentLines(limit int) []string {
 	lines := make([]string, 0, min(limit, len(m.recent)))
 	contentWidth := m.availableContentWidth()
-	for index, command := range m.recent {
-		if index >= limit {
+	for _, command := range m.recent {
+		if len(lines) >= limit {
 			break
 		}
 
-		lines = append(lines, truncateText("- "+command, contentWidth))
+		wrapped := wrapPrefixedText(command, contentWidth, "- ", "  ")
+		remaining := limit - len(lines)
+		if len(wrapped) > remaining {
+			wrapped = wrapped[:remaining]
+		}
+
+		lines = append(lines, wrapped...)
 	}
 
 	return lines

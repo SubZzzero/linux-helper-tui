@@ -2,6 +2,7 @@ package screens
 
 import (
 	"strings"
+	"unicode"
 	"unicode/utf8"
 
 	"linux-helper/internal/models"
@@ -39,6 +40,61 @@ func truncateText(value string, width int) string {
 
 	runes := []rune(value)
 	return string(runes[:width-3]) + "..."
+}
+
+// wrapPrefixedText splits plain text into width-limited lines with prefixes.
+func wrapPrefixedText(value string, width int, firstPrefix string, continuationPrefix string) []string {
+	if width <= 0 {
+		return []string{firstPrefix + value}
+	}
+
+	remaining := strings.TrimSpace(value)
+	lines := make([]string, 0, 2)
+	prefix := firstPrefix
+
+	for {
+		available := max(1, width-textWidth(prefix))
+		if textWidth(remaining) <= available {
+			lines = append(lines, prefix+remaining)
+			return lines
+		}
+
+		chunk := takeWrappedChunk(remaining, available)
+		if chunk == "" {
+			lines = append(lines, truncateText(prefix+remaining, width))
+			return lines
+		}
+
+		lines = append(lines, prefix+chunk)
+		remaining = strings.TrimSpace(strings.TrimPrefix(remaining, chunk))
+		prefix = continuationPrefix
+	}
+}
+
+func takeWrappedChunk(value string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+
+	runes := []rune(value)
+	if len(runes) <= width {
+		return string(runes)
+	}
+
+	cut := width
+	for index := width - 1; index >= 0; index-- {
+		if unicode.IsSpace(runes[index]) {
+			cut = index
+			break
+		}
+	}
+
+	chunk := strings.TrimSpace(string(runes[:cut]))
+	if chunk != "" {
+		return chunk
+	}
+
+	return string(runes[:width])
 }
 
 // resolveRecipeText resolves localized recipe text with English fallback.
