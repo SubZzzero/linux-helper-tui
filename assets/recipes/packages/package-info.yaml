@@ -1,0 +1,33 @@
+id: package-info
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt-cache >/dev/null 2>&1; then apt-cache policy {{package}}; elif command -v dnf >/dev/null 2>&1; then dnf info {{package}}; elif command -v rpm >/dev/null 2>&1; then rpm -qi {{package}}; elif command -v pacman >/dev/null 2>&1; then pacman -Qi {{package}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Show package details"
+  ua: "Показати деталі пакунка"
+  ru: "Показать детали пакета"
+description:
+  en: "Show locally available metadata for one package."
+  ua: "Показує локально доступні метадані одного пакунка."
+  ru: "Показывает локально доступные метаданные одного пакета."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - info
+  - metadata
+examples:
+  - args:
+      package: "curl"
+    description:
+      en: "Inspect the locally known metadata for curl"

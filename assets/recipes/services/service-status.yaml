@@ -1,0 +1,36 @@
+id: service-status
+version: 1
+type: recipe
+category: services
+risk: elevated
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show service status"
+  ua: "Показати стан служби"
+  ru: "Показать состояние службы"
+description:
+  en: "Show the current status of one systemd unit."
+  ua: "Показує поточний стан одного systemd-юніта."
+  ru: "Показывает текущее состояние одного systemd-юнита."
+args:
+  - "status"
+  - "{{unit}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - status
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Inspect the current nginx service status"

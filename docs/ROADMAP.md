@@ -57,9 +57,11 @@
 `AGENTS.md` defines the project constraints, milestone targets, and quality gates that this roadmap must mirror.
 
 ### Current baseline
-- `Phase 1` through `Phase 3` are complete.
+- `Phase 1` through `Phase 4` are complete.
 - The current root TUI flow is a browse-only recipe catalog.
-- The embedded corpus currently covers the six active categories: `filesystem`, `environment`, `network`, `system`, `text`, and `users`.
+- The embedded corpus currently covers ten active categories: `filesystem`, `environment`, `logs`, `network`, `packages`, `processes`, `services`, `system`, `text`, and `users`.
+- Locale selection currently comes from `~/.config/linux-helper/config.yaml`, with `en` as the default locale.
+- Theme selection currently comes from `~/.config/linux-helper/config.yaml`, with `dark` as the default theme.
 
 ### Ongoing quality gates
 - Keep the application offline-first and single-binary.
@@ -77,18 +79,18 @@
 
 ## Phase 4 - Category Expansion
 
-**Status**: [ ] Not started
+**Status**: [x] Done
 
 ### Tasks
-- [ ] Define the next category set beyond the current six active groups.
-- [ ] Update `internal/models/category.go`, `assets/recipes/`, and the catalog flow to support the expanded category set.
-- [ ] Add new recipe categories that cover missing Linux, DevOps, and SRE workflow areas.
-- [ ] Add an initial high-value recipe batch for each new category.
-- [ ] Keep validation and catalog tests aligned with the expanded category matrix.
+- [x] Define the next category set beyond the current six active groups.
+- [x] Update `internal/models/category.go`, `assets/recipes/`, and the catalog flow to support the expanded category set.
+- [x] Add new recipe categories that cover missing Linux, DevOps, and SRE workflow areas.
+- [x] Add an initial high-value recipe batch for each new category.
+- [x] Keep validation and catalog tests aligned with the expanded category matrix.
 
-### Planned category expansion
-- Add category groups for workflows that are currently missing from the catalog.
- - Prioritize categories such as `services`, `processes`, `logs`, `security`, `storage`, `archives`, `packages`, `containers`, or similarly high-value operational areas.
+### Completed category expansion
+- Add category groups for workflows that were missing from the catalog.
+- Expand the corpus with `logs`, `packages`, `processes`, and `services` as the first high-value operational categories beyond the original six.
 - Keep category additions grounded in offline-safe Linux workflows that fit the project scope.
 
 ### Exit criteria
@@ -108,12 +110,17 @@
 - [ ] Grow the embedded recipe library from the expanded category base toward `100+` recipes.
 - [ ] Harden the single-binary packaging path and verify all runtime assets stay embedded.
 - [ ] Improve execution preview, confirmation, and result presentation where the larger corpus exposes UX gaps.
+- [ ] Add in-app locale switching with a dedicated hotkey and persist the selected locale to `config.yaml`.
+- [ ] Keep `en` as the default locale when no explicit locale is configured.
+- [ ] Add in-app theme switching with a dedicated hotkey and persist the selected theme to `config.yaml`.
 - [ ] Expand recipe examples and field coverage for the broader corpus.
 - [ ] Keep recipe validation, category coverage checks, and examples aligned with the larger library.
 
 ### Exit criteria
 - The embedded recipe library reaches at least `100` validated recipes.
 - New categories are no longer thin starter buckets and have meaningful workflow depth.
+- Locale can be switched in the TUI and the selection persists across launches.
+- Theme can be switched in the TUI and the selection persists across launches.
 - `go build` produces one binary smaller than `20 MB`.
 - `go test ./... -race` passes.
 - `golangci-lint run` clean.
@@ -127,6 +134,7 @@
 - [ ] Add or refine benchmarks that track startup, search, and corpus growth over time.
 - [ ] Close coverage gaps in the core packages called out by `AGENTS.md`.
 - [ ] Run a full TUI smoke pass across catalog, forms, confirmations, execution, favorites, and recent commands.
+- [ ] Smoke-test locale and theme switching hotkeys across the main TUI flow.
 - [ ] Stabilize the user experience for a larger corpus and broader category set.
 - [ ] Prepare the project for a release-quality milestone with consistent docs and changelog updates.
 
@@ -139,5 +147,6 @@
 - `go build` produces one binary smaller than `20 MB`.
 - Coverage targets are met for the required core packages.
 - The main TUI flows are verified against the expanded corpus.
+- Locale and theme switching remain stable across the main TUI flows.
 - `go test ./... -race` passes.
 - `golangci-lint run` clean.

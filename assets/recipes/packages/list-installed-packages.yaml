@@ -1,0 +1,26 @@
+id: list-installed-packages
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v dpkg-query >/dev/null 2>&1; then dpkg-query -W; elif command -v rpm >/dev/null 2>&1; then rpm -qa; elif command -v pacman >/dev/null 2>&1; then pacman -Q; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "List installed packages"
+  ua: "Показати встановлені пакунки"
+  ru: "Показать установленные пакеты"
+description:
+  en: "List installed packages using the available local package manager."
+  ua: "Показує встановлені пакунки через доступний локальний менеджер пакунків."
+  ru: "Показывает установленные пакеты через доступный локальный менеджер пакетов."
+args: []
+fields: []
+tags:
+  - packages
+  - inventory
+  - package-manager
+examples:
+  - args: {}
+    description:
+      en: "Inspect the full package inventory"

@@ -1,0 +1,28 @@
+id: process-tree
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: ps
+command: ""
+title:
+  en: "Show process tree"
+  ua: "Показати дерево процесів"
+  ru: "Показать дерево процессов"
+description:
+  en: "Display processes in a parent-child tree view."
+  ua: "Показує процеси у вигляді дерева батько-дочірній."
+  ru: "Показывает процессы в виде дерева родитель-потомок."
+args:
+  - "-ef"
+  - "--forest"
+fields: []
+tags:
+  - processes
+  - ps
+  - tree
+examples:
+  - args: {}
+    description:
+      en: "Inspect process ancestry and spawned workers"

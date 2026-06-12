@@ -1,0 +1,43 @@
+id: tail-log-file
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: direct
+binary: tail
+command: ""
+title:
+  en: "Tail a log file"
+  ua: "Показати кінець лог-файлу"
+  ru: "Показать конец лог-файла"
+description:
+  en: "Print the last lines from a log file."
+  ua: "Виводить останні рядки з лог-файлу."
+  ru: "Выводит последние строки из лог-файла."
+args:
+  - "-n"
+  - "{{lines}}"
+  - "{{path}}"
+fields:
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of lines to show"
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Log file path"
+tags:
+  - logs
+  - tail
+  - file
+examples:
+  - args:
+      lines: "100"
+      path: "/var/log/auth.log"
+    description:
+      en: "Review the latest authentication log lines"

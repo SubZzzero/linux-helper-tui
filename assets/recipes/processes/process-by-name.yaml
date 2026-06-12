@@ -1,0 +1,35 @@
+id: process-by-name
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: pgrep
+command: ""
+title:
+  en: "Find processes by name"
+  ua: "Знайти процеси за назвою"
+  ru: "Найти процессы по имени"
+description:
+  en: "Find running processes by name and print their command lines."
+  ua: "Знаходить запущені процеси за назвою та виводить їхні команди."
+  ru: "Находит запущенные процессы по имени и выводит их команды."
+args:
+  - "-a"
+  - "{{name}}"
+fields:
+  - name: name
+    type: string
+    required: true
+    default: "sshd"
+    description:
+      en: "Process name pattern"
+tags:
+  - processes
+  - pgrep
+  - search
+examples:
+  - args:
+      name: "nginx"
+    description:
+      en: "Find nginx worker and master processes"

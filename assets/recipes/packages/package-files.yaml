@@ -1,0 +1,33 @@
+id: package-files
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v dpkg-query >/dev/null 2>&1; then dpkg-query -L {{package}}; elif command -v rpm >/dev/null 2>&1; then rpm -ql {{package}}; elif command -v pacman >/dev/null 2>&1; then pacman -Ql {{package}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "List files from a package"
+  ua: "Показати файли пакунка"
+  ru: "Показать файлы пакета"
+description:
+  en: "List files installed by one package."
+  ua: "Показує файли, встановлені одним пакунком."
+  ru: "Показывает файлы, установленные одним пакетом."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - files
+  - inventory
+examples:
+  - args:
+      package: "coreutils"
+    description:
+      en: "List files installed by coreutils"

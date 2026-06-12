@@ -1,0 +1,45 @@
+id: journal-unit
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show service journal"
+  ua: "Показати журнал служби"
+  ru: "Показать журнал службы"
+description:
+  en: "Read recent journal entries for one systemd unit."
+  ua: "Читає останні записи журналу для одного systemd-юніта."
+  ru: "Читает последние записи журнала для одного systemd-юнита."
+args:
+  - "-u"
+  - "{{unit}}"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of lines to show"
+tags:
+  - logs
+  - journalctl
+  - systemd
+examples:
+  - args:
+      unit: "nginx.service"
+      lines: "100"
+    description:
+      en: "Inspect the latest nginx journal entries"

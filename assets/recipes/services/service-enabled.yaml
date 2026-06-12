@@ -1,0 +1,35 @@
+id: service-enabled
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Check if a service is enabled"
+  ua: "Перевірити, чи увімкнена служба"
+  ru: "Проверить, включена ли служба"
+description:
+  en: "Report whether a systemd unit is enabled at boot."
+  ua: "Повідомляє, чи увімкнений systemd-юніт під час завантаження."
+  ru: "Сообщает, включен ли systemd-юнит при загрузке."
+args:
+  - "is-enabled"
+  - "{{unit}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - boot
+examples:
+  - args:
+      unit: "docker.service"
+    description:
+      en: "Check whether Docker starts automatically"

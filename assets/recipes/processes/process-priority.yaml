@@ -1,0 +1,37 @@
+id: process-priority
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: ps
+command: ""
+title:
+  en: "Show process priority"
+  ua: "Показати пріоритет процесу"
+  ru: "Показать приоритет процесса"
+description:
+  en: "Show scheduling priority, nice value, and command for one process ID."
+  ua: "Показує пріоритет планування, nice та команду для одного PID."
+  ru: "Показывает приоритет планирования, nice и команду для одного PID."
+args:
+  - "-p"
+  - "{{pid}}"
+  - "-o"
+  - "pid,ppid,ni,pri,stat,cmd"
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process ID"
+tags:
+  - processes
+  - priority
+  - ps
+examples:
+  - args:
+      pid: "4321"
+    description:
+      en: "Inspect the priority metadata for PID 4321"

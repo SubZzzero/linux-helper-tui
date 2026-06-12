@@ -10,8 +10,16 @@ const (
 	CategoryFilesystem Category = "filesystem"
 	// CategoryEnvironment groups environment inspection commands.
 	CategoryEnvironment Category = "environment"
+	// CategoryLogs groups log inspection commands.
+	CategoryLogs Category = "logs"
 	// CategoryNetwork groups networking commands.
 	CategoryNetwork Category = "network"
+	// CategoryPackages groups package manager inspection commands.
+	CategoryPackages Category = "packages"
+	// CategoryProcesses groups process inspection commands.
+	CategoryProcesses Category = "processes"
+	// CategoryServices groups service management inspection commands.
+	CategoryServices Category = "services"
 	// CategorySystem groups system inspection commands.
 	CategorySystem Category = "system"
 	// CategoryText groups text-processing commands.
@@ -23,7 +31,7 @@ const (
 // Valid reports whether the category is known.
 func (c Category) Valid() bool {
 	switch c {
-	case CategoryFilesystem, CategoryEnvironment, CategoryNetwork, CategorySystem, CategoryText, CategoryUsers:
+	case CategoryFilesystem, CategoryEnvironment, CategoryLogs, CategoryNetwork, CategoryPackages, CategoryProcesses, CategoryServices, CategorySystem, CategoryText, CategoryUsers:
 		return true
 	default:
 		return false
@@ -37,8 +45,16 @@ func (c Category) DisplayName() string {
 		return "Filesystem"
 	case CategoryEnvironment:
 		return "Environment"
+	case CategoryLogs:
+		return "Logs"
 	case CategoryNetwork:
 		return "Network"
+	case CategoryPackages:
+		return "Packages"
+	case CategoryProcesses:
+		return "Processes"
+	case CategoryServices:
+		return "Services"
 	case CategorySystem:
 		return "System"
 	case CategoryText:

@@ -21,3 +21,9 @@
 - Raise the embedded corpus test floor to `48` recipes and assert the new per-category minimums.
 - Add twelve more embedded recipes across all six active categories to bring the bundled corpus to `60` workflows total.
 - Mark `Phase 3` complete after raising the corpus test floor to `60` recipes and `10` recipes per active category.
+- Start `Phase 4` by extending category support beyond the original six catalog groups.
+- Add `logs`, `packages`, `processes`, and `services` categories with sixteen new bundled recipes.
+- Raise the embedded corpus test floor to `76` recipes and assert coverage for the ten active categories.
+- Mark `Phase 4` complete after the expanded category matrix passes the validation and race-test gates.
+- Document config-based locale and theme selection, with `en` as the default locale.
+- Add roadmap coverage for planned hotkeys to switch locale and theme inside the TUI.

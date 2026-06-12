@@ -41,9 +41,25 @@ func TestParseCategory(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryEnvironment, category)
 
+	category, err = models.ParseCategory("logs")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryLogs, category)
+
 	category, err = models.ParseCategory("text")
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryText, category)
+
+	category, err = models.ParseCategory("packages")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryPackages, category)
+
+	category, err = models.ParseCategory("processes")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryProcesses, category)
+
+	category, err = models.ParseCategory("services")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryServices, category)
 
 	category, err = models.ParseCategory("users")
 	require.NoError(t, err)
@@ -57,7 +73,11 @@ func TestParseCategory(t *testing.T) {
 func TestCategoryDisplayName(t *testing.T) {
 	assert.Equal(t, "Filesystem", models.CategoryFilesystem.DisplayName())
 	assert.Equal(t, "Environment", models.CategoryEnvironment.DisplayName())
+	assert.Equal(t, "Logs", models.CategoryLogs.DisplayName())
 	assert.Equal(t, "Network", models.CategoryNetwork.DisplayName())
+	assert.Equal(t, "Packages", models.CategoryPackages.DisplayName())
+	assert.Equal(t, "Processes", models.CategoryProcesses.DisplayName())
+	assert.Equal(t, "Services", models.CategoryServices.DisplayName())
 	assert.Equal(t, "System", models.CategorySystem.DisplayName())
 	assert.Equal(t, "Text", models.CategoryText.DisplayName())
 	assert.Equal(t, "Users", models.CategoryUsers.DisplayName())

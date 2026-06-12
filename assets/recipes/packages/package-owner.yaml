@@ -1,0 +1,33 @@
+id: package-owner
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v dpkg-query >/dev/null 2>&1; then dpkg-query -S {{path}}; elif command -v rpm >/dev/null 2>&1; then rpm -qf {{path}}; elif command -v pacman >/dev/null 2>&1; then pacman -Qo {{path}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Find package owner for a file"
+  ua: "Знайти пакунок-власник файлу"
+  ru: "Найти пакет-владельца файла"
+description:
+  en: "Identify which installed package owns a file path."
+  ua: "Визначає, який встановлений пакунок володіє шляхом до файлу."
+  ru: "Определяет, какой установленный пакет владеет путем к файлу."
+args: []
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/bin/bash"
+    description:
+      en: "File path to inspect"
+tags:
+  - packages
+  - ownership
+  - files
+examples:
+  - args:
+      path: "/usr/bin/ssh"
+    description:
+      en: "Find which package provides ssh"

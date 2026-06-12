@@ -1,0 +1,43 @@
+id: grep-log-pattern
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: direct
+binary: grep
+command: ""
+title:
+  en: "Search a log file"
+  ua: "Шукати у лог-файлі"
+  ru: "Искать в лог-файле"
+description:
+  en: "Search a log file for matching lines with line numbers."
+  ua: "Шукає збіги у лог-файлі з номерами рядків."
+  ru: "Ищет совпадения в лог-файле с номерами строк."
+args:
+  - "-n"
+  - "{{pattern}}"
+  - "{{path}}"
+fields:
+  - name: pattern
+    type: string
+    required: true
+    default: "error"
+    description:
+      en: "Pattern to search for"
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Log file path"
+tags:
+  - logs
+  - grep
+  - search
+examples:
+  - args:
+      pattern: "sshd"
+      path: "/var/log/auth.log"
+    description:
+      en: "Find sshd entries in auth.log"

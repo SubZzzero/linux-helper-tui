@@ -1,0 +1,36 @@
+id: service-dependencies
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show service dependencies"
+  ua: "Показати залежності служби"
+  ru: "Показать зависимости службы"
+description:
+  en: "List dependency relationships for one systemd unit."
+  ua: "Показує залежності для одного systemd-юніта."
+  ru: "Показывает зависимости для одного systemd-юнита."
+args:
+  - "list-dependencies"
+  - "{{unit}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "multi-user.target"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - dependencies
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Review units required by nginx"

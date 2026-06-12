@@ -1,0 +1,28 @@
+id: failed-services
+version: 1
+type: recipe
+category: services
+risk: elevated
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "List failed services"
+  ua: "Показати служби зі збоями"
+  ru: "Показать службы со сбоями"
+description:
+  en: "List systemd units that are currently in the failed state."
+  ua: "Показує systemd-юніти, які зараз перебувають у стані failed."
+  ru: "Показывает systemd-юниты, которые сейчас находятся в состоянии failed."
+args:
+  - "--failed"
+  - "--no-pager"
+fields: []
+tags:
+  - services
+  - systemctl
+  - failures
+examples:
+  - args: {}
+    description:
+      en: "Find units that need operator attention"

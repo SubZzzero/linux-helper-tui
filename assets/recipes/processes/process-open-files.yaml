@@ -1,0 +1,35 @@
+id: process-open-files
+version: 1
+type: recipe
+category: processes
+risk: elevated
+execution: direct
+binary: lsof
+command: ""
+title:
+  en: "List open files for a process"
+  ua: "Показати відкриті файли процесу"
+  ru: "Показать открытые файлы процесса"
+description:
+  en: "List open files, sockets, and descriptors for one process ID."
+  ua: "Показує відкриті файли, сокети та дескриптори для одного PID."
+  ru: "Показывает открытые файлы, сокеты и дескрипторы для одного PID."
+args:
+  - "-p"
+  - "{{pid}}"
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process ID"
+tags:
+  - processes
+  - lsof
+  - files
+examples:
+  - args:
+      pid: "1234"
+    description:
+      en: "Inspect file descriptors for PID 1234"

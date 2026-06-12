@@ -1,0 +1,27 @@
+id: kernel-messages
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: dmesg
+command: ""
+title:
+  en: "Show kernel messages"
+  ua: "Показати повідомлення ядра"
+  ru: "Показать сообщения ядра"
+description:
+  en: "Print the kernel ring buffer with human-readable timestamps."
+  ua: "Виводить буфер повідомлень ядра з читабельними часовими мітками."
+  ru: "Выводит буфер сообщений ядра с читаемыми временными метками."
+args:
+  - "--ctime"
+fields: []
+tags:
+  - logs
+  - kernel
+  - dmesg
+examples:
+  - args: {}
+    description:
+      en: "Inspect kernel warnings and boot-time messages"

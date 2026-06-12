@@ -9,8 +9,8 @@ The project is implemented in Go and uses Bubble Tea for the TUI layer. Recipes,
 The repository currently includes:
 
 - embedded recipe loading with optional user overrides
-- fuzzy search over available recipes
-- multi-screen Bubble Tea flow: search, detail, form, confirmation, result
+- category-first recipe catalog with browse-only root navigation
+- multi-screen Bubble Tea flow: catalog, detail, form, confirmation, result
 - direct and shell-based execution modes
 - risk confirmation for dangerous commands
 - embedded locales: `en`, `ua`, `ru`
@@ -89,6 +89,29 @@ If `config.yaml` does not exist, the application falls back to:
 - locale: `en`
 - theme: `dark`
 
+Example configuration:
+
+```yaml
+locale: en
+theme: dark
+```
+
+## Locale and theme selection
+
+Current behavior:
+
+- The user selects the interface language with `locale` in `~/.config/linux-helper/config.yaml`.
+- The user selects the active theme with `theme` in the same config file.
+- `en` is the default locale when the config file is missing or `locale` is empty.
+- `dark` is the default theme when the config file is missing or `theme` is empty.
+- Locale resolution falls back to `en` when a specific translation key is missing.
+
+Planned TUI behavior:
+
+- `l` will cycle the UI locale between the embedded languages and persist the choice to `config.yaml`.
+- `t` will cycle the active theme between the embedded themes and persist the choice to `config.yaml`.
+- These shortcuts are planned but not implemented yet.
+
 ## Recipe model
 
 Recipes are YAML files grouped by category under `assets/recipes/`. Each recipe defines:
@@ -124,7 +147,7 @@ docs/                   roadmap and changelog
 
 The current application flow is:
 
-1. Search for a recipe.
+1. Browse recipe categories in the catalog.
 2. Open the recipe detail screen.
 3. Fill recipe fields.
 4. Preview the resolved command.
@@ -133,17 +156,17 @@ The current application flow is:
 
 ## Keyboard shortcuts
 
-- Search: type to search, left/right arrows switch category, up/down arrows move, `enter` open recipe, `ctrl+c` quit
+- Catalog: left/right arrows switch category, up/down arrows move, `enter` open recipe, `ctrl+c` quit
 - Detail: `enter` or `r` continue to the form, `f` toggle favorite, `esc` or `q` go back
 - Form: `tab`, arrows, or `j`/`k` move between fields, `enter` or `ctrl+s` submit, `esc` or `q` go back
 - Confirm: `enter` or `y` approve, `esc`, `q`, or `n` cancel
 - Result: `enter`, `esc`, or `q` return to the previous screen after execution finishes
+- Planned global shortcuts: `l` cycle locale, `t` cycle theme
 
-## Search categories
+## Catalog categories
 
-- The search screen groups results by recipe category.
+- The catalog groups recipes by category.
 - Use left/right arrows to cycle through `All` and the embedded categories.
-- Search input stays text-first, so letter keys are reserved for the query itself.
 - Category filtering works together with favorites and recent commands.
 
 ## Architecture notes
