@@ -70,6 +70,7 @@ func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc", "backspace", "q":
 			if m.selectedCategory != "" {
 				m.selectedCategory = ""
+				m.selected = 0
 				m.applyCategoryFilter()
 			}
 			return m, nil
@@ -153,6 +154,7 @@ func (m *CatalogModel) SetRecent(recent []string) {
 // SetSelectedCategory switches the active category filter.
 func (m *CatalogModel) SetSelectedCategory(category models.Category) {
 	m.selectedCategory = category
+	m.selected = 0
 	m.applyCategoryFilter()
 }
 

@@ -139,6 +139,40 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	assert.NotContains(t, filteredView, "[filesystem]")
 }
 
+// TestCatalogModelCategorySelectionResetsRecipeIndex opens the first recipe in a category.
+func TestCatalogModelCategorySelectionResetsRecipeIndex(t *testing.T) {
+	model := screens.NewCatalogModel([]models.Recipe{{
+		ID:          "find-file",
+		Category:    models.CategoryFilesystem,
+		Title:       models.LocalizedText{"en": "Find file"},
+		Description: models.LocalizedText{"en": "Find files"},
+	}, {
+		ID:          "disk-usage",
+		Category:    models.CategorySystem,
+		Title:       models.LocalizedText{"en": "Disk usage"},
+		Description: models.LocalizedText{"en": "Show disk usage"},
+	}, {
+		ID:          "show-memory",
+		Category:    models.CategorySystem,
+		Title:       models.LocalizedText{"en": "Show memory"},
+		Description: models.LocalizedText{"en": "Show memory usage"},
+	}}, "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	catalogModel := updated.(screens.CatalogModel)
+	category, ok := (&catalogModel).ConsumeCategorySelection()
+	require.True(t, ok)
+	assert.Equal(t, models.CategorySystem, category)
+
+	catalogModel.SetSelectedCategory(category)
+	updated, _ = catalogModel.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	catalogModel = updated.(screens.CatalogModel)
+	recipe, ok := (&catalogModel).ConsumeSelection()
+	require.True(t, ok)
+	assert.Equal(t, "disk-usage", recipe.ID)
+}
+
 // TestCatalogModelCategoryDescriptionsAlign keeps category descriptions in one column.
 func TestCatalogModelCategoryDescriptionsAlign(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
