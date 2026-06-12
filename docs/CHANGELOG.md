@@ -27,3 +27,6 @@
 - Mark `Phase 4` complete after the expanded category matrix passes the validation and race-test gates.
 - Document config-based locale and theme selection, with `en` as the default locale.
 - Add roadmap coverage for planned hotkeys to switch locale and theme inside the TUI.
+- Start `Phase 5` with a new `troubleshooting` category for operator triage workflows.
+- Add ten troubleshooting recipes for logs, ports, connectivity, boot dependencies, inode pressure, and deleted-open-file diagnostics.
+- Raise the embedded corpus test floor to `86` recipes and assert coverage for `11` active categories.

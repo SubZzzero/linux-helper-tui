@@ -1,0 +1,53 @@
+id: tcp-connectivity-check
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: nc
+command: ""
+title:
+  en: "Check TCP connectivity"
+  ua: "Перевірити TCP-з'єднання"
+  ru: "Проверить TCP-соединение"
+description:
+  en: "Test whether a remote TCP port is reachable within a timeout."
+  ua: "Перевіряє, чи доступний віддалений TCP-порт у межах таймауту."
+  ru: "Проверяет, доступен ли удаленный TCP-порт в пределах таймаута."
+args:
+  - "-vz"
+  - "-w"
+  - "{{timeout}}"
+  - "{{host}}"
+  - "{{port}}"
+fields:
+  - name: host
+    type: string
+    required: true
+    default: "127.0.0.1"
+    description:
+      en: "Hostname or IP address"
+  - name: port
+    type: string
+    required: true
+    default: "22"
+    description:
+      en: "TCP port number"
+  - name: timeout
+    type: string
+    required: true
+    default: "3"
+    description:
+      en: "Timeout in seconds"
+tags:
+  - troubleshooting
+  - network
+  - tcp
+  - nc
+examples:
+  - args:
+      host: "db.internal"
+      port: "5432"
+      timeout: "5"
+    description:
+      en: "Verify that the database port is reachable"

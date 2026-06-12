@@ -1,0 +1,28 @@
+id: systemd-startup-blame
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: systemd-analyze
+command: ""
+title:
+  en: "Show slow systemd units"
+  ua: "Показати повільні юніти systemd"
+  ru: "Показать медленные systemd-юниты"
+description:
+  en: "List units ordered by startup time to find slow boot contributors."
+  ua: "Показує юніти у порядку часу запуску, щоб знайти причини повільного завантаження."
+  ru: "Показывает юниты по времени запуска, чтобы найти причины медленной загрузки."
+args:
+  - "blame"
+fields: []
+tags:
+  - troubleshooting
+  - systemd
+  - boot
+  - performance
+examples:
+  - args: {}
+    description:
+      en: "Find the systemd units that slow boot the most"

@@ -1,0 +1,40 @@
+id: boot-errors
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show current boot errors"
+  ua: "Показати помилки поточного завантаження"
+  ru: "Показать ошибки текущей загрузки"
+description:
+  en: "Inspect error-level journal entries from the current boot."
+  ua: "Переглядає записи журналу рівня error з поточного завантаження."
+  ru: "Показывает записи журнала уровня error из текущей загрузки."
+args:
+  - "-b"
+  - "-p"
+  - "err"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of log lines to show"
+tags:
+  - troubleshooting
+  - boot
+  - journalctl
+  - errors
+examples:
+  - args:
+      lines: "80"
+    description:
+      en: "Check error messages from the current boot"

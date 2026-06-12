@@ -24,6 +24,8 @@ const (
 	CategorySystem Category = "system"
 	// CategoryText groups text-processing commands.
 	CategoryText Category = "text"
+	// CategoryTroubleshooting groups failure triage commands.
+	CategoryTroubleshooting Category = "troubleshooting"
 	// CategoryUsers groups user and session commands.
 	CategoryUsers Category = "users"
 )
@@ -31,7 +33,7 @@ const (
 // Valid reports whether the category is known.
 func (c Category) Valid() bool {
 	switch c {
-	case CategoryFilesystem, CategoryEnvironment, CategoryLogs, CategoryNetwork, CategoryPackages, CategoryProcesses, CategoryServices, CategorySystem, CategoryText, CategoryUsers:
+	case CategoryFilesystem, CategoryEnvironment, CategoryLogs, CategoryNetwork, CategoryPackages, CategoryProcesses, CategoryServices, CategorySystem, CategoryText, CategoryTroubleshooting, CategoryUsers:
 		return true
 	default:
 		return false
@@ -59,6 +61,8 @@ func (c Category) DisplayName() string {
 		return "System"
 	case CategoryText:
 		return "Text"
+	case CategoryTroubleshooting:
+		return "Troubleshooting"
 	case CategoryUsers:
 		return "Users"
 	default:

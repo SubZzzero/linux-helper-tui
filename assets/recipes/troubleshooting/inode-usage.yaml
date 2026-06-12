@@ -1,0 +1,36 @@
+id: inode-usage
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: df
+command: ""
+title:
+  en: "Check inode usage"
+  ua: "Перевірити використання inode"
+  ru: "Проверить использование inode"
+description:
+  en: "Check whether a filesystem is running out of inodes rather than blocks."
+  ua: "Перевіряє, чи закінчуються на файловій системі inode, а не блоки."
+  ru: "Проверяет, заканчиваются ли на файловой системе inode, а не блоки."
+args:
+  - "-ih"
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/"
+    description:
+      en: "Path on the target filesystem"
+tags:
+  - troubleshooting
+  - filesystem
+  - inode
+  - disk
+examples:
+  - args:
+      path: "/var"
+    description:
+      en: "Check inode pressure on the filesystem that backs /var"

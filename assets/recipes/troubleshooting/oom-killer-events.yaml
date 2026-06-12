@@ -1,0 +1,27 @@
+id: oom-killer-events
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: shell
+binary: ""
+command: "journalctl -k --no-pager | grep -E 'Out of memory|Killed process'"
+title:
+  en: "Search for OOM killer events"
+  ua: "Шукати події OOM killer"
+  ru: "Искать события OOM killer"
+description:
+  en: "Search kernel logs for out-of-memory kills and related events."
+  ua: "Шукає у логах ядра події завершення процесів через нестачу пам'яті."
+  ru: "Ищет в логах ядра события завершения процессов из-за нехватки памяти."
+args: []
+fields: []
+tags:
+  - troubleshooting
+  - memory
+  - oom
+  - kernel
+examples:
+  - args: {}
+    description:
+      en: "Check whether the kernel recently killed processes for memory pressure"

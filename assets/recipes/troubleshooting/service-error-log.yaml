@@ -1,0 +1,48 @@
+id: service-error-log
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show error logs for a service"
+  ua: "Показати помилки журналу для служби"
+  ru: "Показать ошибки журнала для службы"
+description:
+  en: "Show recent error-level journal entries for one systemd unit."
+  ua: "Показує останні записи журналу рівня error для одного systemd-юніта."
+  ru: "Показывает последние записи журнала уровня error для одного systemd-юнита."
+args:
+  - "-u"
+  - "{{unit}}"
+  - "-p"
+  - "err"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of log lines to show"
+tags:
+  - troubleshooting
+  - journalctl
+  - systemd
+  - errors
+examples:
+  - args:
+      unit: "nginx.service"
+      lines: "80"
+    description:
+      en: "Inspect recent nginx error-level journal entries"

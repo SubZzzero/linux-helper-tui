@@ -58,8 +58,9 @@
 
 ### Current baseline
 - `Phase 1` through `Phase 4` are complete.
+- `Phase 5` is in progress.
 - The current root TUI flow is a browse-only recipe catalog.
-- The embedded corpus currently covers ten active categories: `filesystem`, `environment`, `logs`, `network`, `packages`, `processes`, `services`, `system`, `text`, and `users`.
+- The embedded corpus currently covers eleven active categories: `filesystem`, `environment`, `logs`, `network`, `packages`, `processes`, `services`, `system`, `text`, `troubleshooting`, and `users`.
 - Locale selection currently comes from `~/.config/linux-helper/config.yaml`, with `en` as the default locale.
 - Theme selection currently comes from `~/.config/linux-helper/config.yaml`, with `dark` as the default theme.
 
@@ -102,9 +103,10 @@
 
 ## Phase 5 - Category Fill-Out And Library Growth
 
-**Status**: [ ] Not started
+**Status**: [~] In progress
 
 ### Tasks
+- [x] Add the `troubleshooting` category with an initial triage-focused recipe batch.
 - [ ] Expand the newly added categories with deeper recipe coverage.
 - [ ] Continue filling the original six categories only after the wider category map is in place.
 - [ ] Grow the embedded recipe library from the expanded category base toward `100+` recipes.

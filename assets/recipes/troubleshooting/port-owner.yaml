@@ -1,0 +1,37 @@
+id: port-owner
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: lsof
+command: ""
+title:
+  en: "Find which process owns a port"
+  ua: "Знайти процес, який володіє портом"
+  ru: "Найти процесс, который владеет портом"
+description:
+  en: "Identify the process that is listening on one TCP port."
+  ua: "Визначає процес, який слухає один TCP-порт."
+  ru: "Определяет процесс, который слушает один TCP-порт."
+args:
+  - "-nP"
+  - "-iTCP:{{port}}"
+  - "-sTCP:LISTEN"
+fields:
+  - name: port
+    type: string
+    required: true
+    default: "8080"
+    description:
+      en: "TCP port number"
+tags:
+  - troubleshooting
+  - port
+  - lsof
+  - network
+examples:
+  - args:
+      port: "5432"
+    description:
+      en: "Find what is bound to PostgreSQL's default port"

@@ -61,6 +61,10 @@ func TestParseCategory(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryServices, category)
 
+	category, err = models.ParseCategory("troubleshooting")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryTroubleshooting, category)
+
 	category, err = models.ParseCategory("users")
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryUsers, category)
@@ -80,5 +84,6 @@ func TestCategoryDisplayName(t *testing.T) {
 	assert.Equal(t, "Services", models.CategoryServices.DisplayName())
 	assert.Equal(t, "System", models.CategorySystem.DisplayName())
 	assert.Equal(t, "Text", models.CategoryText.DisplayName())
+	assert.Equal(t, "Troubleshooting", models.CategoryTroubleshooting.DisplayName())
 	assert.Equal(t, "Users", models.CategoryUsers.DisplayName())
 }

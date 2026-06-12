@@ -210,19 +210,6 @@ func (m CatalogModel) renderCategoryRows() string {
 	return strings.Join(lines, "\n")
 }
 
-func (m CatalogModel) renderRecent() string {
-	lines := make([]string, 0, min(maxRecentVisible, len(m.recent)))
-	for index, command := range m.recent {
-		if index >= maxRecentVisible {
-			break
-		}
-
-		lines = append(lines, "- "+command)
-	}
-
-	return strings.Join(lines, "\n")
-}
-
 func (m CatalogModel) layoutLines() []string {
 	mainLines := []string{m.styles.Title.Render(m.title), ""}
 	if m.isEmpty() {
@@ -457,43 +444,46 @@ func categoryDescription(locale string, category models.Category) string {
 
 var localizedCategoryDescriptions = map[string]map[models.Category]string{
 	"en": {
-		models.CategoryFilesystem:  "Files, directories, and permissions",
-		models.CategoryEnvironment: "Environment variables and shell",
-		models.CategoryLogs:        "System logs and journal",
-		models.CategoryNetwork:     "Network, ports, and connections",
-		models.CategoryPackages:    "Packages and package managers",
-		models.CategoryProcesses:   "Processes and system load",
-		models.CategoryServices:    "Services and systemd",
-		models.CategorySystem:      "System, disks, and resources",
-		models.CategoryText:        "Search and text processing",
-		models.CategoryUsers:       "Users and sessions",
-		"":                         "Category commands",
+		models.CategoryFilesystem:      "Files, directories, and permissions",
+		models.CategoryEnvironment:     "Environment variables and shell",
+		models.CategoryLogs:            "System logs and journal",
+		models.CategoryNetwork:         "Network, ports, and connections",
+		models.CategoryPackages:        "Packages and package managers",
+		models.CategoryProcesses:       "Processes and system load",
+		models.CategoryServices:        "Services and systemd",
+		models.CategorySystem:          "System, disks, and resources",
+		models.CategoryText:            "Search and text processing",
+		models.CategoryTroubleshooting: "Failure triage, diagnostics, and root-cause checks",
+		models.CategoryUsers:           "Users and sessions",
+		"":                             "Category commands",
 	},
 	"ru": {
-		models.CategoryFilesystem:  "Файлы, каталоги и права",
-		models.CategoryEnvironment: "Переменные окружения и shell",
-		models.CategoryLogs:        "Логи и журналы системы",
-		models.CategoryNetwork:     "Сеть, порты и соединения",
-		models.CategoryPackages:    "Пакеты и менеджеры пакетов",
-		models.CategoryProcesses:   "Процессы и нагрузка",
-		models.CategoryServices:    "Сервисы и systemd",
-		models.CategorySystem:      "Система, диски и ресурсы",
-		models.CategoryText:        "Поиск и обработка текста",
-		models.CategoryUsers:       "Пользователи и сессии",
-		"":                         "Команды категории",
+		models.CategoryFilesystem:      "Файлы, каталоги и права",
+		models.CategoryEnvironment:     "Переменные окружения и shell",
+		models.CategoryLogs:            "Логи и журналы системы",
+		models.CategoryNetwork:         "Сеть, порты и соединения",
+		models.CategoryPackages:        "Пакеты и менеджеры пакетов",
+		models.CategoryProcesses:       "Процессы и нагрузка",
+		models.CategoryServices:        "Сервисы и systemd",
+		models.CategorySystem:          "Система, диски и ресурсы",
+		models.CategoryText:            "Поиск и обработка текста",
+		models.CategoryTroubleshooting: "Разбор сбоев, диагностика и поиск первопричины",
+		models.CategoryUsers:           "Пользователи и сессии",
+		"":                             "Команды категории",
 	},
 	"ua": {
-		models.CategoryFilesystem:  "Файли, каталоги та права",
-		models.CategoryEnvironment: "Змінні середовища та shell",
-		models.CategoryLogs:        "Логи та журнали системи",
-		models.CategoryNetwork:     "Мережа, порти та з'єднання",
-		models.CategoryPackages:    "Пакунки та менеджери пакунків",
-		models.CategoryProcesses:   "Процеси та навантаження",
-		models.CategoryServices:    "Сервіси та systemd",
-		models.CategorySystem:      "Система, диски та ресурси",
-		models.CategoryText:        "Пошук і обробка тексту",
-		models.CategoryUsers:       "Користувачі та сесії",
-		"":                         "Команди категорії",
+		models.CategoryFilesystem:      "Файли, каталоги та права",
+		models.CategoryEnvironment:     "Змінні середовища та shell",
+		models.CategoryLogs:            "Логи та журнали системи",
+		models.CategoryNetwork:         "Мережа, порти та з'єднання",
+		models.CategoryPackages:        "Пакунки та менеджери пакунків",
+		models.CategoryProcesses:       "Процеси та навантаження",
+		models.CategoryServices:        "Сервіси та systemd",
+		models.CategorySystem:          "Система, диски та ресурси",
+		models.CategoryText:            "Пошук і обробка тексту",
+		models.CategoryTroubleshooting: "Розбір збоїв, діагностика та пошук першопричини",
+		models.CategoryUsers:           "Користувачі та сесії",
+		"":                             "Команди категорії",
 	},
 }
 

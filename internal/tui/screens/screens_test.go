@@ -26,6 +26,11 @@ func testRecipes() []models.Recipe {
 		Category:    models.CategorySystem,
 		Title:       models.LocalizedText{"en": "Disk usage"},
 		Description: models.LocalizedText{"en": "Show disk usage"},
+	}, {
+		ID:          "port-owner",
+		Category:    models.CategoryTroubleshooting,
+		Title:       models.LocalizedText{"en": "Find port owner"},
+		Description: models.LocalizedText{"en": "Find the process behind a port"},
 	}}
 }
 
@@ -113,8 +118,9 @@ func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	view := updated.View()
 
-	assert.Contains(t, view, "Filesystem   Files, directories, and permissions")
-	assert.Contains(t, view, "System       System, disks, and resources")
+	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
+	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
+	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
 	assert.NotContains(t, view, "[*] Find file")
 }
 
@@ -123,8 +129,9 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	view := model.View()
-	assert.Contains(t, view, "Filesystem   Files, directories, and permissions")
-	assert.Contains(t, view, "System       System, disks, and resources")
+	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
+	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
+	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
 	assert.NotContains(t, view, "Category:")
 	assert.NotContains(t, view, "(1)")
 
@@ -180,10 +187,13 @@ func TestCatalogModelCategoryDescriptionsAlign(t *testing.T) {
 
 	filesystemLine := findLineContaining(view, "Filesystem")
 	systemLine := findLineContaining(view, "System")
+	troubleshootingLine := findLineContaining(view, "Troubleshooting")
 	require.NotEmpty(t, filesystemLine)
 	require.NotEmpty(t, systemLine)
+	require.NotEmpty(t, troubleshootingLine)
 
 	assert.Equal(t, strings.Index(filesystemLine, "Files, directories, and permissions"), strings.Index(systemLine, "System, disks, and resources"))
+	assert.Equal(t, strings.Index(filesystemLine, "Files, directories, and permissions"), strings.Index(troubleshootingLine, "Failure triage, diagnostics, and root-cause checks"))
 }
 
 // TestCatalogModelFitsNarrowTerminal avoids forcing a wide frame in small terminals.

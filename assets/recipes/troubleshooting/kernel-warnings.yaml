@@ -1,0 +1,28 @@
+id: kernel-warnings
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: dmesg
+command: ""
+title:
+  en: "Show kernel warnings and errors"
+  ua: "Показати попередження та помилки ядра"
+  ru: "Показать предупреждения и ошибки ядра"
+description:
+  en: "Review kernel warnings and errors when diagnosing driver, disk, or hardware issues."
+  ua: "Переглядає попередження та помилки ядра під час діагностики драйверів, дисків або обладнання."
+  ru: "Показывает предупреждения и ошибки ядра при диагностике драйверов, дисков или оборудования."
+args:
+  - "--level=warn,err"
+fields: []
+tags:
+  - troubleshooting
+  - kernel
+  - dmesg
+  - hardware
+examples:
+  - args: {}
+    description:
+      en: "Check the kernel ring buffer for warning and error messages"

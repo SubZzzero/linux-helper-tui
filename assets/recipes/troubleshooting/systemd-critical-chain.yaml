@@ -1,0 +1,36 @@
+id: systemd-critical-chain
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: systemd-analyze
+command: ""
+title:
+  en: "Show a systemd critical chain"
+  ua: "Показати критичний ланцюг systemd"
+  ru: "Показать критическую цепочку systemd"
+description:
+  en: "Inspect boot or unit dependency latency through the critical chain view."
+  ua: "Показує затримки завантаження або залежностей юніта через critical chain."
+  ru: "Показывает задержки загрузки или зависимостей юнита через critical chain."
+args:
+  - "critical-chain"
+  - "{{unit}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "multi-user.target"
+    description:
+      en: "Unit or target name"
+tags:
+  - troubleshooting
+  - systemd
+  - boot
+  - dependencies
+examples:
+  - args:
+      unit: "network-online.target"
+    description:
+      en: "Inspect the boot path to network-online.target"

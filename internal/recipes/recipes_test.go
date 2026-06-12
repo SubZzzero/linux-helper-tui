@@ -77,7 +77,7 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	loader := recipes.NewLoader(recipeFS, nil, ".")
 	loaded, err := loader.Load()
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(loaded), 76)
+	assert.GreaterOrEqual(t, len(loaded), 86)
 
 	ids := make(map[string]struct{}, len(loaded))
 	categoryCounts := make(map[string]int)
@@ -114,7 +114,10 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	assert.Contains(t, ids, "list-installed-packages")
 	assert.Contains(t, ids, "process-tree")
 	assert.Contains(t, ids, "service-status")
-	assert.Len(t, categoryCounts, 10)
+	assert.Contains(t, ids, "journal-priority-errors")
+	assert.Contains(t, ids, "port-owner")
+	assert.Contains(t, ids, "systemd-critical-chain")
+	assert.Len(t, categoryCounts, 11)
 	assert.GreaterOrEqual(t, categoryCounts["filesystem"], 10)
 	assert.GreaterOrEqual(t, categoryCounts["environment"], 10)
 	assert.GreaterOrEqual(t, categoryCounts["logs"], 4)
@@ -124,5 +127,6 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	assert.GreaterOrEqual(t, categoryCounts["services"], 4)
 	assert.GreaterOrEqual(t, categoryCounts["system"], 10)
 	assert.GreaterOrEqual(t, categoryCounts["text"], 10)
+	assert.GreaterOrEqual(t, categoryCounts["troubleshooting"], 10)
 	assert.GreaterOrEqual(t, categoryCounts["users"], 10)
 }

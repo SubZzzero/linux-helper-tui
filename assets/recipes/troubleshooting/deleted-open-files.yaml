@@ -1,0 +1,28 @@
+id: deleted-open-files
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: lsof
+command: ""
+title:
+  en: "Find deleted files still held open"
+  ua: "Знайти видалені файли, які ще відкриті"
+  ru: "Найти удаленные файлы, которые еще открыты"
+description:
+  en: "Detect processes that still hold deleted files open and keep disk space from being released."
+  ua: "Знаходить процеси, які тримають видалені файли відкритими і не відпускають дисковий простір."
+  ru: "Находит процессы, которые держат удаленные файлы открытыми и не освобождают место на диске."
+args:
+  - "+L1"
+fields: []
+tags:
+  - troubleshooting
+  - lsof
+  - disk
+  - logs
+examples:
+  - args: {}
+    description:
+      en: "Find processes keeping rotated or deleted logs open"

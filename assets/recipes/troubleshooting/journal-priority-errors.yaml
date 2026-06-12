@@ -1,0 +1,39 @@
+id: journal-priority-errors
+version: 1
+type: recipe
+category: troubleshooting
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show recent journal warnings and errors"
+  ua: "Показати останні попередження та помилки журналу"
+  ru: "Показать последние предупреждения и ошибки журнала"
+description:
+  en: "Read recent journal entries at warning level or higher to start failure triage."
+  ua: "Читає останні записи журналу рівня warning і вище для початкової діагностики."
+  ru: "Читает последние записи журнала уровня warning и выше для первичной диагностики."
+args:
+  - "-p"
+  - "warning..alert"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: lines
+    type: string
+    required: true
+    default: "50"
+    description:
+      en: "Number of journal lines to show"
+tags:
+  - troubleshooting
+  - journalctl
+  - logs
+  - errors
+examples:
+  - args:
+      lines: "100"
+    description:
+      en: "Inspect the latest 100 warning-or-higher journal entries"
