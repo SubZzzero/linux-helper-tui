@@ -50,6 +50,7 @@ func TestResultModelSetPresentationPreservesViewport(t *testing.T) {
 		"en",
 		testStyles(),
 		"Running",
+		"Stop",
 		"Done",
 		"Back",
 		"Scroll",
@@ -70,7 +71,7 @@ func TestResultModelSetPresentationPreservesViewport(t *testing.T) {
 	}
 
 	require.Contains(t, resultModel.View(), "line 20")
-	resultModel.SetPresentation("ua", altStyles(), "Виконується", "Готово", "Назад", "Прокрутка")
+	resultModel.SetPresentation("ua", altStyles(), "Виконується", "Зупинити", "Готово", "Назад", "Прокрутка")
 	view := resultModel.View()
 	assert.Contains(t, view, "Прокрутка")
 	assert.Contains(t, view, "line 20")

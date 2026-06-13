@@ -36,6 +36,7 @@ type executionRequest struct {
 }
 
 type executionFinishedMsg struct {
+	id     int
 	result models.ExecutionResult
 	err    error
 }
@@ -60,11 +61,15 @@ type Model struct {
 	confirmApprove    string
 	confirmBack       string
 	resultRunning     string
+	resultCancel      string
 	resultDone        string
 	resultBack        string
 	resultScroll      string
 	executor          Executor
 	pendingExecution  *executionRequest
+	activeExecutionID int
+	nextExecutionID   int
+	cancelExecution   context.CancelFunc
 	windowWidth       int
 	windowHeight      int
 	logger            *slog.Logger
@@ -98,6 +103,7 @@ func NewModel(catalog screens.CatalogModel, locale string, styles uitheme.Styles
 		confirmApprove:    "Press enter to continue",
 		confirmBack:       "Press esc to cancel",
 		resultRunning:     "Running command...",
+		resultCancel:      "Press esc to stop and go back",
 		resultDone:        "Execution finished",
 		resultScroll:      "Use up/down or pgup/pgdn to scroll",
 		resultBack:        "Press enter or esc to return",
@@ -220,7 +226,7 @@ func (m *Model) handleTransitions() tea.Cmd {
 				return nil
 			}
 
-			m.stack.Push(m.sizeScreen(screens.NewResultModel(recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack, m.resultScroll)))
+			m.stack.Push(m.sizeScreen(screens.NewResultModel(recipe, m.locale, m.styles, m.resultRunning, m.resultCancel, m.resultDone, m.resultBack, m.resultScroll)))
 			return m.executePending()
 		}
 		m.stack.ReplaceTop(formScreen)
@@ -238,12 +244,18 @@ func (m *Model) handleTransitions() tea.Cmd {
 				return nil
 			}
 			m.stack.ReplaceTop(confirmScreen)
-			m.stack.Push(m.sizeScreen(screens.NewResultModel(m.pendingExecution.recipe, m.locale, m.styles, m.resultRunning, m.resultDone, m.resultBack, m.resultScroll)))
+			m.stack.Push(m.sizeScreen(screens.NewResultModel(m.pendingExecution.recipe, m.locale, m.styles, m.resultRunning, m.resultCancel, m.resultDone, m.resultBack, m.resultScroll)))
 			return m.executePending()
 		}
 		m.stack.ReplaceTop(confirmScreen)
 	case screens.ResultModel:
 		resultScreen := current
+		if resultScreen.Running() && resultScreen.ConsumeStop() {
+			m.cancelActiveExecution()
+			m.stack.Pop()
+			m.refreshTopScreen()
+			return nil
+		}
 		if resultScreen.ConsumeBack() {
 			m.stack.Pop()
 			m.refreshTopScreen()
@@ -263,14 +275,25 @@ func (m *Model) executePending() tea.Cmd {
 	request := *m.pendingExecution
 	request.confirmed = true
 	m.pendingExecution = nil
+	m.nextExecutionID++
+	executionID := m.nextExecutionID
+	m.activeExecutionID = executionID
+	ctx, cancel := context.WithCancel(context.Background())
+	m.cancelExecution = cancel
 
 	return func() tea.Msg {
-		result, err := m.executor.Execute(context.Background(), request.recipe, request.values, request.confirmed)
-		return executionFinishedMsg{result: result, err: err}
+		result, err := m.executor.Execute(ctx, request.recipe, request.values, request.confirmed)
+		return executionFinishedMsg{id: executionID, result: result, err: err}
 	}
 }
 
 func (m *Model) finishExecution(msg executionFinishedMsg) {
+	if msg.id == 0 || msg.id != m.activeExecutionID {
+		return
+	}
+
+	m.activeExecutionID = 0
+	m.cancelExecution = nil
 	resultScreen, ok := m.stack.Top().(screens.ResultModel)
 	if !ok {
 		return
@@ -279,6 +302,15 @@ func (m *Model) finishExecution(msg executionFinishedMsg) {
 	resultScreen.SetOutcome(msg.result, msg.err)
 	m.stack.ReplaceTop(resultScreen)
 	m.syncRecentCommands()
+}
+
+func (m *Model) cancelActiveExecution() {
+	if m.cancelExecution != nil {
+		m.cancelExecution()
+	}
+
+	m.cancelExecution = nil
+	m.activeExecutionID = 0
 }
 
 // sizeScreen applies the latest known terminal geometry to a newly opened screen.

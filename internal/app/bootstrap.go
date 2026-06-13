@@ -127,6 +127,7 @@ func Bootstrap() (Model, func() error, error) {
 	model.confirmApprove = translator.T("confirm.approve")
 	model.confirmBack = translator.T("confirm.back")
 	model.resultRunning = translator.T("result.running")
+	model.resultCancel = translator.T("result.cancel")
 	model.resultDone = translator.T("result.done")
 	model.resultScroll = translator.T("result.scroll")
 	model.resultBack = translator.T("result.back")

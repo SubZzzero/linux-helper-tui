@@ -137,6 +137,7 @@ func (m *Model) refreshScreen(screen tea.Model) tea.Model {
 			m.locale,
 			m.styles,
 			translator.T("result.running"),
+			translator.T("result.cancel"),
 			translator.T("result.done"),
 			translator.T("result.back"),
 			translator.T("result.scroll"),

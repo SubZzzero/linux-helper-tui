@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/stretchr/testify/assert"
@@ -36,6 +37,7 @@ type fakeExecutor struct {
 	result models.ExecutionResult
 	err    error
 	called int
+	run    func(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool) (models.ExecutionResult, error)
 }
 
 type fakeFavorites struct {
@@ -47,8 +49,11 @@ type fakeRecent struct {
 }
 
 // Execute records one execution request.
-func (e *fakeExecutor) Execute(_ context.Context, _ models.Recipe, _ map[string]string, _ bool) (models.ExecutionResult, error) {
+func (e *fakeExecutor) Execute(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool) (models.ExecutionResult, error) {
 	e.called++
+	if e.run != nil {
+		return e.run(ctx, recipe, values, confirmed)
+	}
 	return e.result, e.err
 }
 
@@ -108,6 +113,7 @@ func appTestTranslations() map[string]models.LocalizedText {
 		"confirm.approve":      {"en": "Approve EN", "ua": "Схвалити UA", "ru": "Подтвердить RU"},
 		"confirm.back":         {"en": "Cancel EN", "ua": "Скасувати UA", "ru": "Отменить RU"},
 		"result.running":       {"en": "Running EN", "ua": "Виконується UA", "ru": "Выполняется RU"},
+		"result.cancel":        {"en": "Cancel running EN", "ua": "Скасувати виконання UA", "ru": "Прервать выполнение RU"},
 		"result.done":          {"en": "Done EN", "ua": "Готово UA", "ru": "Готово RU"},
 		"result.scroll":        {"en": "Scroll EN", "ua": "Прокрутка UA", "ru": "Прокрутка RU"},
 		"result.back":          {"en": "Back result EN", "ua": "Назад результат UA", "ru": "Назад результат RU"},
@@ -336,4 +342,44 @@ func TestModelThemeHotkeyOnResultScreenPreservesOutput(t *testing.T) {
 	assert.Contains(t, updated.View(), "Scroll EN")
 	require.Len(t, saved, 1)
 	assert.Equal(t, "light", saved[0].Theme)
+}
+
+// TestModelCancelsRunningExecutionOnEscape returns to the previous screen without quitting.
+func TestModelCancelsRunningExecutionOnEscape(t *testing.T) {
+	canceled := make(chan struct{}, 1)
+	executor := &fakeExecutor{
+		run: func(ctx context.Context, _ models.Recipe, _ map[string]string, _ bool) (models.ExecutionResult, error) {
+			<-ctx.Done()
+			canceled <- struct{}{}
+			return models.ExecutionResult{Command: "tail -f /var/log/syslog", ExitCode: -1}, ctx.Err()
+		},
+	}
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, executor, nil)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	require.NotNil(t, cmd)
+
+	go func() {
+		_ = cmd()
+	}()
+
+	assert.Contains(t, updated.View(), "Running command")
+	assert.Contains(t, updated.View(), "Press esc to stop and go back")
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	assert.Contains(t, updated.View(), "Preview")
+	assert.Contains(t, updated.View(), "find .")
+	assert.Equal(t, 1, executor.called)
+
+	select {
+	case <-canceled:
+	case <-time.After(time.Second):
+		t.Fatal("expected running command to be canceled")
+	}
+	assert.NotContains(t, updated.View(), "Execution finished")
+	assert.NotContains(t, updated.View(), "context canceled")
+	assert.NotContains(t, updated.View(), "tail -f /var/log/syslog")
 }

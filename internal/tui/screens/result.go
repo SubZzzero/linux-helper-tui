@@ -18,6 +18,7 @@ type ResultModel struct {
 	locale      string
 	styles      uitheme.Styles
 	runningText string
+	cancelText  string
 	doneText    string
 	backText    string
 	scrollText  string
@@ -25,18 +26,20 @@ type ResultModel struct {
 	err         error
 	running     bool
 	pendingBack bool
+	pendingStop bool
 	width       int
 	height      int
 	viewport    viewport.Model
 }
 
 // NewResultModel constructs an execution result screen in running state.
-func NewResultModel(recipe models.Recipe, locale string, styles uitheme.Styles, runningText string, doneText string, backText string, scrollText string) ResultModel {
+func NewResultModel(recipe models.Recipe, locale string, styles uitheme.Styles, runningText string, cancelText string, doneText string, backText string, scrollText string) ResultModel {
 	return ResultModel{
 		recipe:      recipe,
 		locale:      locale,
 		styles:      styles,
 		runningText: runningText,
+		cancelText:  cancelText,
 		doneText:    doneText,
 		backText:    backText,
 		scrollText:  scrollText,
@@ -73,10 +76,24 @@ func (m ResultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
+		case "esc":
+			m.pendingStop = true
 		}
 	}
 
 	return m, nil
+}
+
+// ConsumeStop reports whether the running command should be interrupted.
+func (m *ResultModel) ConsumeStop() bool {
+	stop := m.pendingStop
+	m.pendingStop = false
+	return stop
+}
+
+// Running reports whether the command is still executing.
+func (m ResultModel) Running() bool {
+	return m.running
 }
 
 // ConsumeBack reports whether the result screen requested a pop.
@@ -95,10 +112,11 @@ func (m *ResultModel) SetOutcome(result models.ExecutionResult, err error) {
 }
 
 // SetPresentation updates localized strings and styles without resetting state.
-func (m *ResultModel) SetPresentation(locale string, styles uitheme.Styles, runningText string, doneText string, backText string, scrollText string) {
+func (m *ResultModel) SetPresentation(locale string, styles uitheme.Styles, runningText string, cancelText string, doneText string, backText string, scrollText string) {
 	m.locale = locale
 	m.styles = styles
 	m.runningText = runningText
+	m.cancelText = cancelText
 	m.doneText = doneText
 	m.backText = backText
 	m.scrollText = scrollText
@@ -110,7 +128,7 @@ func (m ResultModel) View() string {
 	title := m.styles.Title.Render(resolveRecipeText(m.locale, m.recipe.Title))
 
 	if m.running {
-		lines := []string{title, "", m.styles.Accent.Render(m.runningText)}
+		lines := []string{title, "", m.styles.Accent.Render(m.runningText), m.styles.Muted.Render(m.cancelText)}
 		return renderFrame(m.styles, m.width, lines)
 	}
 

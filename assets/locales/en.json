@@ -18,6 +18,7 @@
   "confirm.approve": "Press enter to continue",
   "confirm.back": "Press esc to cancel",
   "result.running": "Running command...",
+  "result.cancel": "Press esc to stop and go back",
   "result.done": "Execution finished",
   "result.scroll": "Use up/down or pgup/pgdn to scroll",
   "result.back": "Press enter or esc to return"

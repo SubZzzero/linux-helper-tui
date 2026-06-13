@@ -307,6 +307,7 @@ func TestResultModelScrollsLargeOutput(t *testing.T) {
 		"en",
 		testStyles(),
 		"Running",
+		"Stop",
 		"Done",
 		"Back",
 		"Scroll",
@@ -341,6 +342,25 @@ func TestResultModelScrollsLargeOutput(t *testing.T) {
 	updated, _ = resultModel.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	resultModel = updated.(screens.ResultModel)
 	assert.True(t, (&resultModel).ConsumeBack())
+}
+
+// TestResultModelRunningEscapeRequestsStop uses escape to interrupt a running command.
+func TestResultModelRunningEscapeRequestsStop(t *testing.T) {
+	model := screens.NewResultModel(
+		models.Recipe{Title: models.LocalizedText{"en": "Follow logs"}},
+		"en",
+		testStyles(),
+		"Running",
+		"Stop",
+		"Done",
+		"Back",
+		"Scroll",
+	)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	resultModel := updated.(screens.ResultModel)
+	assert.True(t, (&resultModel).ConsumeStop())
+	assert.False(t, (&resultModel).ConsumeBack())
 }
 
 func findLineContaining(view string, substring string) string {

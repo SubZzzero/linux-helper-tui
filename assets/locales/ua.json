@@ -18,6 +18,7 @@
   "confirm.approve": "Натисніть enter, щоб продовжити",
   "confirm.back": "Натисніть esc, щоб скасувати",
   "result.running": "Команда виконується...",
+  "result.cancel": "Натисніть esc, щоб зупинити і повернутись",
   "result.done": "Виконання завершено",
   "result.scroll": "Використовуйте up/down або pgup/pgdn для прокрутки",
   "result.back": "Натисніть enter або esc, щоб повернутись"
