@@ -113,14 +113,24 @@ func TestCatalogModelRecentCommands(t *testing.T) {
 // TestCatalogModelBackReturnsToCategories uses escape to leave a category.
 func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
-	model.SetSelectedCategory(models.CategoryFilesystem)
 
-	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEsc})
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	catalogModel := updated.(screens.CatalogModel)
+	category, ok := (&catalogModel).ConsumeCategorySelection()
+	require.True(t, ok)
+	assert.Equal(t, models.CategorySystem, category)
+
+	catalogModel.SetSelectedCategory(category)
+
+	updated, _ = catalogModel.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	view := updated.View()
 
 	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
 	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
 	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
+	assert.Contains(t, findLineContaining(view, "System"), ">")
+	assert.NotContains(t, findLineContaining(view, "Filesystem"), ">")
 	assert.NotContains(t, view, "[*] Find file")
 }
 

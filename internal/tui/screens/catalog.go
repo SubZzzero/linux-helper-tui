@@ -69,9 +69,10 @@ func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case "esc", "backspace", "q":
 			if m.selectedCategory != "" {
+				selectedCategory := m.selectedCategory
 				m.selectedCategory = ""
-				m.selected = 0
 				m.applyCategoryFilter()
+				m.selected = categoryIndex(m.categories, selectedCategory)
 			}
 			return m, nil
 		case "up", "ctrl+p":
@@ -420,6 +421,16 @@ func containsCategory(categories []models.Category, target models.Category) bool
 	}
 
 	return false
+}
+
+func categoryIndex(categories []models.Category, selected models.Category) int {
+	for index, category := range categories {
+		if category == selected {
+			return index
+		}
+	}
+
+	return 0
 }
 
 func categoryLine(locale string, category models.Category, nameWidth int) string {
