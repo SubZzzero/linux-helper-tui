@@ -1,0 +1,27 @@
+id: tcp-connections
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ss
+command: ""
+title:
+  en: "List TCP connections"
+  ua: "Показати TCP-з'єднання"
+  ru: "Показать TCP-соединения"
+description:
+  en: "List active TCP sockets with numeric addresses and process information."
+  ua: "Показує активні TCP-сокети з числовими адресами та інформацією про процеси."
+  ru: "Показывает активные TCP-сокеты с числовыми адресами и информацией о процессах."
+args:
+  - "-tanp"
+fields: []
+tags:
+  - network
+  - tcp
+  - sockets
+examples:
+  - args: {}
+    description:
+      en: "Inspect established and listening TCP sockets"

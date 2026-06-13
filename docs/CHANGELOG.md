@@ -1,5 +1,11 @@
 ## Unreleased
 
+- Add forty-eight bundled recipes across all eleven catalog categories and raise the embedded corpus to `151` validated recipes.
+- Add Phase 6 coverage tests for `internal/app`, `internal/executor`, `internal/models`, and `internal/recipes`, clearing the `80%` quality gates for the required core packages.
+- Add catalog-first benchmarks for embedded recipe loading, registry bootstrap, catalog initialization, and category filtering at a `200`-recipe scale.
+- Add dangerous-confirm regression coverage, confirm-screen presentation refresh coverage, and a bootstrap fallback for invalid persisted theme names.
+- Add a `make bench` target and align milestone docs with the shipped browse-only catalog architecture.
+- Mark `Phase 6` complete after corpus growth, benchmark coverage, smoke hardening, and release-alignment verification.
 - Initialize the `linux-helper` repository structure.
 - Add a minimal Bubble Tea application scaffold with embedded assets.
 - Add loader, search, storage, executor, and service foundations.
@@ -36,3 +42,4 @@
 - Add in-app theme switching with `ctrl+t`, persistence to `config.yaml`, and embedded theme smoke coverage.
 - Refresh active TUI screens in place after locale and theme changes so forms and result views keep their state.
 - Mark `Phase 5` complete after the expanded corpus, persistence flow, and validation gates pass.
+- Remove conflicting single-letter action hotkeys from the TUI flow, keep `esc` as the back action, move favorites to `ctrl+f`, and document the keyboard-safety rule in the roadmap so text input remains usable.

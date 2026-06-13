@@ -1,0 +1,27 @@
+id: cpu-pressure
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: cat
+command: ""
+title:
+  en: "Show CPU pressure stall data"
+  ua: "Показати дані про тиск CPU"
+  ru: "Показать данные о давлении CPU"
+description:
+  en: "Print Linux PSI CPU pressure information for the current system."
+  ua: "Показує інформацію Linux PSI про тиск CPU для поточної системи."
+  ru: "Показывает информацию Linux PSI о давлении CPU для текущей системы."
+args:
+  - "/proc/pressure/cpu"
+fields: []
+tags:
+  - troubleshooting
+  - cpu
+  - psi
+examples:
+  - args: {}
+    description:
+      en: "Inspect whether tasks are stalling due to CPU contention"

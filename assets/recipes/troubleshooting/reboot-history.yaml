@@ -1,0 +1,28 @@
+id: reboot-history
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: last
+command: ""
+title:
+  en: "Show reboot history"
+  ua: "Показати історію перезавантажень"
+  ru: "Показать историю перезагрузок"
+description:
+  en: "Print recent reboot events recorded in the wtmp database."
+  ua: "Показує недавні події перезавантаження, записані в базі wtmp."
+  ru: "Показывает недавние события перезагрузки, записанные в базе wtmp."
+args:
+  - "-x"
+  - "reboot"
+fields: []
+tags:
+  - troubleshooting
+  - reboot
+  - history
+examples:
+  - args: {}
+    description:
+      en: "Review recent reboot events during incident analysis"

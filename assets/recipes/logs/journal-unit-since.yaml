@@ -1,0 +1,55 @@
+id: journal-unit-since
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show service journal since time"
+  ua: "Показати журнал служби з певного часу"
+  ru: "Показать журнал службы с определенного времени"
+description:
+  en: "Read journal entries for one systemd unit newer than a chosen time expression."
+  ua: "Читає записи журналу для одного systemd-юніта, новіші за вибраний часовий вираз."
+  ru: "Читает записи журнала для одного systemd-юнита, новее выбранного временного выражения."
+args:
+  - "-u"
+  - "{{unit}}"
+  - "--since"
+  - "{{since}}"
+  - "-n"
+  - "{{lines}}"
+  - "--no-pager"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+  - name: since
+    type: string
+    required: true
+    default: "2 hours ago"
+    description:
+      en: "Time expression understood by journalctl"
+  - name: lines
+    type: string
+    required: true
+    default: "100"
+    description:
+      en: "Number of journal lines to show"
+tags:
+  - logs
+  - journalctl
+  - systemd
+  - time
+examples:
+  - args:
+      unit: "nginx.service"
+      since: "today"
+      lines: "200"
+    description:
+      en: "Inspect nginx journal entries since the start of today"

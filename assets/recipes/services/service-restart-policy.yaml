@@ -1,0 +1,39 @@
+id: service-restart-policy
+version: 1
+type: recipe
+category: services
+risk: elevated
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show service restart policy"
+  ua: "Показати політику перезапуску служби"
+  ru: "Показать политику перезапуска службы"
+description:
+  en: "Show restart-related properties for one systemd unit."
+  ua: "Показує властивості, пов'язані з перезапуском, для одного systemd-юніта."
+  ru: "Показывает свойства, связанные с перезапуском, для одного systemd-юнита."
+args:
+  - "show"
+  - "{{unit}}"
+  - "--property"
+  - "Restart"
+  - "--property"
+  - "RestartUSec"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - restart
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Inspect restart behavior configured for nginx"

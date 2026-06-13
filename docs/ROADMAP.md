@@ -57,26 +57,27 @@
 `AGENTS.md` defines the project constraints, milestone targets, and quality gates that this roadmap must mirror.
 
 ### Current baseline
-- `Phase 1` through `Phase 4` are complete.
-- `Phase 5` is complete.
+- `Phase 1` through `Phase 6` are complete.
 - The current root TUI flow is a browse-only recipe catalog.
 - The embedded corpus currently covers eleven active categories: `filesystem`, `environment`, `logs`, `network`, `packages`, `processes`, `services`, `system`, `text`, `troubleshooting`, and `users`.
-- The embedded corpus currently includes `103` validated recipes.
+- The embedded corpus currently includes `151` validated recipes.
 - Locale can now be switched in-app with `ctrl+l` and persists to `~/.config/linux-helper/config.yaml`, with `en` as the default locale.
 - Theme can now be switched in-app with `ctrl+t` and persists to `~/.config/linux-helper/config.yaml`, with `dark` as the default theme.
+- Do not reintroduce single-letter or destructive text-editing hotkeys for navigation or confirmation on screens that may receive typed input. Keep conflict-prone actions on non-text keys such as `esc`, `enter`, arrows, `tab`, and explicit `ctrl+...` bindings.
+- Persisted invalid theme names now fall back to the default embedded theme instead of blocking startup.
 
 ### Ongoing quality gates
 - Keep the application offline-first and single-binary.
 - Keep all assets embedded at build time.
 - Run `go test ./... -race` before closing a phase.
 - Keep `golangci-lint run` clean before closing a phase.
-- Maintain at least `80%` coverage for `recipes/`, `search/`, `executor/`, and `models/`.
+- Maintain at least `80%` coverage for `recipes/`, `app/`, `executor/`, and `models/`.
 
 ### Milestone targets carried forward from `AGENTS.md`
 - Reach `150+` bundled recipes.
 - Keep the built binary below `20 MB`.
 - Measure startup below `200 ms` for `200` recipes.
-- Measure search below `50 ms` for `200` recipes.
+- Measure catalog discovery operations below `50 ms` for `200` recipes.
 - Keep valid recipe parse success above `99%`.
 
 ## Phase 4 - Category Expansion
@@ -130,22 +131,24 @@
 
 ## Phase 6 - Milestone M5 And Release Hardening
 
-**Status**: [ ] Not started
+**Status**: [x] Done
 
 ### Tasks
-- [ ] Grow the embedded recipe library to `150+` bundled recipes from the now-expanded category set.
-- [ ] Add or refine benchmarks that track startup, search, and corpus growth over time.
-- [ ] Close coverage gaps in the core packages called out by `AGENTS.md`.
-- [ ] Run a full TUI smoke pass across catalog, forms, confirmations, execution, favorites, and recent commands.
-- [ ] Smoke-test locale and theme switching hotkeys across the main TUI flow.
-- [ ] Stabilize the user experience for a larger corpus and broader category set.
-- [ ] Prepare the project for a release-quality milestone with consistent docs and changelog updates.
+- [x] Grow the embedded recipe library to `150+` bundled recipes from the now-expanded category set.
+- [x] Add benchmarks that track startup, catalog discovery, and corpus loading at milestone scale.
+- [x] Close coverage gaps in the core packages called out by `AGENTS.md`.
+- [x] Run a full TUI smoke pass across catalog, forms, confirmations, execution, and recent commands.
+- [x] Smoke-test locale and theme switching hotkeys across the main TUI flow.
+- [x] Stabilize the user experience for a larger corpus and broader category set.
+- [x] Prepare the project for a release-quality milestone with consistent docs and changelog updates.
+- [x] Keep keyboard UX safe for text entry and avoid reintroducing conflicting single-letter shortcuts such as `q`, `r`, `f`, `k`, `j`, `y`, `n`, or `backspace` as action triggers.
+- [x] Keep `favorites` as a supported product feature after the final cleanup pass.
 
 ### Exit criteria
 - The embedded recipe library reaches at least `150` validated recipes.
 - Benchmarks exist for the critical performance paths and run cleanly.
 - Startup stays below `200 ms` for `200` recipes.
-- Search stays below `50 ms` for `200` recipes.
+- Catalog discovery operations stay below `50 ms` for `200` recipes.
 - Valid recipe parse success stays above `99%`.
 - `go build` produces one binary smaller than `20 MB`.
 - Coverage targets are met for the required core packages.

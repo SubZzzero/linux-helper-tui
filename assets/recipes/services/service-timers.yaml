@@ -1,0 +1,29 @@
+id: service-timers
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "List systemd timers"
+  ua: "Показати таймери systemd"
+  ru: "Показать таймеры systemd"
+description:
+  en: "List active and inactive systemd timers with their next run time."
+  ua: "Показує активні та неактивні таймери systemd з часом наступного запуску."
+  ru: "Показывает активные и неактивные таймеры systemd со временем следующего запуска."
+args:
+  - "list-timers"
+  - "--all"
+  - "--no-pager"
+fields: []
+tags:
+  - services
+  - systemctl
+  - timers
+examples:
+  - args: {}
+    description:
+      en: "Review scheduled systemd timer activity"

@@ -1,0 +1,35 @@
+id: user-primary-group
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: id
+command: ""
+title:
+  en: "Show a user's primary group"
+  ua: "Показати основну групу користувача"
+  ru: "Показать основную группу пользователя"
+description:
+  en: "Print the primary group name for one user account."
+  ua: "Показує назву основної групи для одного облікового запису користувача."
+  ru: "Показывает название основной группы для одной учетной записи пользователя."
+args:
+  - "-gn"
+  - "{{user}}"
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - groups
+  - id
+examples:
+  - args:
+      user: "postgres"
+    description:
+      en: "Show the primary group used by the postgres account"

@@ -1,0 +1,45 @@
+id: journal-priority-range
+version: 1
+type: recipe
+category: logs
+risk: elevated
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show journal entries by priority"
+  ua: "Показати записи журналу за пріоритетом"
+  ru: "Показать записи журнала по приоритету"
+description:
+  en: "Filter journal entries at or above one syslog priority level since a given time."
+  ua: "Фільтрує записи журналу на рівні одного пріоритету syslog або вище, починаючи з вказаного часу."
+  ru: "Фильтрует записи журнала на уровне одного приоритета syslog или выше, начиная с указанного времени."
+args:
+  - "-p"
+  - "{{priority}}"
+  - "--since"
+  - "{{since}}"
+  - "--no-pager"
+fields:
+  - name: priority
+    type: string
+    required: true
+    default: "warning"
+    description:
+      en: "Minimum syslog priority"
+  - name: since
+    type: string
+    required: true
+    default: "today"
+    description:
+      en: "Journal start time expression"
+tags:
+  - logs
+  - journalctl
+  - priority
+examples:
+  - args:
+      priority: "err"
+      since: "-2h"
+    description:
+      en: "Review recent error-level journal entries from the last two hours"

@@ -1,0 +1,33 @@
+id: user-home-disk-usage
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: shell
+binary: ""
+command: "du -sh \"$(getent passwd {{user}} | cut -d: -f6)\""
+title:
+  en: "Show a user's home directory size"
+  ua: "Показати розмір домашнього каталогу користувача"
+  ru: "Показать размер домашнего каталога пользователя"
+description:
+  en: "Resolve one user's home directory and print its total disk usage."
+  ua: "Визначає домашній каталог користувача і показує його загальне використання диска."
+  ru: "Определяет домашний каталог пользователя и показывает его общее использование диска."
+args: []
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - home
+  - disk
+examples:
+  - args:
+      user: "www-data"
+    description:
+      en: "Measure the home directory footprint for the web service account"

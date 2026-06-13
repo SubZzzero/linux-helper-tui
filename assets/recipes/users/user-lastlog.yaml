@@ -1,0 +1,35 @@
+id: user-lastlog
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: lastlog
+command: ""
+title:
+  en: "Show a user's last login record"
+  ua: "Показати останній запис входу користувача"
+  ru: "Показать последнюю запись входа пользователя"
+description:
+  en: "Print the last recorded login for one user account."
+  ua: "Показує останній зафіксований вхід для одного облікового запису."
+  ru: "Показывает последний зафиксированный вход для одной учетной записи."
+args:
+  - "-u"
+  - "{{user}}"
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - login
+  - audit
+examples:
+  - args:
+      user: "ubuntu"
+    description:
+      en: "Check when the ubuntu account last logged in"

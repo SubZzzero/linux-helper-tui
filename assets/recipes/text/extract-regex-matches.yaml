@@ -1,0 +1,43 @@
+id: extract-regex-matches
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: grep
+command: ""
+title:
+  en: "Extract regex matches"
+  ua: "Витягти збіги регулярного виразу"
+  ru: "Извлечь совпадения регулярного выражения"
+description:
+  en: "Print only the matching text fragments for an extended regular expression."
+  ua: "Виводить лише фрагменти тексту, що збіглися з розширеним регулярним виразом."
+  ru: "Выводит только фрагменты текста, совпавшие с расширенным регулярным выражением."
+args:
+  - "-oE"
+  - "{{pattern}}"
+  - "{{path}}"
+fields:
+  - name: pattern
+    type: string
+    required: true
+    default: "[0-9]+"
+    description:
+      en: "Extended regular expression"
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Input file path"
+tags:
+  - text
+  - grep
+  - regex
+examples:
+  - args:
+      pattern: "[A-Z]{2,}"
+      path: "/etc/os-release"
+    description:
+      en: "Extract uppercase keys from os-release"

@@ -1,0 +1,27 @@
+id: memory-pressure
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: cat
+command: ""
+title:
+  en: "Show memory pressure stall data"
+  ua: "Показати дані про тиск пам'яті"
+  ru: "Показать данные о давлении памяти"
+description:
+  en: "Print Linux PSI memory pressure information for the current system."
+  ua: "Показує інформацію Linux PSI про тиск пам'яті для поточної системи."
+  ru: "Показывает информацию Linux PSI о давлении памяти для текущей системы."
+args:
+  - "/proc/pressure/memory"
+fields: []
+tags:
+  - troubleshooting
+  - memory
+  - psi
+examples:
+  - args: {}
+    description:
+      en: "Inspect whether memory contention is delaying tasks"

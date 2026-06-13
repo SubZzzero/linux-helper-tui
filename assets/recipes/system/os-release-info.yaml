@@ -1,0 +1,27 @@
+id: os-release-info
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: cat
+command: ""
+title:
+  en: "Show OS release information"
+  ua: "Показати інформацію про реліз ОС"
+  ru: "Показать информацию о релизе ОС"
+description:
+  en: "Print the operating system release metadata from /etc/os-release."
+  ua: "Показує метадані релізу операційної системи з /etc/os-release."
+  ru: "Показывает метаданные релиза операционной системы из /etc/os-release."
+args:
+  - "/etc/os-release"
+fields: []
+tags:
+  - system
+  - os
+  - release
+examples:
+  - args: {}
+    description:
+      en: "Review distro name, version, and identifiers"

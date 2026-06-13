@@ -1,0 +1,27 @@
+id: file-descriptor-usage
+version: 1
+type: recipe
+category: troubleshooting
+risk: safe
+execution: direct
+binary: cat
+command: ""
+title:
+  en: "Show system file descriptor usage"
+  ua: "Показати використання файлових дескрипторів системи"
+  ru: "Показать использование файловых дескрипторов системы"
+description:
+  en: "Print the kernel counters for allocated and maximum file descriptors."
+  ua: "Показує лічильники ядра для виділених і максимальних файлових дескрипторів."
+  ru: "Показывает счетчики ядра для выделенных и максимальных файловых дескрипторов."
+args:
+  - "/proc/sys/fs/file-nr"
+fields: []
+tags:
+  - troubleshooting
+  - files
+  - procfs
+examples:
+  - args: {}
+    description:
+      en: "Check global file descriptor pressure"

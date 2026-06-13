@@ -1,0 +1,36 @@
+id: list-broken-symlinks
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "List broken symlinks"
+  ua: "Показати зламані символічні посилання"
+  ru: "Показать битые символические ссылки"
+description:
+  en: "Find symbolic links whose targets no longer exist under one path."
+  ua: "Знаходить символічні посилання, цілі яких більше не існують, під одним шляхом."
+  ru: "Находит символические ссылки, цели которых больше не существуют, под одним путем."
+args:
+  - "{{path}}"
+  - "-xtype"
+  - "l"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+tags:
+  - filesystem
+  - symlink
+  - find
+examples:
+  - args:
+      path: "/etc"
+    description:
+      en: "Look for broken symbolic links under /etc"

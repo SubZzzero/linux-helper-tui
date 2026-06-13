@@ -1,0 +1,33 @@
+id: installed-package-version
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v dpkg-query >/dev/null 2>&1; then dpkg-query -W -f='${Package} ${Version}\n' {{package}}; elif command -v rpm >/dev/null 2>&1; then rpm -q {{package}}; elif command -v pacman >/dev/null 2>&1; then pacman -Q {{package}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Show installed package version"
+  ua: "Показати версію встановленого пакунка"
+  ru: "Показать версию установленного пакета"
+description:
+  en: "Print the installed version for one package name."
+  ua: "Виводить встановлену версію для одного пакунка."
+  ru: "Выводит установленную версию для одного пакета."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - version
+  - inventory
+examples:
+  - args:
+      package: "openssh-server"
+    description:
+      en: "Print the installed version of the SSH server package"

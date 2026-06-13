@@ -1,0 +1,27 @@
+id: swap-devices
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: swapon
+command: ""
+title:
+  en: "List swap devices"
+  ua: "Показати пристрої підкачки"
+  ru: "Показать устройства подкачки"
+description:
+  en: "List active swap files and devices with capacity and usage."
+  ua: "Показує активні swap-файли та пристрої з розміром і використанням."
+  ru: "Показывает активные swap-файлы и устройства с размером и использованием."
+args:
+  - "--show"
+fields: []
+tags:
+  - system
+  - swap
+  - memory
+examples:
+  - args: {}
+    description:
+      en: "Inspect configured swap capacity"

@@ -76,3 +76,26 @@ func TestResultModelSetPresentationPreservesViewport(t *testing.T) {
 	assert.Contains(t, view, "Прокрутка")
 	assert.Contains(t, view, "line 20")
 }
+
+// TestConfirmModelSetPresentationPreservesPendingAction keeps approval state through refreshes.
+func TestConfirmModelSetPresentationPreservesPendingAction(t *testing.T) {
+	model := screens.NewConfirmModel(
+		models.Recipe{Title: models.LocalizedText{"en": "Delete logs", "ua": "Видалити логи"}, Risk: models.RiskDangerous},
+		"en",
+		testStyles(),
+		"rm -rf /tmp/logs",
+		"Confirm",
+		"Approve",
+		"Back",
+	)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	confirmModel := updated.(screens.ConfirmModel)
+	confirmModel.SetPresentation("ua", altStyles(), "Підтвердити", "Схвалити", "Назад")
+
+	view := confirmModel.View()
+	assert.Contains(t, view, "Підтвердити")
+	assert.Contains(t, view, "Видалити логи")
+	assert.True(t, confirmModel.ConsumeConfirm())
+	assert.False(t, confirmModel.ConsumeConfirm())
+}

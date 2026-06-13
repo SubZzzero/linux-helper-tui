@@ -1,0 +1,26 @@
+id: shell-version
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: shell
+binary: ""
+command: "printf '%s\n' \"${BASH_VERSION:-$SHELL}\""
+title:
+  en: "Show shell version hint"
+  ua: "Показати підказку версії оболонки"
+  ru: "Показать подсказку версии оболочки"
+description:
+  en: "Print the current Bash version when available, or fall back to the shell path."
+  ua: "Виводить поточну версію Bash, якщо вона доступна, або шлях до оболонки як запасний варіант."
+  ru: "Выводит текущую версию Bash, если она доступна, или путь к оболочке как запасной вариант."
+args: []
+fields: []
+tags:
+  - environment
+  - shell
+  - version
+examples:
+  - args: {}
+    description:
+      en: "Check which interactive shell version is currently active"

@@ -1,0 +1,34 @@
+id: print-variable
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: direct
+binary: printenv
+command: ""
+title:
+  en: "Print one environment variable"
+  ua: "Показати одну змінну середовища"
+  ru: "Показать одну переменную окружения"
+description:
+  en: "Print the value of one exported environment variable."
+  ua: "Виводить значення однієї експортованої змінної середовища."
+  ru: "Выводит значение одной экспортированной переменной окружения."
+args:
+  - "{{name}}"
+fields:
+  - name: name
+    type: string
+    required: true
+    default: "HOME"
+    description:
+      en: "Environment variable name"
+tags:
+  - environment
+  - variables
+  - printenv
+examples:
+  - args:
+      name: "LANG"
+    description:
+      en: "Show the current locale environment variable"

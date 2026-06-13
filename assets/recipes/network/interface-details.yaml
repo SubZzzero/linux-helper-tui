@@ -1,0 +1,38 @@
+id: interface-details
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show detailed interface information"
+  ua: "Показати детальну інформацію про інтерфейс"
+  ru: "Показать подробную информацию об интерфейсе"
+description:
+  en: "Print detailed link-layer information for one network interface."
+  ua: "Показує детальну інформацію канального рівня для одного мережевого інтерфейсу."
+  ru: "Показывает подробную информацию канального уровня для одного сетевого интерфейса."
+args:
+  - "-d"
+  - "link"
+  - "show"
+  - "dev"
+  - "{{interface}}"
+fields:
+  - name: interface
+    type: string
+    required: true
+    default: "eth0"
+    description:
+      en: "Network interface name"
+tags:
+  - network
+  - interface
+  - ip
+examples:
+  - args:
+      interface: "lo"
+    description:
+      en: "Inspect detailed attributes of the loopback interface"

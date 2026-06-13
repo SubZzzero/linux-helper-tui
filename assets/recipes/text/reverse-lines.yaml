@@ -1,0 +1,34 @@
+id: reverse-lines
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: direct
+binary: tac
+command: ""
+title:
+  en: "Reverse file lines"
+  ua: "Показати рядки файлу у зворотному порядку"
+  ru: "Показать строки файла в обратном порядке"
+description:
+  en: "Print a file with lines in reverse order."
+  ua: "Виводить файл з рядками у зворотному порядку."
+  ru: "Выводит файл со строками в обратном порядке."
+args:
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/etc/passwd"
+    description:
+      en: "Input file path"
+tags:
+  - text
+  - file
+  - order
+examples:
+  - args:
+      path: "/var/log/dpkg.log"
+    description:
+      en: "Read a package log from the newest line back"

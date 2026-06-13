@@ -1,0 +1,33 @@
+id: repository-package-search
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt-cache >/dev/null 2>&1; then apt-cache search {{term}}; elif command -v dnf >/dev/null 2>&1; then dnf search {{term}}; elif command -v pacman >/dev/null 2>&1; then pacman -Ss {{term}}; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "Search package repositories"
+  ua: "Шукати пакунки в репозиторіях"
+  ru: "Искать пакеты в репозиториях"
+description:
+  en: "Search locally available package metadata for packages matching a term."
+  ua: "Шукає в локально доступних метаданих пакунків записи, що відповідають терміну."
+  ru: "Ищет в локально доступных метаданных пакетов записи, соответствующие термину."
+args: []
+fields:
+  - name: term
+    type: string
+    required: true
+    default: "openssl"
+    description:
+      en: "Search term"
+tags:
+  - packages
+  - search
+  - repositories
+examples:
+  - args:
+      term: "postgresql"
+    description:
+      en: "Find repository packages related to PostgreSQL"

@@ -1,0 +1,47 @@
+id: translate-characters
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: shell
+binary: ""
+command: "tr '{{from_chars}}' '{{to_chars}}' < {{path}}"
+title:
+  en: "Translate characters in text"
+  ua: "Замінити символи в тексті"
+  ru: "Заменить символы в тексте"
+description:
+  en: "Translate one set of characters into another while streaming a file."
+  ua: "Замінює один набір символів на інший під час потокової обробки файлу."
+  ru: "Заменяет один набор символов на другой при потоковой обработке файла."
+args: []
+fields:
+  - name: from_chars
+    type: string
+    required: true
+    default: "a-z"
+    description:
+      en: "Source character set"
+  - name: to_chars
+    type: string
+    required: true
+    default: "A-Z"
+    description:
+      en: "Replacement character set"
+  - name: path
+    type: string
+    required: true
+    default: "/etc/hostname"
+    description:
+      en: "Input file path"
+tags:
+  - text
+  - tr
+  - transform
+examples:
+  - args:
+      from_chars: "[:lower:]"
+      to_chars: "[:upper:]"
+      path: "/etc/hostname"
+    description:
+      en: "Convert a hostname file to uppercase for inspection"

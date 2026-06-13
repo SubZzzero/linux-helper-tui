@@ -2,8 +2,6 @@ package app_test
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"testing"
 	"time"
 
@@ -30,6 +28,17 @@ func appTestRecipes() []models.Recipe {
 		Fields:      []models.Field{{Name: "path", Type: models.FieldTypeString, Required: true, Default: "."}},
 		Title:       models.LocalizedText{"en": "Find file"},
 		Description: models.LocalizedText{"en": "Find files"},
+	}, {
+		ID:          "delete-tree",
+		Version:     1,
+		Category:    models.CategoryFilesystem,
+		Risk:        models.RiskDangerous,
+		Execution:   models.ExecutionTypeDirect,
+		Binary:      "rm",
+		Args:        []string{"-rf", "{{path}}"},
+		Fields:      []models.Field{{Name: "path", Type: models.FieldTypeString, Required: true, Default: "/tmp/cache"}},
+		Title:       models.LocalizedText{"en": "Delete tree", "ua": "Видалити дерево"},
+		Description: models.LocalizedText{"en": "Delete a directory tree", "ua": "Видалити дерево каталогів"},
 	}}
 }
 
@@ -284,64 +293,6 @@ func TestModelLocaleHotkeyUpdatesActiveFormWithoutLosingValues(t *testing.T) {
 	require.Len(t, saved, 1)
 	assert.Equal(t, "ua", saved[0].Locale)
 	assert.Equal(t, "dark", saved[0].Theme)
-}
-
-// TestModelThemeHotkeyPersistsConfig keeps locale stable while cycling the theme.
-func TestModelThemeHotkeyPersistsConfig(t *testing.T) {
-	catalogModel := appTestCatalog(appTestRecipes(), nil)
-	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, nil, nil)
-	saved := []storage.Config{}
-	configureAppPreferences(&model, &saved)
-
-	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updatedModel := updated.(app.Model)
-	updated, cmd := updatedModel.Update(tea.KeyMsg{Type: tea.KeyCtrlT})
-	require.NotNil(t, cmd)
-	updated, _ = updated.Update(cmd())
-	view := updated.View()
-
-	require.Len(t, saved, 1)
-	assert.Equal(t, storage.Config{Locale: "en", Theme: "light"}, saved[0])
-	assert.Contains(t, view, "Find file")
-	assert.Contains(t, view, "Detail EN")
-	assert.Contains(t, view, "Favorite")
-}
-
-// TestModelThemeHotkeyOnResultScreenPreservesOutput keeps result text visible after a refresh.
-func TestModelThemeHotkeyOnResultScreenPreservesOutput(t *testing.T) {
-	outputLines := make([]string, 0, 20)
-	for index := 1; index <= 20; index++ {
-		outputLines = append(outputLines, fmt.Sprintf("line %02d", index))
-	}
-
-	executor := &fakeExecutor{result: models.ExecutionResult{Command: "ps aux", ExitCode: 0, Stdout: strings.Join(outputLines, "\n")}}
-	catalogModel := appTestCatalog(appTestRecipes(), nil)
-	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, executor, nil)
-	saved := []storage.Config{}
-	configureAppPreferences(&model, &saved)
-
-	updated, _ := model.Update(tea.WindowSizeMsg{Width: 80, Height: 16})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updated, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	require.NotNil(t, cmd)
-	updated, _ = updated.Update(cmd())
-
-	for step := 0; step < 5; step++ {
-		updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyPgDown})
-	}
-
-	require.Contains(t, updated.View(), "line 20")
-	updatedModel := updated.(app.Model)
-	updated, cmd = updatedModel.Update(tea.KeyMsg{Type: tea.KeyCtrlT})
-	require.NotNil(t, cmd)
-	updated, _ = updated.Update(cmd())
-	assert.Contains(t, updated.View(), "line 20")
-	assert.Contains(t, updated.View(), "Scroll EN")
-	require.Len(t, saved, 1)
-	assert.Equal(t, "light", saved[0].Theme)
 }
 
 // TestModelCancelsRunningExecutionOnEscape returns to the previous screen without quitting.

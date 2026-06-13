@@ -1,0 +1,43 @@
+id: service-properties
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show selected service properties"
+  ua: "Показати вибрані властивості служби"
+  ru: "Показать выбранные свойства службы"
+description:
+  en: "Print selected systemd properties for one unit in a compact form."
+  ua: "Показує вибрані властивості systemd для одного юніта у компактному вигляді."
+  ru: "Показывает выбранные свойства systemd для одного юнита в компактном виде."
+args:
+  - "show"
+  - "{{unit}}"
+  - "--property={{properties}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+  - name: properties
+    type: string
+    required: true
+    default: "ActiveState,SubState,ExecMainPID"
+    description:
+      en: "Comma-separated property names"
+tags:
+  - services
+  - systemctl
+  - properties
+examples:
+  - args:
+      unit: "nginx.service"
+      properties: "ActiveState,SubState,MainPID"
+    description:
+      en: "Read the current state and main PID for nginx"

@@ -1,0 +1,35 @@
+id: service-is-active
+version: 1
+type: recipe
+category: services
+risk: safe
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Check whether a service is active"
+  ua: "Перевірити, чи активна служба"
+  ru: "Проверить, активна ли служба"
+description:
+  en: "Print the active state of one systemd unit."
+  ua: "Показує активний стан одного systemd-юніта."
+  ru: "Показывает активное состояние одного systemd-юнита."
+args:
+  - "is-active"
+  - "{{unit}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "cron.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - state
+examples:
+  - args:
+      unit: "docker.service"
+    description:
+      en: "Check whether Docker is currently active"

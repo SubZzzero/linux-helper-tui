@@ -1,0 +1,36 @@
+id: route-to-host
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ip
+command: ""
+title:
+  en: "Show route to a host"
+  ua: "Показати маршрут до хоста"
+  ru: "Показать маршрут до хоста"
+description:
+  en: "Ask the kernel which route it would use to reach one destination host."
+  ua: "Запитує ядро, який маршрут воно використає для досягнення вказаного хоста."
+  ru: "Запрашивает у ядра, какой маршрут оно использует для достижения указанного хоста."
+args:
+  - "route"
+  - "get"
+  - "{{host}}"
+fields:
+  - name: host
+    type: string
+    required: true
+    default: "8.8.8.8"
+    description:
+      en: "Destination host or IP address"
+tags:
+  - network
+  - routing
+  - ip
+examples:
+  - args:
+      host: "192.168.1.10"
+    description:
+      en: "Check which interface and gateway would reach a LAN host"

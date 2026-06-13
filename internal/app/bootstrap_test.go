@@ -46,3 +46,20 @@ func TestBootstrapUsesPersistedLocaleAndTheme(t *testing.T) {
 	assert.NotContains(t, view, "backspace")
 	assert.NotContains(t, view, " або q")
 }
+
+// TestBootstrapFallsBackToDefaultTheme keeps startup working after theme removals.
+func TestBootstrapFallsBackToDefaultTheme(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	configPath := filepath.Join(home, ".config", "linux-helper", "config.yaml")
+	require.NoError(t, os.MkdirAll(filepath.Dir(configPath), 0o755))
+	require.NoError(t, os.WriteFile(configPath, []byte("locale: ua\ntheme: missing\n"), 0o644))
+
+	model, closeLog, err := app.Bootstrap()
+	require.NoError(t, err)
+	defer func() { require.NoError(t, closeLog()) }()
+
+	view := model.View()
+	assert.Contains(t, view, "Останні команди")
+	assert.Contains(t, view, "ctrl+l мова")
+}

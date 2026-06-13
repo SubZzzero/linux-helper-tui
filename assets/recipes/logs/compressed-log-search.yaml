@@ -1,0 +1,43 @@
+id: compressed-log-search
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: direct
+binary: zgrep
+command: ""
+title:
+  en: "Search inside a compressed log"
+  ua: "Шукати всередині стисненого логу"
+  ru: "Искать внутри сжатого лога"
+description:
+  en: "Search a gzip-compressed log file for matching lines."
+  ua: "Шукає рядки, що збігаються, у gzip-стисненому лог-файлі."
+  ru: "Ищет совпадающие строки в gzip-сжатом лог-файле."
+args:
+  - "-n"
+  - "{{pattern}}"
+  - "{{path}}"
+fields:
+  - name: pattern
+    type: string
+    required: true
+    default: "error"
+    description:
+      en: "Search pattern"
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog.1.gz"
+    description:
+      en: "Compressed log file path"
+tags:
+  - logs
+  - grep
+  - gzip
+examples:
+  - args:
+      pattern: "nginx"
+      path: "/var/log/nginx/access.log.1.gz"
+    description:
+      en: "Search the previous compressed nginx access log"

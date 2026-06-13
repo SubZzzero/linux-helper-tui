@@ -1,0 +1,26 @@
+id: recent-auth-failures
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: shell
+binary: ""
+command: "if [ -f /var/log/auth.log ]; then grep -inE 'failed|failure|invalid user' /var/log/auth.log; elif [ -f /var/log/secure ]; then grep -inE 'failed|failure|invalid user' /var/log/secure; else echo 'No auth log found' >&2; exit 1; fi"
+title:
+  en: "Search recent authentication failures"
+  ua: "Шукати недавні збої автентифікації"
+  ru: "Искать недавние ошибки аутентификации"
+description:
+  en: "Scan common auth log files for failed login and invalid user messages."
+  ua: "Переглядає типові auth-логи на повідомлення про невдалі входи та невідомих користувачів."
+  ru: "Просматривает типичные auth-логи на сообщения о неудачных входах и неизвестных пользователях."
+args: []
+fields: []
+tags:
+  - logs
+  - auth
+  - grep
+examples:
+  - args: {}
+    description:
+      en: "Review local authentication failure messages"

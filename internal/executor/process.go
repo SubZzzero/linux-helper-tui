@@ -10,6 +10,16 @@ import (
 	"linux-helper/internal/models"
 )
 
+var runProcess = func(ctx context.Context, name string, args ...string) (string, string, error) {
+	cmd := exec.CommandContext(ctx, name, args...)
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	return stdout.String(), stderr.String(), err
+}
+
 // CommandRunner abstracts process execution for tests.
 type CommandRunner interface {
 	Run(ctx context.Context, name string, args ...string) (models.ExecutionResult, error)
@@ -21,13 +31,7 @@ type OSRunner struct{}
 
 // Run executes a binary with arguments.
 func (OSRunner) Run(ctx context.Context, name string, args ...string) (models.ExecutionResult, error) {
-	cmd := exec.CommandContext(ctx, name, args...)
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
+	stdout, stderr, err := runProcess(ctx, name, args...)
 	command := name
 	if len(args) > 0 {
 		command += " " + joinArgs(args)
@@ -35,8 +39,8 @@ func (OSRunner) Run(ctx context.Context, name string, args ...string) (models.Ex
 
 	result := models.ExecutionResult{
 		Command:  command,
-		Stdout:   stdout.String(),
-		Stderr:   stderr.String(),
+		Stdout:   stdout,
+		Stderr:   stderr,
 		ExitCode: exitCode(err),
 	}
 	if err != nil {
@@ -77,7 +81,8 @@ func exitCode(err error) int {
 		return 0
 	}
 
-	var exitErr *exec.ExitError
+	type exitCoder interface{ ExitCode() int }
+	var exitErr exitCoder
 	if errors.As(err, &exitErr) {
 		return exitErr.ExitCode()
 	}

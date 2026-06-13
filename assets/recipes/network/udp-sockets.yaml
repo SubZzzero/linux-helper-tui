@@ -1,0 +1,27 @@
+id: udp-sockets
+version: 1
+type: recipe
+category: network
+risk: safe
+execution: direct
+binary: ss
+command: ""
+title:
+  en: "List UDP sockets"
+  ua: "Показати UDP-сокети"
+  ru: "Показать UDP-сокеты"
+description:
+  en: "List UDP sockets with numeric addresses and process information."
+  ua: "Показує UDP-сокети з числовими адресами та інформацією про процеси."
+  ru: "Показывает UDP-сокеты с числовыми адресами и информацией о процессах."
+args:
+  - "-uanp"
+fields: []
+tags:
+  - network
+  - udp
+  - sockets
+examples:
+  - args: {}
+    description:
+      en: "Inspect local UDP listeners and peers"

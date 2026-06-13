@@ -1,0 +1,37 @@
+id: find-empty-files
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find empty files"
+  ua: "Знайти порожні файли"
+  ru: "Найти пустые файлы"
+description:
+  en: "Search a directory tree for zero-byte files."
+  ua: "Шукає файли нульового розміру в дереві каталогів."
+  ru: "Ищет файлы нулевого размера в дереве каталогов."
+args:
+  - "{{path}}"
+  - "-type"
+  - "f"
+  - "-empty"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+tags:
+  - filesystem
+  - find
+  - files
+examples:
+  - args:
+      path: "/tmp"
+    description:
+      en: "Look for empty files under /tmp"

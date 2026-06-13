@@ -1,0 +1,33 @@
+id: package-reverse-dependencies
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt-cache >/dev/null 2>&1; then apt-cache rdepends {{package}}; elif command -v dnf >/dev/null 2>&1 && command -v repoquery >/dev/null 2>&1; then repoquery --whatrequires {{package}}; elif command -v pacman >/dev/null 2>&1; then pactree -r {{package}}; else echo 'No supported reverse dependency query found' >&2; exit 1; fi"
+title:
+  en: "Show reverse package dependencies"
+  ua: "Показати зворотні залежності пакунка"
+  ru: "Показать обратные зависимости пакета"
+description:
+  en: "List packages that depend on one target package when the local toolchain supports it."
+  ua: "Показує пакунки, що залежать від вказаного пакунка, якщо локальний набір інструментів це підтримує."
+  ru: "Показывает пакеты, которые зависят от указанного пакета, если локальный набор инструментов это поддерживает."
+args: []
+fields:
+  - name: package
+    type: string
+    required: true
+    default: "openssl"
+    description:
+      en: "Package name"
+tags:
+  - packages
+  - dependencies
+  - reverse
+examples:
+  - args:
+      package: "libssl3"
+    description:
+      en: "Inspect which installed packages rely on OpenSSL libraries"

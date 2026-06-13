@@ -1,0 +1,35 @@
+id: user-id-number
+version: 1
+type: recipe
+category: users
+risk: safe
+execution: direct
+binary: id
+command: ""
+title:
+  en: "Show a user's numeric UID"
+  ua: "Показати числовий UID користувача"
+  ru: "Показать числовой UID пользователя"
+description:
+  en: "Print the numeric user ID for one account."
+  ua: "Показує числовий ідентифікатор користувача для одного облікового запису."
+  ru: "Показывает числовой идентификатор пользователя для одной учетной записи."
+args:
+  - "-u"
+  - "{{user}}"
+fields:
+  - name: user
+    type: string
+    required: true
+    default: "root"
+    description:
+      en: "User name to inspect"
+tags:
+  - users
+  - uid
+  - id
+examples:
+  - args:
+      user: "nobody"
+    description:
+      en: "Print the numeric UID for the nobody account"

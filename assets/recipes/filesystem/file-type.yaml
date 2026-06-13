@@ -1,0 +1,34 @@
+id: file-type
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: file
+command: ""
+title:
+  en: "Detect file type"
+  ua: "Визначити тип файлу"
+  ru: "Определить тип файла"
+description:
+  en: "Inspect one path and print the detected file type."
+  ua: "Перевіряє один шлях і виводить визначений тип файлу."
+  ru: "Проверяет один путь и выводит определенный тип файла."
+args:
+  - "{{path}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/etc/passwd"
+    description:
+      en: "File path to inspect"
+tags:
+  - filesystem
+  - file
+  - metadata
+examples:
+  - args:
+      path: "/bin/bash"
+    description:
+      en: "Identify the type of the Bash executable"

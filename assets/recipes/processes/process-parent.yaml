@@ -1,0 +1,37 @@
+id: process-parent
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: ps
+command: ""
+title:
+  en: "Show process parent"
+  ua: "Показати батьківський процес"
+  ru: "Показать родительский процесс"
+description:
+  en: "Show the parent process ID and command line for one process."
+  ua: "Показує ідентифікатор батьківського процесу та командний рядок для одного процесу."
+  ru: "Показывает идентификатор родительского процесса и командную строку для одного процесса."
+args:
+  - "-o"
+  - "ppid=,cmd="
+  - "-p"
+  - "{{pid}}"
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process identifier"
+tags:
+  - processes
+  - ps
+  - parent
+examples:
+  - args:
+      pid: "1234"
+    description:
+      en: "Show the parent process details for PID 1234"

@@ -1,0 +1,33 @@
+id: unique-line-counts
+version: 1
+type: recipe
+category: text
+risk: safe
+execution: shell
+binary: ""
+command: "sort {{path}} | uniq -c"
+title:
+  en: "Count unique lines"
+  ua: "Порахувати унікальні рядки"
+  ru: "Подсчитать уникальные строки"
+description:
+  en: "Sort a file and count how many times each unique line appears."
+  ua: "Сортує файл і рахує, скільки разів зустрічається кожен унікальний рядок."
+  ru: "Сортирует файл и считает, сколько раз встречается каждая уникальная строка."
+args: []
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "/var/log/syslog"
+    description:
+      en: "Input file path"
+tags:
+  - text
+  - sort
+  - uniq
+examples:
+  - args:
+      path: "/etc/passwd"
+    description:
+      en: "Count repeated lines in passwd-style data"

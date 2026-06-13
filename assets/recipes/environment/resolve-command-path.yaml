@@ -1,0 +1,33 @@
+id: resolve-command-path
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: shell
+binary: ""
+command: "command -v {{command_name}}"
+title:
+  en: "Resolve a command in PATH"
+  ua: "Знайти команду в PATH"
+  ru: "Найти команду в PATH"
+description:
+  en: "Show which executable the shell would run for one command name."
+  ua: "Показує, який виконуваний файл оболонка запустить для вказаної команди."
+  ru: "Показывает, какой исполняемый файл оболочка запустит для указанной команды."
+args: []
+fields:
+  - name: command_name
+    type: string
+    required: true
+    default: "bash"
+    description:
+      en: "Command name to resolve"
+tags:
+  - environment
+  - path
+  - shell
+examples:
+  - args:
+      command_name: "systemctl"
+    description:
+      en: "Show where the systemctl executable is located"

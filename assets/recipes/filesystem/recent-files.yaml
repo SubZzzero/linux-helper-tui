@@ -1,0 +1,45 @@
+id: recent-files
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find recently modified files"
+  ua: "Знайти нещодавно змінені файли"
+  ru: "Найти недавно измененные файлы"
+description:
+  en: "Search for files modified within the last N days."
+  ua: "Шукає файли, змінені протягом останніх N днів."
+  ru: "Ищет файлы, измененные в течение последних N дней."
+args:
+  - "{{path}}"
+  - "-type"
+  - "f"
+  - "-mtime"
+  - "-{{days}}"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+  - name: days
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Maximum file age in days"
+tags:
+  - filesystem
+  - find
+  - modified
+examples:
+  - args:
+      path: "/etc"
+      days: "7"
+    description:
+      en: "List files changed in /etc during the last week"

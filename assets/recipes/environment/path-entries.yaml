@@ -1,0 +1,26 @@
+id: path-entries
+version: 1
+type: recipe
+category: environment
+risk: safe
+execution: shell
+binary: ""
+command: "printf '%s\n' \"$PATH\" | tr ':' '\n'"
+title:
+  en: "List PATH entries"
+  ua: "Показати елементи PATH"
+  ru: "Показать элементы PATH"
+description:
+  en: "Split the current PATH variable into one directory per line."
+  ua: "Розбиває поточну змінну PATH на окремі каталоги по одному в рядку."
+  ru: "Разбивает текущую переменную PATH на отдельные каталоги по одному в строке."
+args: []
+fields: []
+tags:
+  - environment
+  - path
+  - shell
+examples:
+  - args: {}
+    description:
+      en: "Inspect the command search path one entry at a time"

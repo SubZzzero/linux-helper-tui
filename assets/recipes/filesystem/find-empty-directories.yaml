@@ -1,0 +1,37 @@
+id: find-empty-directories
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+command: ""
+title:
+  en: "Find empty directories"
+  ua: "Знайти порожні каталоги"
+  ru: "Найти пустые каталоги"
+description:
+  en: "Search a directory tree for empty directories."
+  ua: "Шукає порожні каталоги в дереві каталогів."
+  ru: "Ищет пустые каталоги в дереве каталогов."
+args:
+  - "{{path}}"
+  - "-type"
+  - "d"
+  - "-empty"
+fields:
+  - name: path
+    type: string
+    required: true
+    default: "."
+    description:
+      en: "Search root directory"
+tags:
+  - filesystem
+  - find
+  - directories
+examples:
+  - args:
+      path: "/var/tmp"
+    description:
+      en: "Look for empty directories under /var/tmp"

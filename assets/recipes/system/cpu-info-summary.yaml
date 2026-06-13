@@ -1,0 +1,26 @@
+id: cpu-info-summary
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: lscpu
+command: ""
+title:
+  en: "Show CPU summary"
+  ua: "Показати зведення про CPU"
+  ru: "Показать сводку о CPU"
+description:
+  en: "Print the CPU architecture, topology, and virtualization summary."
+  ua: "Показує зведення про архітектуру CPU, топологію та віртуалізацію."
+  ru: "Показывает сводку об архитектуре CPU, топологии и виртуализации."
+args: []
+fields: []
+tags:
+  - system
+  - cpu
+  - hardware
+examples:
+  - args: {}
+    description:
+      en: "Inspect CPU capabilities and topology"

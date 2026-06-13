@@ -1,0 +1,27 @@
+id: journal-disk-usage
+version: 1
+type: recipe
+category: logs
+risk: safe
+execution: direct
+binary: journalctl
+command: ""
+title:
+  en: "Show journal disk usage"
+  ua: "Показати використання диска журналом"
+  ru: "Показать использование диска журналом"
+description:
+  en: "Print how much disk space the local systemd journal currently uses."
+  ua: "Показує, скільки місця на диску зараз використовує локальний журнал systemd."
+  ru: "Показывает, сколько места на диске сейчас использует локальный журнал systemd."
+args:
+  - "--disk-usage"
+fields: []
+tags:
+  - logs
+  - journalctl
+  - disk
+examples:
+  - args: {}
+    description:
+      en: "Check how much space journald consumes"

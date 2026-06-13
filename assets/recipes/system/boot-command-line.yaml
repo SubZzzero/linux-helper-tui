@@ -1,0 +1,27 @@
+id: boot-command-line
+version: 1
+type: recipe
+category: system
+risk: safe
+execution: direct
+binary: cat
+command: ""
+title:
+  en: "Show kernel boot command line"
+  ua: "Показати командний рядок завантаження ядра"
+  ru: "Показать командную строку загрузки ядра"
+description:
+  en: "Print the kernel command line used for the current boot."
+  ua: "Показує командний рядок ядра, використаний для поточного завантаження."
+  ru: "Показывает командную строку ядра, использованную для текущей загрузки."
+args:
+  - "/proc/cmdline"
+fields: []
+tags:
+  - system
+  - kernel
+  - boot
+examples:
+  - args: {}
+    description:
+      en: "Inspect kernel parameters passed at boot"

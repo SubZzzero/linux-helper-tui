@@ -1,0 +1,35 @@
+id: process-cpu-affinity
+version: 1
+type: recipe
+category: processes
+risk: safe
+execution: direct
+binary: taskset
+command: ""
+title:
+  en: "Show process CPU affinity"
+  ua: "Показати прив'язку процесу до CPU"
+  ru: "Показать привязку процесса к CPU"
+description:
+  en: "Print the CPU affinity mask configured for one process ID."
+  ua: "Показує маску прив'язки до CPU, налаштовану для одного PID."
+  ru: "Показывает маску привязки к CPU, настроенную для одного PID."
+args:
+  - "-pc"
+  - "{{pid}}"
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process ID"
+tags:
+  - processes
+  - cpu
+  - taskset
+examples:
+  - args:
+      pid: "1234"
+    description:
+      en: "Inspect the CPU affinity for PID 1234"

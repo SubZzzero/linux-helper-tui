@@ -1,0 +1,26 @@
+id: explicit-packages
+version: 1
+type: recipe
+category: packages
+risk: safe
+execution: shell
+binary: ""
+command: "if command -v apt-mark >/dev/null 2>&1; then apt-mark showmanual; elif command -v dnf >/dev/null 2>&1; then dnf repoquery --userinstalled; elif command -v pacman >/dev/null 2>&1; then pacman -Qe; else echo 'No supported package manager found' >&2; exit 1; fi"
+title:
+  en: "List explicitly installed packages"
+  ua: "Показати явно встановлені пакунки"
+  ru: "Показать явно установленные пакеты"
+description:
+  en: "List packages that were explicitly installed rather than pulled in automatically."
+  ua: "Показує пакунки, які були встановлені явно, а не підтягнуті автоматично."
+  ru: "Показывает пакеты, которые были установлены явно, а не подтянуты автоматически."
+args: []
+fields: []
+tags:
+  - packages
+  - inventory
+  - package-manager
+examples:
+  - args: {}
+    description:
+      en: "Review the packages chosen directly by an operator"

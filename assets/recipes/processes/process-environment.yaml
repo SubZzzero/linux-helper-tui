@@ -1,0 +1,33 @@
+id: process-environment
+version: 1
+type: recipe
+category: processes
+risk: elevated
+execution: shell
+binary: ""
+command: "tr '\0' '\n' </proc/{{pid}}/environ"
+title:
+  en: "Show process environment"
+  ua: "Показати середовище процесу"
+  ru: "Показать окружение процесса"
+description:
+  en: "Print environment variables exported into one running process."
+  ua: "Виводить змінні середовища, експортовані в один запущений процес."
+  ru: "Выводит переменные окружения, экспортированные в один запущенный процесс."
+args: []
+fields:
+  - name: pid
+    type: string
+    required: true
+    default: "1"
+    description:
+      en: "Process ID"
+tags:
+  - processes
+  - environment
+  - procfs
+examples:
+  - args:
+      pid: "4321"
+    description:
+      en: "Inspect the environment of PID 4321"

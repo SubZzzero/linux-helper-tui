@@ -57,7 +57,11 @@ func Bootstrap() (Model, func() error, error) {
 
 	definition, err := uitheme.ResolveDefinition(themes, config.Theme)
 	if err != nil {
-		return Model{}, nil, err
+		definition, err = uitheme.ResolveDefinition(themes, storage.DefaultConfig().Theme)
+		if err != nil {
+			return Model{}, nil, err
+		}
+		config.Theme = definition.Name
 	}
 
 	styles := uitheme.NewStyles(definition)

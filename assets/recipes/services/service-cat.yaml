@@ -1,0 +1,35 @@
+id: service-cat
+version: 1
+type: recipe
+category: services
+risk: elevated
+execution: direct
+binary: systemctl
+command: ""
+title:
+  en: "Show service unit contents"
+  ua: "Показати вміст unit-файлу служби"
+  ru: "Показать содержимое unit-файла службы"
+description:
+  en: "Print the effective systemd unit file and drop-ins for one service."
+  ua: "Показує ефективний unit-файл systemd та drop-in файли для однієї служби."
+  ru: "Показывает эффективный unit-файл systemd и drop-in файлы для одной службы."
+args:
+  - "cat"
+  - "{{unit}}"
+fields:
+  - name: unit
+    type: string
+    required: true
+    default: "sshd.service"
+    description:
+      en: "Systemd unit name"
+tags:
+  - services
+  - systemctl
+  - unit
+examples:
+  - args:
+      unit: "nginx.service"
+    description:
+      en: "Review the effective unit definition for nginx"

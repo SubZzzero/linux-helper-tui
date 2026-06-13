@@ -7,7 +7,7 @@ programming. You are thoughtful, give nuanced answers, and reason carefully befo
 any code.
 
 This project is **linux-helper** — an offline TUI application for Linux/DevOps/SRE engineers
-to search, fill, preview, and execute CLI command recipes without internet access, AI, or
+to browse, fill, preview, and execute CLI command recipes without internet access, AI, or
 external services. The single binary embeds all assets at build time.
 
 **Primary principles:**
@@ -29,7 +29,7 @@ external services. The single binary embeds all assets at build time.
 | UI components | `github.com/charmbracelet/bubbles` | list, textinput, spinner, paginator, viewport |
 | Styling | `github.com/charmbracelet/lipgloss` | All colors/borders via lipgloss; no raw ANSI |
 | YAML | `gopkg.in/yaml.v3` | Recipe loading and config persistence |
-| Fuzzy search | `github.com/sahilm/fuzzy` | In-memory index; no external process |
+| Catalog discovery | stdlib + Bubble Tea state | Browse-only category-first navigation; no free-text root search |
 | Assertions (test) | `github.com/stretchr/testify` | `assert` and `require` packages only |
 | Asset embedding | `embed` (stdlib) | Bundles recipes, locales, themes into binary |
 | Logging | `log/slog` (stdlib) | Structured, level-based; writes to file only (never stdout) |
@@ -49,9 +49,9 @@ linux-helper/
 ├── internal/
 │   ├── app/
 │   │   ├── app.go             # Root Bubble Tea model, top-level Update/View
-│   │   └── bootstrap.go       # Loads config, recipes, index; returns App
+│   │   └── bootstrap.go       # Loads config, recipes, and presentation resources; returns App
 │   ├── tui/
-│   │   ├── screens/           # One file per screen (search, detail, confirm, …)
+│   │   ├── screens/           # One file per screen (catalog, detail, confirm, …)
 │   │   ├── widgets/           # Reusable components (recipe card, field form, …)
 │   │   ├── layouts/           # Layout helpers (split panes, centering, …)
 │   │   └── navigation/        # Screen stack / router
@@ -60,10 +60,6 @@ linux-helper/
 │   │   ├── parser.go          # yaml.v3 → domain model
 │   │   ├── validator.go       # Validates required fields, known enums
 │   │   └── registry.go        # In-memory map[id]Recipe
-│   ├── search/
-│   │   ├── index.go           # Builds string corpus from recipes
-│   │   ├── fuzzy.go           # Wraps sahilm/fuzzy
-│   │   └── ranking.go         # Score normalisation, tie-breaking
 │   ├── executor/
 │   │   ├── direct.go          # exec.Command(binary, args…)
 │   │   ├── shell.go           # exec.Command("bash", "-c", cmd)
@@ -77,8 +73,7 @@ linux-helper/
 │   │   ├── recent.go          # Ring-buffer of last N commands
 │   │   └── config.go          # Reads/writes ~/.config/linux-helper/config.yaml
 │   ├── services/
-│   │   ├── recipe_service.go  # Orchestrates loader + registry + search
-│   │   ├── search_service.go  # Exposes Search(query) []Recipe
+│   │   ├── recipe_service.go  # Orchestrates loader + registry
 │   │   └── execution_service.go # Orchestrates executor + risk + storage.recent
 │   ├── models/
 │   │   ├── recipe.go          # Recipe, RiskLevel, ExecutionType
@@ -246,7 +241,7 @@ User-override files in `~/.config/linux-helper/` are loaded with `os` — they a
       Run(ctx context.Context, name string, args ...string) (ExecutionResult, error)
   }
   ```
-- Minimum coverage target: **80%** for `recipes/`, `search/`, `executor/`, `models/`.
+- Minimum coverage target: **80%** for `recipes/`, `app/`, `executor/`, `models/`.
 - Run `go test ./... -race` before marking any task complete.
 
 ---
@@ -340,6 +335,7 @@ build      # go build -o bin/linux-helper ./cmd/linux-helper
 test       # go test ./... -race -count=1
 lint       # golangci-lint run
 cover      # go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
+bench      # go test ./... -run '^$' -bench .
 clean      # rm -rf bin/ coverage.out
 ```
 
@@ -349,14 +345,14 @@ clean      # rm -rf bin/ coverage.out
 
 | Milestone | Deliverable | Exit Test |
 |---|---|---|
-| M1 | Recipe loader, validator, search index | Unit tests; search returns correct recipes |
+| M1 | Recipe loader, validator, registry | Unit tests; embedded corpus loads and validates |
 | M2 | Executor (direct + shell), risk engine, preview | Integration test; commands run + captured |
-| M3 | Full TUI: search screen, categories, navigation | Manual smoke test; keyboard navigation works |
+| M3 | Full TUI: catalog, categories, navigation | Manual smoke test; keyboard navigation works |
 | M4 | i18n EN/UA/RU, favorites, recent | Unit tests; locale strings load; favorites persist |
 | M5 | 150+ bundled recipes, single binary build | `go build` produces one binary < 20 MB; startup < 200 ms |
 
 **Performance targets (must be measured with `go test -bench`):**
 
-- Startup (recipe load + index build): **< 200 ms** for 200 recipes.
-- Search query: **< 50 ms** for 200 recipes.
+- Startup (recipe load + catalog bootstrap): **< 200 ms** for 200 recipes.
+- Catalog discovery operations: **< 50 ms** for 200 recipes.
 - Recipe parse success rate: **> 99%** on valid YAML corpus.

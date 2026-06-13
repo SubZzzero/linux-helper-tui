@@ -1,6 +1,7 @@
 package recipes_test
 
 import (
+	"errors"
 	"io/fs"
 	"regexp"
 	"testing"
@@ -73,6 +74,154 @@ description:
 	assert.Equal(t, "find-file", recipe.ID)
 }
 
+// TestLoaderLoadOverridesMergeAndSort prefers overrides and returns sorted results.
+func TestLoaderLoadOverridesMergeAndSort(t *testing.T) {
+	t.Parallel()
+
+	embedded := fstest.MapFS{
+		"recipes/z-last.yaml": {Data: []byte(`id: z-last
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: ls
+title:
+  en: Last
+`)},
+		"recipes/shared.yaml": {Data: []byte(`id: shared
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+title:
+  en: Embedded
+`)},
+	}
+
+	override := fstest.MapFS{
+		"recipes/a-first.yaml": {Data: []byte(`id: a-first
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: pwd
+title:
+  en: First
+`)},
+		"recipes/shared.yaml": {Data: []byte(`id: shared
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: printf
+title:
+  en: Override
+`)},
+	}
+
+	loaded, err := recipes.NewLoader(embedded, override, "recipes").Load()
+	require.NoError(t, err)
+	require.Len(t, loaded, 3)
+	assert.Equal(t, []string{"a-first", "shared", "z-last"}, []string{loaded[0].ID, loaded[1].ID, loaded[2].ID})
+	assert.Equal(t, "printf", loaded[1].Binary)
+	assert.Equal(t, "Override", loaded[1].Title.Resolve("en"))
+}
+
+// TestLoaderLoadMissingOverridePath ignores an absent override tree.
+func TestLoaderLoadMissingOverridePath(t *testing.T) {
+	t.Parallel()
+
+	loader := recipes.NewLoader(fstest.MapFS{
+		"recipes/find.yaml": {Data: []byte(`id: find-file
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+binary: find
+title:
+  en: Find file
+`)},
+	}, fstest.MapFS{}, "recipes")
+
+	loaded, err := loader.Load()
+	require.NoError(t, err)
+	require.Len(t, loaded, 1)
+	assert.Equal(t, "find-file", loaded[0].ID)
+}
+
+// TestLoaderLoadErrors wraps parser, validator, and filesystem failures.
+func TestLoaderLoadErrors(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		loader  *recipes.Loader
+		wantErr string
+	}{
+		{
+			name: "parse error",
+			loader: recipes.NewLoader(fstest.MapFS{
+				"recipes/bad.yaml": {Data: []byte("id: [")},
+			}, nil, "recipes"),
+			wantErr: "recipes/bad.yaml: parse recipe yaml:",
+		},
+		{
+			name: "validation error",
+			loader: recipes.NewLoader(fstest.MapFS{
+				"recipes/invalid.yaml": {Data: []byte(`id: invalid
+version: 1
+type: recipe
+category: filesystem
+risk: safe
+execution: direct
+title:
+  en: Invalid
+`)},
+			}, nil, "recipes"),
+			wantErr: "recipes/invalid.yaml: validate recipe: recipe \"invalid\" binary is required for direct execution",
+		},
+		{
+			name:    "walk error",
+			loader:  recipes.NewLoader(errFS{err: errors.New("boom")}, nil, "recipes"),
+			wantErr: "walk recipes: boom",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			_, err := tt.loader.Load()
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), tt.wantErr)
+		})
+	}
+}
+
+// TestRegistryBranches covers duplicate IDs, missing recipes, and copy semantics.
+func TestRegistryBranches(t *testing.T) {
+	t.Parallel()
+
+	_, err := recipes.NewRegistry([]models.Recipe{{ID: "dup"}, {ID: "dup"}})
+	assert.ErrorIs(t, err, recipes.ErrDuplicateRecipeID)
+
+	registry, err := recipes.NewRegistry([]models.Recipe{{ID: "one"}, {ID: "two"}})
+	require.NoError(t, err)
+
+	_, err = registry.Get("missing")
+	assert.ErrorIs(t, err, recipes.ErrRecipeNotFound)
+
+	all := registry.All()
+	all[0].ID = "changed"
+	assert.Equal(t, "one", registry.All()[0].ID)
+}
+
 // TestEmbeddedRecipeCorpusLoads validates all bundled recipe files.
 func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	recipeFS, err := fs.Sub(linuxhelper.Assets, "assets/recipes")
@@ -81,7 +230,7 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	loader := recipes.NewLoader(recipeFS, nil, ".")
 	loaded, err := loader.Load()
 	require.NoError(t, err)
-	assert.GreaterOrEqual(t, len(loaded), 100)
+	assert.GreaterOrEqual(t, len(loaded), 150)
 
 	ids := make(map[string]struct{}, len(loaded))
 	categoryCounts := make(map[string]int)
@@ -125,18 +274,33 @@ func TestEmbeddedRecipeCorpusLoads(t *testing.T) {
 	assert.Contains(t, ids, "journal-priority-errors")
 	assert.Contains(t, ids, "port-owner")
 	assert.Contains(t, ids, "systemd-critical-chain")
+	assert.Contains(t, ids, "path-entries")
+	assert.Contains(t, ids, "recent-files")
+	assert.Contains(t, ids, "journal-disk-usage")
+	assert.Contains(t, ids, "route-to-host")
+	assert.Contains(t, ids, "repository-package-search")
+	assert.Contains(t, ids, "process-environment")
+	assert.Contains(t, ids, "service-timers")
+	assert.Contains(t, ids, "cpu-info-summary")
+	assert.Contains(t, ids, "unique-line-counts")
+	assert.Contains(t, ids, "user-home-disk-usage")
+	assert.Contains(t, ids, "memory-pressure")
+	assert.Contains(t, ids, "list-broken-symlinks")
+	assert.Contains(t, ids, "journal-unit-since")
+	assert.Contains(t, ids, "process-parent")
+	assert.Contains(t, ids, "service-restart-policy")
 	assert.Len(t, categoryCounts, 11)
-	assert.GreaterOrEqual(t, categoryCounts["filesystem"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["environment"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["logs"], 8)
-	assert.GreaterOrEqual(t, categoryCounts["network"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["packages"], 8)
-	assert.GreaterOrEqual(t, categoryCounts["processes"], 8)
-	assert.GreaterOrEqual(t, categoryCounts["services"], 8)
-	assert.GreaterOrEqual(t, categoryCounts["system"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["text"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["troubleshooting"], 10)
-	assert.GreaterOrEqual(t, categoryCounts["users"], 10)
+	assert.GreaterOrEqual(t, categoryCounts["filesystem"], 14)
+	assert.GreaterOrEqual(t, categoryCounts["environment"], 14)
+	assert.GreaterOrEqual(t, categoryCounts["logs"], 12)
+	assert.GreaterOrEqual(t, categoryCounts["network"], 14)
+	assert.GreaterOrEqual(t, categoryCounts["packages"], 12)
+	assert.GreaterOrEqual(t, categoryCounts["processes"], 12)
+	assert.GreaterOrEqual(t, categoryCounts["services"], 12)
+	assert.GreaterOrEqual(t, categoryCounts["system"], 14)
+	assert.GreaterOrEqual(t, categoryCounts["text"], 14)
+	assert.GreaterOrEqual(t, categoryCounts["troubleshooting"], 15)
+	assert.GreaterOrEqual(t, categoryCounts["users"], 14)
 }
 
 // TestEmbeddedRecipeTemplatePlaceholdersMatchFields keeps recipes and fields aligned.
@@ -216,4 +380,13 @@ func recipePlaceholders(recipe models.Recipe) []string {
 	}
 
 	return placeholders
+}
+
+type errFS struct {
+	err error
+}
+
+// Open returns the configured filesystem error.
+func (f errFS) Open(string) (fs.File, error) {
+	return nil, f.err
 }

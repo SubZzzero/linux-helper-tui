@@ -1,0 +1,35 @@
+id: process-by-port
+version: 1
+type: recipe
+category: processes
+risk: elevated
+execution: direct
+binary: lsof
+command: ""
+title:
+  en: "Show processes using a TCP port"
+  ua: "Показати процеси, що використовують TCP-порт"
+  ru: "Показать процессы, использующие TCP-порт"
+description:
+  en: "List processes that listen on or use one TCP port."
+  ua: "Показує процеси, які слухають або використовують один TCP-порт."
+  ru: "Показывает процессы, которые слушают или используют один TCP-порт."
+args:
+  - "-nP"
+  - "-iTCP:{{port}}"
+fields:
+  - name: port
+    type: string
+    required: true
+    default: "22"
+    description:
+      en: "TCP port number"
+tags:
+  - processes
+  - lsof
+  - network
+examples:
+  - args:
+      port: "5432"
+    description:
+      en: "Find which process is using the PostgreSQL port"
