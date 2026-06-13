@@ -1,19 +1,32 @@
 # linux-helper
 
-`linux-helper` is an offline terminal UI for Linux, DevOps, and SRE workflows. It lets you browse command recipes, fill required fields, preview the final command, and execute it locally without depending on external services.
+`linux-helper` is an offline terminal UI for everyday Linux work. It lets you browse command recipes, fill required fields, preview the final command, and execute it locally without depending on external services.
 
 The project is implemented in Go and uses Bubble Tea for the TUI layer. Recipes, locales, and themes are embedded into the binary at build time.
+
+## Screenshots
+
+<p align="center">
+  <img src="img_temp/catalog.png" alt="Catalog screen" width="48%" />
+  <img src="img_temp/recipe-detail.png" alt="Recipe detail screen" width="48%" />
+</p>
+<p align="center">
+  <img src="img_temp/form.png" alt="Recipe form screen" width="48%" />
+  <img src="img_temp/result.png" alt="Execution result screen" width="48%" />
+</p>
 
 ## Current status
 
 The repository currently includes:
 
-- `103` embedded recipes across `11` categories
+- `151` embedded recipes across `11` categories
 - embedded recipe loading with optional user overrides
 - category-first recipe catalog with browse-only root navigation
 - multi-screen Bubble Tea flow: catalog, detail, form, confirmation, result
 - direct and shell-based execution modes
 - risk confirmation for dangerous commands
+- benchmark coverage for startup, embedded loading, registry bootstrap, and catalog discovery
+- release hardening for dangerous-confirm, locale/theme refresh, and theme fallback
 - embedded locales: `en`, `ua`, `ru`
 - embedded themes: `dark`, `light`
 - in-app locale switching with `ctrl+l`
@@ -36,7 +49,13 @@ Representative bundled recipes include:
 - Go `1.22+`
 - `golangci-lint` for linting
 
+## Releases
+
+GitHub Releases can include a prebuilt `linux-helper` binary for Linux, so local Go tooling is only required when building from source.
+
 ## Quick start
+
+Download a release binary or build from source.
 
 Build the binary:
 
@@ -76,6 +95,7 @@ The repository exposes these Make targets:
 - `make test` runs `go test ./... -race -count=1`
 - `make lint` runs `golangci-lint run`
 - `make cover` writes `coverage.out` and opens an HTML coverage report
+- `make bench` runs the benchmark suite for startup and catalog discovery paths
 - `make clean` removes build and coverage artifacts
 
 ## User data paths
@@ -108,6 +128,7 @@ Current behavior:
 - `ctrl+t` cycles the active theme between the embedded themes and persists the choice to `config.yaml`.
 - `en` is the default locale when the config file is missing or `locale` is empty.
 - `dark` is the default theme when the config file is missing or `theme` is empty.
+- Invalid persisted theme names fall back to the default embedded theme.
 - Locale resolution falls back to `en` when a specific translation key is missing.
 
 ## Recipe model
@@ -130,7 +151,6 @@ cmd/linux-helper/        application entry point
 internal/app/           bootstrap and root Bubble Tea model
 internal/tui/           screens, navigation, and theme styling
 internal/recipes/       recipe loading, parsing, validation, registry
-internal/search/        fuzzy search index and ranking
 internal/executor/      command execution and risk handling
 internal/services/      orchestration layer used by the TUI
 internal/storage/       config, favorites, and recent command persistence
@@ -154,17 +174,17 @@ The current application flow is:
 
 ## Keyboard shortcuts
 
-- Catalog: left/right arrows switch category, up/down arrows move, `enter` open recipe, `ctrl+c` quit
+- Catalog: `up/down` or `ctrl+n/ctrl+p` move, `home/end` jump, `enter` open the selected category or recipe, `esc` return from a category to the category list, `ctrl+c` quit
 - Global: `ctrl+l` cycle locale, `ctrl+t` cycle theme
-- Detail: `enter` or `r` continue to the form, `f` toggle favorite, `esc` or `q` go back
-- Form: `tab`, arrows, or `j`/`k` move between fields, `enter` or `ctrl+s` submit, `esc` or `q` go back
-- Confirm: `enter` or `y` approve, `esc`, `q`, or `n` cancel
-- Result: `enter`, `esc`, or `q` return to the previous screen after execution finishes
+- Detail: `enter` continue to the form, `ctrl+f` toggle favorite, `esc` go back, `ctrl+c` quit
+- Form: `tab`, `shift+tab`, arrows, or `ctrl+n/ctrl+p` move between fields, `enter` or `ctrl+s` continue, `esc` go back, `ctrl+c` quit
+- Confirm: `enter` approve, `esc` cancel, `ctrl+c` quit
+- Result: `up/down` or `pgup/pgdn` scroll, `enter` or `esc` return after completion, `esc` stops a running command and goes back, `ctrl+c` quits
 
 ## Catalog categories
 
 - The catalog groups recipes by category.
-- Use left/right arrows to cycle through `All` and the embedded categories, including `troubleshooting` for operator triage workflows.
+- Use `enter` to drill into a category and `esc` to return to the category list, including `troubleshooting` for operator triage workflows.
 - Category filtering works together with favorites and recent commands.
 
 ## Architecture notes
