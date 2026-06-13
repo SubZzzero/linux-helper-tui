@@ -251,12 +251,12 @@ func TestCatalogModelTypingDoesNotChangeView(t *testing.T) {
 	assert.Equal(t, before, updated.View())
 }
 
-// TestDetailModelRunShortcutUsesR.
-func TestDetailModelRunShortcutUsesR(t *testing.T) {
+// TestDetailModelRuneRDoesNotTriggerExecute keeps text runes from acting as shortcuts.
+func TestDetailModelRuneRDoesNotTriggerExecute(t *testing.T) {
 	model := screens.NewDetailModel(models.Recipe{Title: models.LocalizedText{"en": "Find file"}}, "en", testStyles(), false, "Run", "Back", "Favorite", "Remove", "Add")
 	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'r'}, Type: tea.KeyRunes})
 	detailModel := updated.(screens.DetailModel)
-	assert.True(t, (&detailModel).ConsumeExecute())
+	assert.False(t, (&detailModel).ConsumeExecute())
 }
 
 // TestFormModelSubmitShortcutUsesCtrlS.
@@ -285,10 +285,19 @@ func TestFormModelSubmitShortcutUsesCtrlS(t *testing.T) {
 // TestDetailModelToggleFavorite marks the requested change.
 func TestDetailModelToggleFavorite(t *testing.T) {
 	model := screens.NewDetailModel(models.Recipe{Title: models.LocalizedText{"en": "Find file"}}, "en", testStyles(), false, "Run", "Back", "Favorite", "Remove", "Add")
-	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyCtrlF})
 	detailModel := updated.(screens.DetailModel)
 
 	assert.True(t, (&detailModel).ConsumeToggleFavorite())
+}
+
+// TestDetailModelRuneFDoesNotToggleFavorite keeps text runes available for input.
+func TestDetailModelRuneFDoesNotToggleFavorite(t *testing.T) {
+	model := screens.NewDetailModel(models.Recipe{Title: models.LocalizedText{"en": "Find file"}}, "en", testStyles(), false, "Run", "Back", "Favorite", "Remove", "Add")
+	updated, _ := model.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
+	detailModel := updated.(screens.DetailModel)
+
+	assert.False(t, (&detailModel).ConsumeToggleFavorite())
 }
 
 // TestResultModelScrollsLargeOutput keeps large command output accessible in a viewport.

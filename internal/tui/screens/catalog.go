@@ -67,7 +67,7 @@ func (m CatalogModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case "esc", "backspace", "q":
+		case "esc":
 			if m.selectedCategory != "" {
 				selectedCategory := m.selectedCategory
 				m.selectedCategory = ""

@@ -23,6 +23,8 @@ func TestBootstrapUsesDefaultsWhenConfigMissing(t *testing.T) {
 	view := model.View()
 	assert.Contains(t, view, "Recent commands")
 	assert.Contains(t, view, "ctrl+l locale")
+	assert.NotContains(t, view, "backspace")
+	assert.NotContains(t, view, " or q")
 	assert.FileExists(t, filepath.Join(home, ".local", "share", "linux-helper", "app.log"))
 }
 
@@ -41,4 +43,6 @@ func TestBootstrapUsesPersistedLocaleAndTheme(t *testing.T) {
 	view := model.View()
 	assert.Contains(t, view, "Останні команди")
 	assert.Contains(t, view, "ctrl+l мова")
+	assert.NotContains(t, view, "backspace")
+	assert.NotContains(t, view, " або q")
 }

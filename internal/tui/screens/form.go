@@ -66,13 +66,13 @@ func (m FormModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case "esc", "q":
+		case "esc":
 			m.pendingBack = true
 			return m, nil
-		case "up", "k", "ctrl+p", "shift+tab":
+		case "up", "ctrl+p", "shift+tab":
 			m.focusPrevious()
 			return m, nil
-		case "down", "j", "ctrl+n", "tab":
+		case "down", "ctrl+n", "tab":
 			m.focusNext()
 			return m, nil
 		case "enter", "ctrl+s":

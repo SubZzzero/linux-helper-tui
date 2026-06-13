@@ -183,7 +183,7 @@ func TestModelTogglesFavorites(t *testing.T) {
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
-	updated, _ = updated.Update(tea.KeyMsg{Runes: []rune{'f'}, Type: tea.KeyRunes})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyCtrlF})
 
 	assert.Contains(t, updated.View(), "Favorite: yes")
 

@@ -50,10 +50,10 @@ func (m ConfirmModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch typed.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case "enter", "y":
+		case "enter":
 			m.pendingRun = true
 			return m, nil
-		case "esc", "n", "backspace", "q":
+		case "esc":
 			m.pendingBack = true
 			return m, nil
 		}

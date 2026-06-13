@@ -53,11 +53,11 @@ func (m DetailModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = typed.Width
 	case tea.KeyMsg:
 		switch typed.String() {
-		case "esc", "backspace", "q":
+		case "esc":
 			m.back = true
-		case "f":
+		case "ctrl+f":
 			m.toggleFavorite = true
-		case "enter", "r":
+		case "enter":
 			m.start = true
 		case "ctrl+c":
 			return m, tea.Quit
