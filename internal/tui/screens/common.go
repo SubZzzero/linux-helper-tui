@@ -9,7 +9,9 @@ import (
 	uitheme "linux-helper/internal/tui/theme"
 )
 
-const framedVerticalOverhead = 4
+const appFooterText = "Developed by github.com/SubZzzero"
+
+const framedVerticalOverhead = 5
 const framedHorizontalOverhead = 4
 
 // renderFrame renders one framed screen with optional width expansion.
@@ -19,7 +21,19 @@ func renderFrame(styles uitheme.Styles, width int, lines []string) string {
 		frame = frame.Width(max(1, width-2))
 	}
 
-	return frame.Render(strings.Join(lines, "\n"))
+	contentLines := append([]string(nil), lines...)
+	contentLines = append(contentLines, footerLines(styles, width)...)
+	return frame.Render(strings.Join(contentLines, "\n"))
+}
+
+// footerLines renders the shared application footer inside the active frame.
+func footerLines(styles uitheme.Styles, width int) []string {
+	contentWidth := 0
+	if width > 0 {
+		contentWidth = max(1, width-framedHorizontalOverhead)
+	}
+
+	return []string{styles.Muted.Render(truncateText(appFooterText, contentWidth))}
 }
 
 // textWidth returns the visible rune width for simple UI alignment.

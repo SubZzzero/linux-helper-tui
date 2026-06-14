@@ -251,6 +251,13 @@ func TestCatalogModelTypingDoesNotChangeView(t *testing.T) {
 	assert.Equal(t, before, updated.View())
 }
 
+// TestSharedFooterRendersGitHubCredit keeps the application credit visible.
+func TestSharedFooterRendersGitHubCredit(t *testing.T) {
+	model := screens.NewDetailModel(models.Recipe{Title: models.LocalizedText{"en": "Find file"}}, "en", testStyles(), false, "Run", "Back", "Favorite", "Remove", "Add")
+
+	assert.Contains(t, model.View(), "Developed by github.com/SubZzzero")
+}
+
 // TestDetailModelRuneRDoesNotTriggerExecute keeps text runes from acting as shortcuts.
 func TestDetailModelRuneRDoesNotTriggerExecute(t *testing.T) {
 	model := screens.NewDetailModel(models.Recipe{Title: models.LocalizedText{"en": "Find file"}}, "en", testStyles(), false, "Run", "Back", "Favorite", "Remove", "Add")
