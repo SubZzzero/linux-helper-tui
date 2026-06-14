@@ -39,9 +39,6 @@ The repository currently includes:
 - Go `1.22+`
 - `golangci-lint` for linting
 
-## Releases
-
-GitHub Releases can include a prebuilt `linux-helper` binary for Linux, so local Go tooling is only required when building from source.
 
 ## Quick start
 
@@ -162,25 +159,3 @@ The current application flow is:
 5. Confirm execution for dangerous recipes.
 6. Execute and inspect the result screen.
 
-## Keyboard shortcuts
-
-- Catalog: `up/down` or `ctrl+n/ctrl+p` move, `home/end` jump, `enter` open the selected category or recipe, `esc` return from a category to the category list, `ctrl+c` quit
-- Global: `ctrl+l` cycle locale, `ctrl+t` cycle theme
-- Detail: `enter` continue to the form, `ctrl+f` toggle favorite, `esc` go back, `ctrl+c` quit
-- Form: `tab`, `shift+tab`, arrows, or `ctrl+n/ctrl+p` move between fields, `enter` or `ctrl+s` continue, `esc` go back, `ctrl+c` quit
-- Confirm: `enter` approve, `esc` cancel, `ctrl+c` quit
-- Result: `up/down` or `pgup/pgdn` scroll, `enter` or `esc` return after completion, `esc` stops a running command and goes back, `ctrl+c` quits
-
-## Catalog categories
-
-- The catalog groups recipes by category.
-- Use `enter` to drill into a category and `esc` to return to the category list, including `troubleshooting` for operator triage workflows.
-- Category filtering works together with favorites and recent commands.
-
-## Architecture notes
-
-- The app is a single binary.
-- Embedded assets are exposed through `embed.FS`.
-- Blocking work stays out of the Bubble Tea update loop.
-- Logging goes to a file only, never to standard output.
-- Tests cover the core internal packages and TUI transitions.
