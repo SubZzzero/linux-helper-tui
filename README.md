@@ -1,8 +1,12 @@
 # linux-helper
 
-`linux-helper` is an offline terminal UI for everyday Linux work. It lets you browse command recipes, fill required fields, preview the final command, and execute it locally without depending on external services.
+`linux-helper` is an offline terminal UI for discovering, generating, and executing Linux commands.
 
-The project is implemented in Go and uses Bubble Tea for the TUI layer. Recipes, locales, and themes are embedded into the binary at build time.
+Browse 150+ categorized recipes, fill required parameters, preview the final command, and run it locally from a single interface.
+
+Built for Linux administrators, developers, homelab enthusiasts, and anyone tired of memorizing command syntax, flags, and troubleshooting workflows.
+
+
 
 ## Screenshots
 
@@ -19,7 +23,7 @@ The project is implemented in Go and uses Bubble Tea for the TUI layer. Recipes,
 
 The repository currently includes:
 
-- `151` embedded recipes across `11` categories
+- `150` embedded recipes across `11` categories
 - embedded recipe loading with optional user overrides
 - category-first recipe catalog with browse-only root navigation
 - multi-screen Bubble Tea flow: catalog, detail, form, confirmation, result
@@ -28,9 +32,6 @@ The repository currently includes:
 - benchmark coverage for startup, embedded loading, registry bootstrap, and catalog discovery
 - release hardening for dangerous-confirm, locale/theme refresh, and theme fallback
 - embedded locales: `en`, `ua`, `ru`
-- embedded themes: `dark`, `light`
-- in-app locale switching with `ctrl+l`
-- in-app theme switching with `ctrl+t`
 - storage for config, favorites, recent commands, and logs
 
 ## Requirements
@@ -106,17 +107,6 @@ Example configuration:
 locale: en
 theme: dark
 ```
-
-## Locale and theme selection
-
-Current behavior:
-
-- `ctrl+l` cycles the UI locale between the embedded languages and persists the choice to `config.yaml`.
-- `ctrl+t` cycles the active theme between the embedded themes and persists the choice to `config.yaml`.
-- `en` is the default locale when the config file is missing or `locale` is empty.
-- `dark` is the default theme when the config file is missing or `theme` is empty.
-- Invalid persisted theme names fall back to the default embedded theme.
-- Locale resolution falls back to `en` when a specific translation key is missing.
 
 ## Recipe model
 
