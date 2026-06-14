@@ -33,19 +33,9 @@ The repository currently includes:
 - in-app theme switching with `ctrl+t`
 - storage for config, favorites, recent commands, and logs
 
-Representative bundled recipes include:
-
-- filesystem: `find-file`, `list-directory`, `show-file-head`, `show-file-tail`, `count-files`, `find-large-files`
-- environment: `current-date`, `current-hostname`, `print-environment`, `print-path`
-- network: `ping-host`, `dns-lookup`, `listening-ports`, `ip-addresses`
-- system: `disk-usage`, `memory-usage`, `system-uptime`, `kernel-info`, `process-list`, `top-cpu-processes`
-- text: `grep-pattern`, `count-lines`, `cut-fields`, `sort-unique`
-- troubleshooting: `journal-priority-errors`, `port-owner`, `systemd-critical-chain`, `deleted-open-files`
-- users: `current-user`, `user-identity`, `user-groups`, `logged-in-users`
-
 ## Requirements
 
-- Linux
+- Linux (`x86_64` / `amd64`)
 - Go `1.22+`
 - `golangci-lint` for linting
 

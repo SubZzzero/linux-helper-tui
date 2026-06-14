@@ -3,22 +3,18 @@ version: 1
 type: recipe
 category: logs
 risk: elevated
-execution: direct
-binary: journalctl
-command: ""
+execution: shell
+binary: ""
+command: "stdbuf -oL -eL journalctl -u {{unit}} -n 50 -f --no-pager"
 title:
   en: "Follow a service journal live"
   ua: "Стежити за журналом служби в реальному часі"
   ru: "Следить за журналом службы в реальном времени"
 description:
-  en: "Stream new journal entries for one systemd unit."
-  ua: "Потоково показує нові записи журналу для одного systemd-юніта."
-  ru: "Потоково показывает новые записи журнала для одного systemd-юнита."
-args:
-  - "-u"
-  - "{{unit}}"
-  - "-f"
-  - "--no-pager"
+  en: "Show the last 50 journal entries for one systemd unit, then stream new ones live."
+  ua: "Показує останні 50 записів журналу для одного systemd-юніта, а потім потоково показує нові."
+  ru: "Показывает последние 50 записей журнала для одного systemd-юнита, а затем потоково показывает новые."
+args: []
 fields:
   - name: unit
     type: string

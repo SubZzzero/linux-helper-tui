@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os/exec"
 
 	"linux-helper/internal/models"
@@ -20,10 +21,29 @@ var runProcess = func(ctx context.Context, name string, args ...string) (string,
 	return stdout.String(), stderr.String(), err
 }
 
+var runProcessStreaming = func(ctx context.Context, name string, sink OutputSink, args ...string) (string, string, error) {
+	cmd := exec.CommandContext(ctx, name, args...)
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = io.MultiWriter(&stdout, outputWriter{stream: "stdout", sink: sink})
+	cmd.Stderr = io.MultiWriter(&stderr, outputWriter{stream: "stderr", sink: sink})
+	err := cmd.Run()
+	return stdout.String(), stderr.String(), err
+}
+
+// OutputSink receives incremental process output chunks.
+type OutputSink func(stream string, chunk string)
+
 // CommandRunner abstracts process execution for tests.
 type CommandRunner interface {
 	Run(ctx context.Context, name string, args ...string) (models.ExecutionResult, error)
 	RunShell(ctx context.Context, command string) (models.ExecutionResult, error)
+}
+
+// StreamingCommandRunner emits output while the process is still running.
+type StreamingCommandRunner interface {
+	RunStreaming(ctx context.Context, name string, sink OutputSink, args ...string) (models.ExecutionResult, error)
+	RunShellStreaming(ctx context.Context, command string, sink OutputSink) (models.ExecutionResult, error)
 }
 
 // OSRunner executes commands on the current machine.
@@ -61,6 +81,38 @@ func (runner OSRunner) RunShell(ctx context.Context, command string) (models.Exe
 	return result, nil
 }
 
+// RunStreaming executes a binary and reports output chunks as they arrive.
+func (OSRunner) RunStreaming(ctx context.Context, name string, sink OutputSink, args ...string) (models.ExecutionResult, error) {
+	stdout, stderr, err := runProcessStreaming(ctx, name, sink, args...)
+	command := name
+	if len(args) > 0 {
+		command += " " + joinArgs(args)
+	}
+
+	result := models.ExecutionResult{
+		Command:  command,
+		Stdout:   stdout,
+		Stderr:   stderr,
+		ExitCode: exitCode(err),
+	}
+	if err != nil {
+		return result, fmt.Errorf("run command: %w", err)
+	}
+
+	return result, nil
+}
+
+// RunShellStreaming executes a shell command and reports output chunks as they arrive.
+func (runner OSRunner) RunShellStreaming(ctx context.Context, command string, sink OutputSink) (models.ExecutionResult, error) {
+	result, err := runner.RunStreaming(ctx, "bash", sink, "-c", command)
+	result.Command = command
+	if err != nil {
+		return result, fmt.Errorf("run shell command: %w", err)
+	}
+
+	return result, nil
+}
+
 // joinArgs produces a display string for executed arguments.
 func joinArgs(args []string) string {
 	if len(args) == 0 {
@@ -88,4 +140,17 @@ func exitCode(err error) int {
 	}
 
 	return -1
+}
+
+type outputWriter struct {
+	stream string
+	sink   OutputSink
+}
+
+func (w outputWriter) Write(chunk []byte) (int, error) {
+	if w.sink != nil && len(chunk) > 0 {
+		w.sink(w.stream, string(append([]byte(nil), chunk...)))
+	}
+
+	return len(chunk), nil
 }

@@ -11,9 +11,9 @@ title:
   ua: "Показати робочий каталог процесу"
   ru: "Показать рабочий каталог процесса"
 description:
-  en: "Resolve the current working directory of one running process."
-  ua: "Визначає поточний робочий каталог одного запущеного процесу."
-  ru: "Определяет текущий рабочий каталог одного запущенного процесса."
+  en: "Resolve the directory that the process sees as its current working directory (the /proc/<pid>/cwd target)."
+  ua: "Визначає каталог, який процес бачить як свій поточний робочий каталог (ціль /proc/<pid>/cwd)."
+  ru: "Определяет каталог, который процесс видит как свой текущий рабочий каталог (цель ссылки /proc/<pid>/cwd)."
 args:
   - "/proc/{{pid}}/cwd"
 fields:

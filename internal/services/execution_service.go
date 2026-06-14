@@ -51,3 +51,40 @@ func (s *ExecutionService) Execute(ctx context.Context, recipe models.Recipe, va
 
 	return result, nil
 }
+
+// ExecuteStreaming runs a recipe and forwards process output while it executes.
+func (s *ExecutionService) ExecuteStreaming(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool, sink func(stream string, chunk string)) (models.ExecutionResult, error) {
+	if err := executor.ConfirmRisk(recipe.Risk, confirmed); err != nil {
+		return models.ExecutionResult{}, err
+	}
+
+	streamingRunner, ok := s.runner.(executor.StreamingCommandRunner)
+	if !ok {
+		return s.Execute(ctx, recipe, values, confirmed)
+	}
+
+	var (
+		result models.ExecutionResult
+		err    error
+	)
+
+	switch recipe.Execution {
+	case models.ExecutionTypeDirect:
+		result, err = executor.ExecuteDirectStreaming(ctx, streamingRunner, recipe, values, executor.OutputSink(sink))
+	case models.ExecutionTypeShell:
+		result, err = executor.ExecuteShellStreaming(ctx, streamingRunner, recipe, values, executor.OutputSink(sink))
+	default:
+		err = fmt.Errorf("unsupported execution type %q", recipe.Execution)
+	}
+	if err != nil {
+		return result, err
+	}
+
+	if s.recent != nil {
+		if err := s.recent.Add(result.Command); err != nil {
+			return result, fmt.Errorf("record recent command: %w", err)
+		}
+	}
+
+	return result, nil
+}

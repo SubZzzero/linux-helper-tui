@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"context"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -10,7 +11,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"linux-helper/internal/app"
+	"linux-helper/internal/executor"
 	"linux-helper/internal/models"
+	"linux-helper/internal/services"
 	"linux-helper/internal/storage"
 	"linux-helper/internal/tui/screens"
 	uitheme "linux-helper/internal/tui/theme"
@@ -45,8 +48,9 @@ func appTestRecipes() []models.Recipe {
 type fakeExecutor struct {
 	result models.ExecutionResult
 	err    error
-	called int
+	called atomic.Int32
 	run    func(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool) (models.ExecutionResult, error)
+	stream func(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool, sink func(stream string, chunk string)) (models.ExecutionResult, error)
 }
 
 type fakeFavorites struct {
@@ -57,13 +61,32 @@ type fakeRecent struct {
 	commands []string
 }
 
+type streamingRunner struct{}
+
 // Execute records one execution request.
 func (e *fakeExecutor) Execute(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool) (models.ExecutionResult, error) {
-	e.called++
+	e.called.Add(1)
 	if e.run != nil {
 		return e.run(ctx, recipe, values, confirmed)
 	}
 	return e.result, e.err
+}
+
+// ExecuteStreaming records one streaming execution request.
+func (e *fakeExecutor) ExecuteStreaming(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool, sink func(stream string, chunk string)) (models.ExecutionResult, error) {
+	e.called.Add(1)
+	if e.stream != nil {
+		return e.stream(ctx, recipe, values, confirmed, sink)
+	}
+	if e.run != nil {
+		return e.run(ctx, recipe, values, confirmed)
+	}
+
+	return e.result, e.err
+}
+
+func (e *fakeExecutor) callCount() int {
+	return int(e.called.Load())
 }
 
 // Load returns the current favorite identifiers.
@@ -90,6 +113,34 @@ func (f *fakeFavorites) Toggle(recipeID string) (bool, error) {
 // Load returns the recent commands.
 func (f *fakeRecent) Load() ([]string, error) {
 	return append([]string(nil), f.commands...), nil
+}
+
+// Run returns a static execution result.
+func (streamingRunner) Run(_ context.Context, _ string, _ ...string) (models.ExecutionResult, error) {
+	return models.ExecutionResult{Command: "tail -F /var/log/test.log"}, nil
+}
+
+// RunShell returns a static execution result.
+func (streamingRunner) RunShell(_ context.Context, _ string) (models.ExecutionResult, error) {
+	return models.ExecutionResult{Command: "journalctl -f"}, nil
+}
+
+// RunStreaming emits one live stdout chunk.
+func (streamingRunner) RunStreaming(_ context.Context, _ string, sink executor.OutputSink, _ ...string) (models.ExecutionResult, error) {
+	if sink != nil {
+		sink("stdout", "live line\n")
+	}
+
+	return models.ExecutionResult{Command: "tail -F /var/log/test.log", Stdout: "live line\n"}, nil
+}
+
+// RunShellStreaming emits one live stderr chunk.
+func (streamingRunner) RunShellStreaming(_ context.Context, _ string, sink executor.OutputSink) (models.ExecutionResult, error) {
+	if sink != nil {
+		sink("stderr", "warn line\n")
+	}
+
+	return models.ExecutionResult{Command: "journalctl -f", Stderr: "warn line\n"}, nil
 }
 
 func appTestStyles() uitheme.Styles {
@@ -176,10 +227,10 @@ func TestModelExecutesSafeRecipe(t *testing.T) {
 	updated, cmd = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	require.NotNil(t, updated)
 	require.NotNil(t, cmd)
-	assert.Equal(t, 0, executor.called)
+	assert.Equal(t, 0, executor.callCount())
 
 	updated, _ = updated.Update(cmd())
-	assert.Equal(t, 1, executor.called)
+	assert.Equal(t, 1, executor.callCount())
 	assert.Contains(t, updated.View(), "Execution finished")
 	assert.Contains(t, updated.View(), "find .")
 
@@ -323,7 +374,7 @@ func TestModelCancelsRunningExecutionOnEscape(t *testing.T) {
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	assert.Contains(t, updated.View(), "Preview")
 	assert.Contains(t, updated.View(), "find .")
-	assert.Equal(t, 1, executor.called)
+	assert.Equal(t, 1, executor.callCount())
 
 	select {
 	case <-canceled:
@@ -333,4 +384,64 @@ func TestModelCancelsRunningExecutionOnEscape(t *testing.T) {
 	assert.NotContains(t, updated.View(), "Execution finished")
 	assert.NotContains(t, updated.View(), "context canceled")
 	assert.NotContains(t, updated.View(), "tail -f /var/log/syslog")
+}
+
+// TestModelStreamsRunningExecutionOutput keeps follow-style output visible before completion.
+func TestModelStreamsRunningExecutionOutput(t *testing.T) {
+	executor := &fakeExecutor{
+		stream: func(_ context.Context, _ models.Recipe, _ map[string]string, _ bool, sink func(stream string, chunk string)) (models.ExecutionResult, error) {
+			sink("stdout", "line one\n")
+			sink("stderr", "warn\n")
+			return models.ExecutionResult{Command: "tail -F /var/log/syslog", ExitCode: 0, Stdout: "line one\n", Stderr: "warn\n"}, nil
+		},
+	}
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, executor, nil)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	require.NotNil(t, cmd)
+
+	msg := cmd()
+	updated, cmd = updated.Update(msg)
+	require.NotNil(t, cmd)
+	view := updated.View()
+	assert.Contains(t, view, "Running command")
+	assert.Contains(t, view, "line one")
+
+	msg = cmd()
+	updated, cmd = updated.Update(msg)
+	require.NotNil(t, cmd)
+	assert.Contains(t, updated.View(), "warn")
+
+	msg = cmd()
+	updated, _ = updated.Update(msg)
+	assert.Contains(t, updated.View(), "Execution finished")
+	assert.Contains(t, updated.View(), "tail -F /var/log/syslog")
+	assert.Equal(t, 1, executor.callCount())
+}
+
+// TestModelUsesStreamingExecutionService verifies app-level streaming with the real service type.
+func TestModelUsesStreamingExecutionService(t *testing.T) {
+	service := services.NewExecutionService(streamingRunner{}, nil)
+	catalogModel := screens.NewCatalogModel(appTestRecipes(), "en", appTestStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
+	model := app.NewModel(catalogModel, "en", appTestStyles(), nil, nil, nil, service, nil)
+
+	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	updated, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	require.NotNil(t, cmd)
+
+	msg := cmd()
+	updated, cmd = updated.Update(msg)
+	require.NotNil(t, cmd)
+	assert.Contains(t, updated.View(), "live line")
+
+	msg = cmd()
+	updated, _ = updated.Update(msg)
+	assert.Contains(t, updated.View(), "Execution finished")
+	assert.Contains(t, updated.View(), "tail -F /var/log/test.log")
 }

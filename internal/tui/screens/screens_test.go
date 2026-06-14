@@ -363,6 +363,31 @@ func TestResultModelRunningEscapeRequestsStop(t *testing.T) {
 	assert.False(t, (&resultModel).ConsumeBack())
 }
 
+// TestResultModelShowsLiveOutputWhileRunning keeps streamed text visible in a sized viewport.
+func TestResultModelShowsLiveOutputWhileRunning(t *testing.T) {
+	model := screens.NewResultModel(
+		models.Recipe{Title: models.LocalizedText{"en": "Follow logs"}},
+		"en",
+		testStyles(),
+		"Running",
+		"Stop",
+		"Done",
+		"Back",
+		"Scroll",
+	)
+
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 80, Height: 16})
+	resultModel := updated.(screens.ResultModel)
+	resultModel.AppendOutput("stdout", "line one\n")
+	resultModel.AppendOutput("stderr", "warn\n")
+	view := resultModel.View()
+
+	assert.Contains(t, view, "line one")
+	assert.Contains(t, view, "warn")
+	assert.Contains(t, view, "Running")
+	assert.NotContains(t, view, "Execution finished")
+}
+
 func findLineContaining(view string, substring string) string {
 	for _, line := range strings.Split(view, "\n") {
 		if strings.Contains(line, substring) {

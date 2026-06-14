@@ -18,6 +18,11 @@ type Executor interface {
 	Execute(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool) (models.ExecutionResult, error)
 }
 
+// StreamingExecutor emits output while a recipe is still running.
+type StreamingExecutor interface {
+	ExecuteStreaming(ctx context.Context, recipe models.Recipe, values map[string]string, confirmed bool, sink func(stream string, chunk string)) (models.ExecutionResult, error)
+}
+
 // Favorites toggles and loads favorite recipe identifiers.
 type Favorites interface {
 	Load() ([]string, error)
@@ -39,6 +44,12 @@ type executionFinishedMsg struct {
 	id     int
 	result models.ExecutionResult
 	err    error
+}
+
+type executionOutputMsg struct {
+	id     int
+	stream string
+	chunk  string
 }
 
 // Model is the root Bubble Tea application model.
@@ -70,6 +81,7 @@ type Model struct {
 	activeExecutionID int
 	nextExecutionID   int
 	cancelExecution   context.CancelFunc
+	executionUpdates  <-chan tea.Msg
 	windowWidth       int
 	windowHeight      int
 	logger            *slog.Logger
@@ -127,6 +139,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if finished, ok := msg.(executionFinishedMsg); ok {
 		m.finishExecution(finished)
 		return m, nil
+	}
+
+	if output, ok := msg.(executionOutputMsg); ok {
+		if output.id != 0 && output.id == m.activeExecutionID {
+			if resultScreen, ok := m.stack.Top().(screens.ResultModel); ok {
+				resultScreen.AppendOutput(output.stream, output.chunk)
+				m.stack.ReplaceTop(resultScreen)
+			}
+		}
+
+		return m, waitForExecutionUpdate(m.executionUpdates)
 	}
 
 	if saved, ok := msg.(preferenceSaveMsg); ok {
@@ -280,6 +303,24 @@ func (m *Model) executePending() tea.Cmd {
 	m.activeExecutionID = executionID
 	ctx, cancel := context.WithCancel(context.Background())
 	m.cancelExecution = cancel
+	m.executionUpdates = nil
+
+	if streamer, ok := m.executor.(StreamingExecutor); ok {
+		updates := make(chan tea.Msg, 128)
+		m.executionUpdates = updates
+		go func() {
+			result, err := streamer.ExecuteStreaming(ctx, request.recipe, request.values, request.confirmed, func(stream string, chunk string) {
+				select {
+				case updates <- executionOutputMsg{id: executionID, stream: stream, chunk: chunk}:
+				case <-ctx.Done():
+				}
+			})
+			updates <- executionFinishedMsg{id: executionID, result: result, err: err}
+			close(updates)
+		}()
+
+		return waitForExecutionUpdate(updates)
+	}
 
 	return func() tea.Msg {
 		result, err := m.executor.Execute(ctx, request.recipe, request.values, request.confirmed)
@@ -294,6 +335,7 @@ func (m *Model) finishExecution(msg executionFinishedMsg) {
 
 	m.activeExecutionID = 0
 	m.cancelExecution = nil
+	m.executionUpdates = nil
 	resultScreen, ok := m.stack.Top().(screens.ResultModel)
 	if !ok {
 		return
@@ -311,6 +353,22 @@ func (m *Model) cancelActiveExecution() {
 
 	m.cancelExecution = nil
 	m.activeExecutionID = 0
+	m.executionUpdates = nil
+}
+
+func waitForExecutionUpdate(updates <-chan tea.Msg) tea.Cmd {
+	if updates == nil {
+		return nil
+	}
+
+	return func() tea.Msg {
+		msg, ok := <-updates
+		if !ok {
+			return nil
+		}
+
+		return msg
+	}
 }
 
 // sizeScreen applies the latest known terminal geometry to a newly opened screen.

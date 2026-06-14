@@ -5,7 +5,7 @@ category: processes
 risk: elevated
 execution: shell
 binary: ""
-command: "tr '\0' '\n' </proc/{{pid}}/environ"
+command: 'tr ''\000'' ''\n'' </proc/{{pid}}/environ'
 title:
   en: "Show process environment"
   ua: "Показати середовище процесу"

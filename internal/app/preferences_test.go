@@ -39,12 +39,12 @@ func TestModelLocaleHotkeyUpdatesDangerousConfirmWithoutLosingPreview(t *testing
 	assert.Contains(t, view, "rm -rf /tmp/cache")
 	require.Len(t, saved, 1)
 	assert.Equal(t, storage.Config{Locale: "ua", Theme: "dark"}, saved[0])
-	assert.Equal(t, 0, executor.called)
+	assert.Equal(t, 0, executor.callCount())
 
 	updated, cmd = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	require.NotNil(t, cmd)
 	updated, _ = updated.Update(cmd())
-	assert.Equal(t, 1, executor.called)
+	assert.Equal(t, 1, executor.callCount())
 	assert.Contains(t, updated.View(), "Execution finished")
 	assert.Contains(t, updated.View(), "rm -rf /tmp/cache")
 }
@@ -66,11 +66,11 @@ func TestModelDangerousConfirmBackClearsPendingExecution(t *testing.T) {
 	view := updated.View()
 	assert.Contains(t, view, "Preview")
 	assert.Contains(t, view, "rm -rf /tmp/cache")
-	assert.Equal(t, 0, executor.called)
+	assert.Equal(t, 0, executor.callCount())
 
 	_, cmd := updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	require.Nil(t, cmd)
-	assert.Equal(t, 0, executor.called)
+	assert.Equal(t, 0, executor.callCount())
 }
 
 // TestModelThemeHotkeyPersistsConfig keeps locale stable while cycling the theme.

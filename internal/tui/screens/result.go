@@ -60,9 +60,9 @@ func (m ResultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = typed.Height
 		m.syncViewport()
 	case tea.KeyMsg:
+		var cmd tea.Cmd
+		m.viewport, cmd = m.viewport.Update(typed)
 		if !m.running {
-			var cmd tea.Cmd
-			m.viewport, cmd = m.viewport.Update(typed)
 			switch typed.String() {
 			case "ctrl+c":
 				return m, tea.Quit
@@ -79,6 +79,8 @@ func (m ResultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			m.pendingStop = true
 		}
+
+		return m, cmd
 	}
 
 	return m, nil
@@ -111,6 +113,18 @@ func (m *ResultModel) SetOutcome(result models.ExecutionResult, err error) {
 	m.syncViewport()
 }
 
+// AppendOutput adds one live output chunk to the active result buffer.
+func (m *ResultModel) AppendOutput(stream string, chunk string) {
+	switch stream {
+	case "stderr":
+		m.result.Stderr += chunk
+	default:
+		m.result.Stdout += chunk
+	}
+
+	m.syncViewport()
+}
+
 // SetPresentation updates localized strings and styles without resetting state.
 func (m *ResultModel) SetPresentation(locale string, styles uitheme.Styles, runningText string, cancelText string, doneText string, backText string, scrollText string) {
 	m.locale = locale
@@ -128,8 +142,14 @@ func (m ResultModel) View() string {
 	title := m.styles.Title.Render(resolveRecipeText(m.locale, m.recipe.Title))
 
 	if m.running {
-		lines := []string{title, "", m.styles.Accent.Render(m.runningText), m.styles.Muted.Render(m.cancelText)}
-		return renderFrame(m.styles, m.width, lines)
+		headLines := []string{title, "", m.styles.Accent.Render(m.runningText), m.styles.Muted.Render(m.cancelText)}
+		bodyContent := m.viewport.View()
+		if m.width == 0 || m.height == 0 {
+			bodyContent = m.outputContent()
+		}
+		footLines := []string{"", m.styles.Muted.Render(m.scrollText)}
+		body := strings.Join(append(append(headLines, bodyContent), footLines...), "\n")
+		return resultFrame(m.styles, m.width).Render(body)
 	}
 
 	statusStyle := m.styles.Success
@@ -152,15 +172,15 @@ func (m ResultModel) View() string {
 
 // syncViewport keeps the output viewport aligned with the current result and window size.
 func (m *ResultModel) syncViewport() {
-	if m.running {
-		return
-	}
-
 	offset := m.viewport.YOffset
 	contentWidth, contentHeight := m.viewportDimensions()
 	vp := viewport.New(contentWidth, contentHeight)
 	vp.SetContent(m.outputContent())
-	vp.SetYOffset(offset)
+	if m.running {
+		vp.GotoBottom()
+	} else {
+		vp.SetYOffset(offset)
+	}
 	m.viewport = vp
 }
 
@@ -175,6 +195,9 @@ func (m ResultModel) viewportDimensions() (int, int) {
 
 	contentWidth := max(1, frameWidth-horizontalFrame)
 	staticLines := 8
+	if m.running {
+		staticLines = 6
+	}
 	availableHeight := max(1, m.height-verticalFrame-staticLines)
 	return contentWidth, availableHeight
 }
@@ -195,6 +218,10 @@ func (m ResultModel) outputContent() string {
 	}
 
 	if len(sections) == 0 {
+		if m.running {
+			return m.styles.Muted.Render("No output yet")
+		}
+
 		return m.styles.Muted.Render("No output")
 	}
 

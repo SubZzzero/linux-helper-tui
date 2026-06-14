@@ -27,6 +27,25 @@ func ExecuteDirect(ctx context.Context, runner CommandRunner, recipe models.Reci
 	return result, nil
 }
 
+// ExecuteDirectStreaming launches a direct-execution recipe with live output.
+func ExecuteDirectStreaming(ctx context.Context, runner StreamingCommandRunner, recipe models.Recipe, values map[string]string, sink OutputSink) (models.ExecutionResult, error) {
+	args := make([]string, 0, len(recipe.Args))
+	for _, arg := range recipe.Args {
+		rendered, err := renderTemplate(arg, values)
+		if err != nil {
+			return models.ExecutionResult{}, err
+		}
+		args = append(args, rendered)
+	}
+
+	result, err := runner.RunStreaming(ctx, recipe.Binary, sink, args...)
+	if err != nil {
+		return result, fmt.Errorf("execute direct recipe %q: %w", recipe.ID, err)
+	}
+
+	return result, nil
+}
+
 // renderTemplate replaces {{name}} placeholders with field values.
 func renderTemplate(template string, values map[string]string) (string, error) {
 	result := template
