@@ -207,10 +207,15 @@ func (m CatalogModel) renderResults() string {
 }
 
 func (m CatalogModel) renderCategoryRows() string {
-	lines := make([]string, 0, len(m.categories))
+	lines := make([]string, 0, len(m.categories)+1)
 	nameWidth := categoryNameWidth(m.categories)
 	contentWidth := m.availableContentWidth()
+	hasPrimaryCategories := containsNonDockerCategory(m.categories)
 	for index, category := range m.categories {
+		if category == models.CategoryDocker && hasPrimaryCategories {
+			lines = append(lines, m.styles.Muted.Render(categorySeparator(contentWidth)))
+		}
+
 		line := truncateText("  "+categoryLine(m.locale, category, nameWidth), contentWidth)
 		if index == m.selected {
 			line = m.styles.Selected.Render(truncateText("> "+categoryLine(m.locale, category, nameWidth), contentWidth))
@@ -401,16 +406,41 @@ func (m CatalogModel) lastSelectableIndex() int {
 func categoriesFromResults(results []models.Recipe) []models.Category {
 	seen := make(map[models.Category]struct{}, len(results))
 	categories := make([]models.Category, 0, len(results))
+	dockerCategories := make([]models.Category, 0, 1)
 	for _, recipe := range results {
 		if _, ok := seen[recipe.Category]; ok {
 			continue
 		}
 
 		seen[recipe.Category] = struct{}{}
+		if recipe.Category == models.CategoryDocker {
+			dockerCategories = append(dockerCategories, recipe.Category)
+			continue
+		}
+
 		categories = append(categories, recipe.Category)
 	}
 
+	categories = append(categories, dockerCategories...)
 	return categories
+}
+
+func containsNonDockerCategory(categories []models.Category) bool {
+	for _, category := range categories {
+		if category != models.CategoryDocker {
+			return true
+		}
+	}
+
+	return false
+}
+
+func categorySeparator(width int) string {
+	if width <= 0 {
+		return "----------------"
+	}
+
+	return strings.Repeat("-", max(8, min(width, 18)))
 }
 
 func containsCategory(categories []models.Category, target models.Category) bool {

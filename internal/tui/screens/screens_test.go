@@ -51,7 +51,7 @@ func TestCatalogModelSelection(t *testing.T) {
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
-	assert.Equal(t, models.CategoryDocker, category)
+	assert.Equal(t, models.CategoryFilesystem, category)
 }
 
 // TestDetailModelBack pops on escape.
@@ -120,7 +120,6 @@ func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
@@ -134,6 +133,7 @@ func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 
 	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
 	assert.Contains(t, findLineContaining(view, "Docker"), "Containers, images, volumes, and Docker state")
+	assert.Contains(t, view, "----------------")
 	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
 	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
 	assert.Contains(t, findLineContaining(view, "System"), ">")
@@ -151,6 +151,8 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
 	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
 	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
+	assert.Contains(t, view, "----------------")
+	assert.Less(t, strings.Index(view, "Filesystem"), strings.Index(view, "Docker"))
 	assert.NotContains(t, view, "Category:")
 	assert.NotContains(t, view, "(1)")
 
@@ -158,24 +160,26 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
-	assert.Equal(t, models.CategoryDocker, category)
+	assert.Equal(t, models.CategoryFilesystem, category)
 	catalogModel.SetSelectedCategory(category)
 	filteredView := catalogModel.View()
-	assert.Contains(t, filteredView, "List Docker containers")
-	assert.NotContains(t, filteredView, "Find file")
+	assert.Contains(t, filteredView, "Find file")
+	assert.NotContains(t, filteredView, "List Docker containers")
 	assert.NotContains(t, filteredView, "Disk usage")
-	assert.NotContains(t, filteredView, "[docker]")
+	assert.NotContains(t, filteredView, "[filesystem]")
 
 	updated, _ = model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel = updated.(screens.CatalogModel)
 	category, ok = (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
-	assert.Equal(t, models.CategoryFilesystem, category)
+	assert.Equal(t, models.CategoryDocker, category)
 	catalogModel.SetSelectedCategory(category)
 	filteredView = catalogModel.View()
-	assert.Contains(t, filteredView, "Find file")
-	assert.NotContains(t, filteredView, "[filesystem]")
+	assert.Contains(t, filteredView, "List Docker containers")
+	assert.NotContains(t, filteredView, "[docker]")
 }
 
 // TestCatalogModelCategorySelectionResetsRecipeIndex opens the first recipe in a category.
@@ -203,7 +207,6 @@ func TestCatalogModelCategorySelectionResetsRecipeIndex(t *testing.T) {
 	}}, "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
-	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()

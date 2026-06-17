@@ -23,7 +23,7 @@ Built for Linux administrators, developers, homelab enthusiasts, and anyone tire
 
 The repository currently includes:
 
-- `150` embedded recipes across `11` categories
+- `165` embedded recipes across `12` categories
 - embedded recipe loading with optional user overrides
 - category-first recipe catalog with browse-only root navigation
 - multi-screen Bubble Tea flow: catalog, detail, form, confirmation, result
@@ -149,3 +149,6 @@ The current application flow is:
 5. Confirm execution for dangerous recipes.
 6. Execute and inspect the result screen.
 
+## Updates
+
+Docker
