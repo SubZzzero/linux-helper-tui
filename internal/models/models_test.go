@@ -37,6 +37,10 @@ func TestParseCategory(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryNetwork, category)
 
+	category, err = models.ParseCategory("docker")
+	require.NoError(t, err)
+	assert.Equal(t, models.CategoryDocker, category)
+
 	category, err = models.ParseCategory("environment")
 	require.NoError(t, err)
 	assert.Equal(t, models.CategoryEnvironment, category)
@@ -75,6 +79,7 @@ func TestParseCategory(t *testing.T) {
 
 // TestCategoryDisplayName returns stable labels for known categories.
 func TestCategoryDisplayName(t *testing.T) {
+	assert.Equal(t, "Docker", models.CategoryDocker.DisplayName())
 	assert.Equal(t, "Filesystem", models.CategoryFilesystem.DisplayName())
 	assert.Equal(t, "Environment", models.CategoryEnvironment.DisplayName())
 	assert.Equal(t, "Logs", models.CategoryLogs.DisplayName())

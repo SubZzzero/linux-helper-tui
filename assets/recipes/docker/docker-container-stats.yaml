@@ -1,0 +1,36 @@
+id: docker-container-stats
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show Docker container resource usage"
+  ua: "Показати використання ресурсів Docker-контейнером"
+  ru: "Показать использование ресурсов Docker-контейнером"
+description:
+  en: "Show one-shot CPU, memory, network, and block I/O stats for a container."
+  ua: "Показує одноразову статистику CPU, пам'яті, мережі та block I/O для контейнера."
+  ru: "Показывает разовую статистику CPU, памяти, сети и block I/O для контейнера."
+args:
+  - "stats"
+  - "--no-stream"
+  - "{{container}}"
+fields:
+  - name: container
+    type: string
+    required: true
+    default: "nginx"
+    description:
+      en: "Container name or ID"
+tags:
+  - docker
+  - stats
+  - performance
+examples:
+  - args:
+      container: "redis"
+    description:
+      en: "Measure current resource pressure from the redis container"

@@ -1,0 +1,35 @@
+id: docker-image-history
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show Docker image history"
+  ua: "Показати історію Docker-образу"
+  ru: "Показать историю Docker-образа"
+description:
+  en: "Show image layers and history for one Docker image."
+  ua: "Показує шари та історію одного Docker-образу."
+  ru: "Показывает слои и историю одного Docker-образа."
+args:
+  - "history"
+  - "{{image}}"
+fields:
+  - name: image
+    type: string
+    required: true
+    default: "nginx:latest"
+    description:
+      en: "Image name or ID"
+tags:
+  - docker
+  - images
+  - history
+examples:
+  - args:
+      image: "postgres:16"
+    description:
+      en: "Inspect the layer history for the postgres image"

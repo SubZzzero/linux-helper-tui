@@ -1,0 +1,44 @@
+id: docker-container-logs
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show Docker container logs"
+  ua: "Показати логи Docker-контейнера"
+  ru: "Показать логи Docker-контейнера"
+description:
+  en: "Show the last log lines emitted by one container."
+  ua: "Показує останні рядки логів одного контейнера."
+  ru: "Показывает последние строки логов одного контейнера."
+args:
+  - "logs"
+  - "--tail"
+  - "{{lines}}"
+  - "{{container}}"
+fields:
+  - name: container
+    type: string
+    required: true
+    default: "nginx"
+    description:
+      en: "Container name or ID"
+  - name: lines
+    type: string
+    required: true
+    default: "100"
+    description:
+      en: "Number of log lines to show"
+tags:
+  - docker
+  - logs
+  - containers
+examples:
+  - args:
+      container: "api"
+      lines: "200"
+    description:
+      en: "Review the most recent application log output from the api container"

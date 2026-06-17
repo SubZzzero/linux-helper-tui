@@ -1,0 +1,28 @@
+id: docker-network-ls
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "List Docker networks"
+  ua: "Показати Docker-мережі"
+  ru: "Показать Docker-сети"
+description:
+  en: "List Docker bridge, overlay, and custom networks on the host."
+  ua: "Показує bridge, overlay та кастомні Docker-мережі на хості."
+  ru: "Показывает bridge, overlay и пользовательские Docker-сети на хосте."
+args:
+  - "network"
+  - "ls"
+fields: []
+tags:
+  - docker
+  - networks
+  - inventory
+examples:
+  - args: {}
+    description:
+      en: "Review available Docker networks before connecting new containers"

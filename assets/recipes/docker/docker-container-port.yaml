@@ -1,0 +1,35 @@
+id: docker-container-port
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show Docker container port mappings"
+  ua: "Показати мапінг портів Docker-контейнера"
+  ru: "Показать сопоставление портов Docker-контейнера"
+description:
+  en: "Show published port mappings for one container."
+  ua: "Показує опубліковані зіставлення портів для одного контейнера."
+  ru: "Показывает опубликованные сопоставления портов для одного контейнера."
+args:
+  - "port"
+  - "{{container}}"
+fields:
+  - name: container
+    type: string
+    required: true
+    default: "nginx"
+    description:
+      en: "Container name or ID"
+tags:
+  - docker
+  - ports
+  - networking
+examples:
+  - args:
+      container: "web"
+    description:
+      en: "Verify which host ports are published by the web container"

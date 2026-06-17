@@ -1,0 +1,35 @@
+id: docker-inspect-container
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Inspect a Docker container"
+  ua: "Інспектувати Docker-контейнер"
+  ru: "Инспектировать Docker-контейнер"
+description:
+  en: "Show low-level JSON metadata for one container."
+  ua: "Показує низькорівневі JSON-метадані одного контейнера."
+  ru: "Показывает низкоуровневые JSON-метаданные одного контейнера."
+args:
+  - "inspect"
+  - "{{container}}"
+fields:
+  - name: container
+    type: string
+    required: true
+    default: "nginx"
+    description:
+      en: "Container name or ID"
+tags:
+  - docker
+  - inspect
+  - metadata
+examples:
+  - args:
+      container: "postgres"
+    description:
+      en: "Inspect network, mounts, and environment for the postgres container"

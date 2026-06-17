@@ -1,0 +1,27 @@
+id: docker-ps-running
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "List running Docker containers"
+  ua: "Показати запущені Docker-контейнери"
+  ru: "Показать запущенные Docker-контейнеры"
+description:
+  en: "Show only containers that are currently running."
+  ua: "Показує лише контейнери, які зараз запущені."
+  ru: "Показывает только контейнеры, которые сейчас запущены."
+args:
+  - "ps"
+fields: []
+tags:
+  - docker
+  - containers
+  - runtime
+examples:
+  - args: {}
+    description:
+      en: "See which application containers are currently active"

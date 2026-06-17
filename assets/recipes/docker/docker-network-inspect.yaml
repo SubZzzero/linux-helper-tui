@@ -1,0 +1,36 @@
+id: docker-network-inspect
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Inspect a Docker network"
+  ua: "Інспектувати Docker-мережу"
+  ru: "Инспектировать Docker-сеть"
+description:
+  en: "Show detailed metadata and attached containers for one Docker network."
+  ua: "Показує детальні метадані та підключені контейнери для однієї Docker-мережі."
+  ru: "Показывает подробные метаданные и подключенные контейнеры для одной Docker-сети."
+args:
+  - "network"
+  - "inspect"
+  - "{{network}}"
+fields:
+  - name: network
+    type: string
+    required: true
+    default: "bridge"
+    description:
+      en: "Docker network name"
+tags:
+  - docker
+  - networks
+  - inspect
+examples:
+  - args:
+      network: "frontend"
+    description:
+      en: "Inspect which containers are attached to the frontend network"

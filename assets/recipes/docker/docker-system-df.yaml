@@ -1,0 +1,28 @@
+id: docker-system-df
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show Docker disk usage"
+  ua: "Показати використання диска Docker"
+  ru: "Показать использование диска Docker"
+description:
+  en: "Summarize disk usage for Docker images, containers, local volumes, and build cache."
+  ua: "Підсумовує використання диска Docker-образами, контейнерами, локальними томами та build cache."
+  ru: "Суммирует использование диска Docker-образами, контейнерами, локальными томами и build cache."
+args:
+  - "system"
+  - "df"
+fields: []
+tags:
+  - docker
+  - disk
+  - storage
+examples:
+  - args: {}
+    description:
+      en: "Estimate how much disk space Docker artifacts currently consume"

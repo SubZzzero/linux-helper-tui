@@ -11,6 +11,7 @@ import (
 func benchmarkCatalogRecipes(count int) []models.Recipe {
 	recipes := make([]models.Recipe, 0, count)
 	categories := []models.Category{
+		models.CategoryDocker,
 		models.CategoryFilesystem,
 		models.CategoryEnvironment,
 		models.CategoryLogs,
@@ -63,6 +64,7 @@ func BenchmarkCatalogSetSelectedCategory(b *testing.B) {
 	styles := testStyles()
 	model := screens.NewCatalogModel(recipes, "en", styles, nil, nil, "linux-helper", "Empty", "Recent", "No recent commands yet.", "Catalog help")
 	categories := []models.Category{
+		models.CategoryDocker,
 		models.CategoryFilesystem,
 		models.CategoryEnvironment,
 		models.CategoryLogs,

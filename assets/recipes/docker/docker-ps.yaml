@@ -1,0 +1,28 @@
+id: docker-ps
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "List all Docker containers"
+  ua: "Показати всі Docker-контейнери"
+  ru: "Показать все Docker-контейнеры"
+description:
+  en: "List running and stopped Docker containers with their current state."
+  ua: "Показує запущені та зупинені Docker-контейнери з їхнім поточним станом."
+  ru: "Показывает запущенные и остановленные Docker-контейнеры с их текущим состоянием."
+args:
+  - "ps"
+  - "-a"
+fields: []
+tags:
+  - docker
+  - containers
+  - inventory
+examples:
+  - args: {}
+    description:
+      en: "Review all local containers before cleanup or debugging"

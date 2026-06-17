@@ -1,0 +1,27 @@
+id: docker-images
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "List Docker images"
+  ua: "Показати Docker-образи"
+  ru: "Показать Docker-образы"
+description:
+  en: "List images present in the local Docker image cache."
+  ua: "Показує образи, наявні в локальному кеші Docker."
+  ru: "Показывает образы, доступные в локальном кеше Docker."
+args:
+  - "images"
+fields: []
+tags:
+  - docker
+  - images
+  - inventory
+examples:
+  - args: {}
+    description:
+      en: "Review the local image cache before pruning or updating images"

@@ -1,0 +1,28 @@
+id: docker-volume-ls
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "List Docker volumes"
+  ua: "Показати Docker-томи"
+  ru: "Показать Docker-тома"
+description:
+  en: "List Docker volumes available on the local host."
+  ua: "Показує Docker-томи, доступні на локальному хості."
+  ru: "Показывает Docker-тома, доступные на локальном хосте."
+args:
+  - "volume"
+  - "ls"
+fields: []
+tags:
+  - docker
+  - volumes
+  - storage
+examples:
+  - args: {}
+    description:
+      en: "Review which named volumes exist before backup or cleanup"

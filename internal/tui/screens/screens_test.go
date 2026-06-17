@@ -17,6 +17,11 @@ import (
 
 func testRecipes() []models.Recipe {
 	return []models.Recipe{{
+		ID:          "docker-ps",
+		Category:    models.CategoryDocker,
+		Title:       models.LocalizedText{"en": "List Docker containers"},
+		Description: models.LocalizedText{"en": "List all local containers"},
+	}, {
 		ID:          "find-file",
 		Category:    models.CategoryFilesystem,
 		Title:       models.LocalizedText{"en": "Find file"},
@@ -46,7 +51,7 @@ func TestCatalogModelSelection(t *testing.T) {
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
-	assert.Equal(t, models.CategoryFilesystem, category)
+	assert.Equal(t, models.CategoryDocker, category)
 }
 
 // TestDetailModelBack pops on escape.
@@ -115,6 +120,7 @@ func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
@@ -127,9 +133,11 @@ func TestCatalogModelBackReturnsToCategories(t *testing.T) {
 	view := updated.View()
 
 	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
+	assert.Contains(t, findLineContaining(view, "Docker"), "Containers, images, volumes, and Docker state")
 	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
 	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
 	assert.Contains(t, findLineContaining(view, "System"), ">")
+	assert.NotContains(t, findLineContaining(view, "Docker"), ">")
 	assert.NotContains(t, findLineContaining(view, "Filesystem"), ">")
 	assert.NotContains(t, view, "[*] Find file")
 }
@@ -139,6 +147,7 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	view := model.View()
+	assert.Contains(t, findLineContaining(view, "Docker"), "Containers, images, volumes, and Docker state")
 	assert.Contains(t, findLineContaining(view, "Filesystem"), "Files, directories, and permissions")
 	assert.Contains(t, findLineContaining(view, "System"), "System, disks, and resources")
 	assert.Contains(t, findLineContaining(view, "Troubleshooting"), "Failure triage, diagnostics, and root-cause checks")
@@ -149,16 +158,34 @@ func TestCatalogModelGroupsAndFiltersByCategory(t *testing.T) {
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
 	require.True(t, ok)
+	assert.Equal(t, models.CategoryDocker, category)
 	catalogModel.SetSelectedCategory(category)
 	filteredView := catalogModel.View()
-	assert.Contains(t, filteredView, "Find file")
+	assert.Contains(t, filteredView, "List Docker containers")
+	assert.NotContains(t, filteredView, "Find file")
 	assert.NotContains(t, filteredView, "Disk usage")
+	assert.NotContains(t, filteredView, "[docker]")
+
+	updated, _ = model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
+	catalogModel = updated.(screens.CatalogModel)
+	category, ok = (&catalogModel).ConsumeCategorySelection()
+	require.True(t, ok)
+	assert.Equal(t, models.CategoryFilesystem, category)
+	catalogModel.SetSelectedCategory(category)
+	filteredView = catalogModel.View()
+	assert.Contains(t, filteredView, "Find file")
 	assert.NotContains(t, filteredView, "[filesystem]")
 }
 
 // TestCatalogModelCategorySelectionResetsRecipeIndex opens the first recipe in a category.
 func TestCatalogModelCategorySelectionResetsRecipeIndex(t *testing.T) {
 	model := screens.NewCatalogModel([]models.Recipe{{
+		ID:          "docker-ps",
+		Category:    models.CategoryDocker,
+		Title:       models.LocalizedText{"en": "List Docker containers"},
+		Description: models.LocalizedText{"en": "List all local containers"},
+	}, {
 		ID:          "find-file",
 		Category:    models.CategoryFilesystem,
 		Title:       models.LocalizedText{"en": "Find file"},
@@ -176,6 +203,7 @@ func TestCatalogModelCategorySelectionResetsRecipeIndex(t *testing.T) {
 	}}, "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 
 	updated, _ := model.Update(tea.KeyMsg{Type: tea.KeyDown})
+	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyDown})
 	updated, _ = updated.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	catalogModel := updated.(screens.CatalogModel)
 	category, ok := (&catalogModel).ConsumeCategorySelection()
@@ -195,13 +223,16 @@ func TestCatalogModelCategoryDescriptionsAlign(t *testing.T) {
 	model := screens.NewCatalogModel(testRecipes(), "en", testStyles(), nil, nil, "linux-helper", "Empty", "Recent commands", "No recent commands yet.", "up/down move, enter open, esc back, ctrl+c quit")
 	view := model.View()
 
+	dockerLine := findLineContaining(view, "Docker")
 	filesystemLine := findLineContaining(view, "Filesystem")
 	systemLine := findLineContaining(view, "System")
 	troubleshootingLine := findLineContaining(view, "Troubleshooting")
+	require.NotEmpty(t, dockerLine)
 	require.NotEmpty(t, filesystemLine)
 	require.NotEmpty(t, systemLine)
 	require.NotEmpty(t, troubleshootingLine)
 
+	assert.Equal(t, strings.Index(dockerLine, "Containers, images, volumes, and Docker state"), strings.Index(filesystemLine, "Files, directories, and permissions"))
 	assert.Equal(t, strings.Index(filesystemLine, "Files, directories, and permissions"), strings.Index(systemLine, "System, disks, and resources"))
 	assert.Equal(t, strings.Index(filesystemLine, "Files, directories, and permissions"), strings.Index(troubleshootingLine, "Failure triage, diagnostics, and root-cause checks"))
 }
@@ -234,12 +265,12 @@ func TestCatalogModelWrapsLongRecentCommands(t *testing.T) {
 		"up/down move, enter open, esc back, ctrl+c quit",
 	)
 
-	updated, _ := model.Update(tea.WindowSizeMsg{Width: 34, Height: 16})
+	updated, _ := model.Update(tea.WindowSizeMsg{Width: 40, Height: 18})
 	view := updated.View()
 
 	assert.Contains(t, view, "- systemctl")
 	assert.Contains(t, view, "  multi-user.target --no-pager")
-	assert.LessOrEqual(t, maxLineWidth(view), 34)
+	assert.LessOrEqual(t, maxLineWidth(view), 40)
 }
 
 // TestCatalogModelTypingDoesNotChangeView keeps browse-only input inactive.

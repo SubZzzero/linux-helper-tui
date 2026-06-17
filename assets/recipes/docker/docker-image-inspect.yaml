@@ -1,0 +1,36 @@
+id: docker-image-inspect
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Inspect a Docker image"
+  ua: "Інспектувати Docker-образ"
+  ru: "Инспектировать Docker-образ"
+description:
+  en: "Show low-level JSON metadata for one Docker image."
+  ua: "Показує низькорівневі JSON-метадані одного Docker-образу."
+  ru: "Показывает низкоуровневые JSON-метаданные одного Docker-образа."
+args:
+  - "image"
+  - "inspect"
+  - "{{image}}"
+fields:
+  - name: image
+    type: string
+    required: true
+    default: "nginx:latest"
+    description:
+      en: "Image name or ID"
+tags:
+  - docker
+  - images
+  - inspect
+examples:
+  - args:
+      image: "redis:7"
+    description:
+      en: "Inspect metadata such as layers and default config for the redis image"

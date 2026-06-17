@@ -6,6 +6,8 @@ import "fmt"
 type Category string
 
 const (
+	// CategoryDocker groups Docker and container runtime inspection commands.
+	CategoryDocker Category = "docker"
 	// CategoryFilesystem groups filesystem commands.
 	CategoryFilesystem Category = "filesystem"
 	// CategoryEnvironment groups environment inspection commands.
@@ -33,16 +35,18 @@ const (
 // Valid reports whether the category is known.
 func (c Category) Valid() bool {
 	switch c {
-	case CategoryFilesystem, CategoryEnvironment, CategoryLogs, CategoryNetwork, CategoryPackages, CategoryProcesses, CategoryServices, CategorySystem, CategoryText, CategoryTroubleshooting, CategoryUsers:
+	case CategoryDocker, CategoryFilesystem, CategoryEnvironment, CategoryLogs, CategoryNetwork, CategoryPackages, CategoryProcesses, CategoryServices, CategorySystem, CategoryText, CategoryTroubleshooting, CategoryUsers:
 		return true
-	default:
-		return false
 	}
+
+	return false
 }
 
 // DisplayName returns the human-readable category label.
 func (c Category) DisplayName() string {
 	switch c {
+	case CategoryDocker:
+		return "Docker"
 	case CategoryFilesystem:
 		return "Filesystem"
 	case CategoryEnvironment:

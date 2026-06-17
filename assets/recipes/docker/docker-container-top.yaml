@@ -1,0 +1,35 @@
+id: docker-container-top
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Show processes inside a Docker container"
+  ua: "Показати процеси всередині Docker-контейнера"
+  ru: "Показать процессы внутри Docker-контейнера"
+description:
+  en: "List processes running inside one container."
+  ua: "Показує процеси, які працюють усередині одного контейнера."
+  ru: "Показывает процессы, работающие внутри одного контейнера."
+args:
+  - "top"
+  - "{{container}}"
+fields:
+  - name: container
+    type: string
+    required: true
+    default: "nginx"
+    description:
+      en: "Container name or ID"
+tags:
+  - docker
+  - processes
+  - containers
+examples:
+  - args:
+      container: "worker"
+    description:
+      en: "Check which processes are active inside the worker container"

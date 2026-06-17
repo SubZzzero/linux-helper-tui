@@ -466,6 +466,7 @@ func categoryDescription(locale string, category models.Category) string {
 
 var localizedCategoryDescriptions = map[string]map[models.Category]string{
 	"en": {
+		models.CategoryDocker:          "Containers, images, volumes, and Docker state",
 		models.CategoryFilesystem:      "Files, directories, and permissions",
 		models.CategoryEnvironment:     "Environment variables and shell",
 		models.CategoryLogs:            "System logs and journal",
@@ -480,6 +481,7 @@ var localizedCategoryDescriptions = map[string]map[models.Category]string{
 		"":                             "Category commands",
 	},
 	"ru": {
+		models.CategoryDocker:          "Контейнеры, образы, тома и состояние Docker",
 		models.CategoryFilesystem:      "Файлы, каталоги и права",
 		models.CategoryEnvironment:     "Переменные окружения и shell",
 		models.CategoryLogs:            "Логи и журналы системы",
@@ -494,6 +496,7 @@ var localizedCategoryDescriptions = map[string]map[models.Category]string{
 		"":                             "Команды категории",
 	},
 	"ua": {
+		models.CategoryDocker:          "Контейнери, образи, томи та стан Docker",
 		models.CategoryFilesystem:      "Файли, каталоги та права",
 		models.CategoryEnvironment:     "Змінні середовища та shell",
 		models.CategoryLogs:            "Логи та журнали системи",

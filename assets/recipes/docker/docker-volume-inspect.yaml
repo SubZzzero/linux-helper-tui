@@ -1,0 +1,36 @@
+id: docker-volume-inspect
+version: 1
+type: recipe
+category: docker
+risk: elevated
+execution: direct
+binary: docker
+command: ""
+title:
+  en: "Inspect a Docker volume"
+  ua: "Інспектувати Docker-том"
+  ru: "Инспектировать Docker-том"
+description:
+  en: "Show metadata for one Docker volume, including mountpoint and driver."
+  ua: "Показує метадані одного Docker-тому, включно з mountpoint і драйвером."
+  ru: "Показывает метаданные одного Docker-тома, включая mountpoint и драйвер."
+args:
+  - "volume"
+  - "inspect"
+  - "{{volume}}"
+fields:
+  - name: volume
+    type: string
+    required: true
+    default: "app_data"
+    description:
+      en: "Docker volume name"
+tags:
+  - docker
+  - volumes
+  - inspect
+examples:
+  - args:
+      volume: "postgres_data"
+    description:
+      en: "Inspect where the postgres_data volume is mounted on the host"
